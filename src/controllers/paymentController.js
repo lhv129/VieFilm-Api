@@ -26,10 +26,10 @@ const handlePaymentReturn = async (req, res) => {
             await ticketModel.updateStatus(ticket._id.toString(),"paid");
             const getTicket = await ticketModel.getDetails(ticket._id.toString());
 
-            console.log(getTicket);
+            // console.log(getTicket);
 
             res.status(400).json({
-                status: false,
+                status: true,
                 message: "Đặt vé thành công",
                 data: getTicket
             })

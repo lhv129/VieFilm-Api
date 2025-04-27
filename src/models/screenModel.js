@@ -172,6 +172,17 @@ const getAllByCinema = async (cinemaId) => {
     }
 }
 
+const find = async (filter) => {
+    try {
+        const results = await GET_DB()
+            .collection(SCREEN_COLLECTION_NAME)
+            .find(filter).toArray();
+        return results;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 export const screenModel = {
     SCREEN_COLLECTION_NAME,
     SCREEN_COLLECTION_SCHEMA,
@@ -182,5 +193,6 @@ export const screenModel = {
     getDetails,
     update,
     getDelete,
-    getAllByCinema
+    getAllByCinema,
+    find
 };

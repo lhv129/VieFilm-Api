@@ -6,6 +6,8 @@ import { StatusCodes } from "http-status-codes";
 import { autoCalculateEndDate } from "../utils/autoCalculateEndDate";
 import moment from "moment";
 import { ObjectId } from "mongodb";
+import { showtimeValidation } from "../validations/showtimeValidation";
+import { cinemaModel } from "@/models/cinemaModel";
 
 const getAll = async (date) => {
     try {
@@ -28,6 +30,11 @@ const create = async (reqBody) => {
         if (!screen) {
             throw new ApiError(StatusCodes.NOT_FOUND, "ScreenId không tồn tại, vui lòng kiểm tra lại");
         }
+        // Kiểm tra date
+        // Ngày chiếu phải là ngày hôm nay hoặc những ngày sắp tới
+        // Ngày chiếu phải nằm trong thời gian công chiếu và kết thúc của phim
+        showtimeValidation.validateDateAndStartTime(date, startTime, movie);
+
         const endTime = await autoCalculateEndDate.calculateEndTime(startTime, date, movie.duration);
         // Lấy ra toàn bộ danh sách showtime của phòng muốn thêm trong ngày hôm đó
         const existingShowtimes = await showtimeModel.find({ screenId: new ObjectId(screenId), date: date, _deletedAt: false })
@@ -92,6 +99,12 @@ const update = async (id, reqBody) => {
         if (!screen) {
             throw new ApiError(StatusCodes.NOT_FOUND, "ScreenId không tồn tại, vui lòng kiểm tra lại");
         }
+
+        // Kiểm tra date
+        // Ngày chiếu phải là ngày hôm nay hoặc những ngày sắp tới
+        // Ngày chiếu phải nằm trong thời gian công chiếu và kết thúc của phim
+        showtimeValidation.validateDateAndStartTime(date, startTime, movie);
+
         const endTime = await autoCalculateEndDate.calculateEndTime(startTime, date, movie.duration);
         // Lấy ra toàn bộ danh sách showtime của phòng muốn thêm trong ngày hôm đó
         const existingShowtimes = await showtimeModel.find({ screenId: new ObjectId(screenId), date: date, _deletedAt: false })
@@ -162,11 +175,65 @@ const getSeatsByShowtime = async (showtimeId) => {
     }
 }
 
+const getAllByMovie = async (reqBody) => {
+    try {
+        const { date, cinemaId, movieId } = reqBody;
+        if (!date) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Vui lòng chọn ngày để lấy ra suất chiếu");
+        }
+        const cinema = await cinemaModel.findOneById(cinemaId);
+        if (!cinema) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Rạp phim không tồn tại vui lòng kiểm tra lại");
+        }
+        const movie = await movieModel.findOneById(movieId);
+        if (!movie) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Phim không tồn tại, vui lòng kiểm tra lại");
+        }
+
+        // Bước 1: Lấy danh sách screenId thuộc cinemaId
+        const screens = await screenModel.find({ cinemaId: new ObjectId(cinemaId), _deletedAt: false });
+        const screenIds = screens.map(screen => screen._id);
+        if (screenIds.length === 0) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Không tìm thấy phòng chiếu thuộc rạp này");
+        }
+
+        const showtimes = await showtimeModel.find({
+            screenId: { $in: screenIds },
+            movieId: new ObjectId(movieId),
+            date: date,
+            _deletedAt: false
+        });
+
+        // Đếm tổng số ghế đang trống của suất chiếu đó
+        // Lấy danh sách ghế từng suất chiếu
+        const showtimesWithSeats = await Promise.all(
+            showtimes.map(async (showtime) => {
+                // Gọi getSeatsByShowtime
+                const { screen } = await getSeatsByShowtime(showtime._id);
+
+                // screen.seats là array ghế
+                const totalEmptySeats = screen.seats.filter(seat => !seat.isBooked).length;
+
+                // Gắn thêm field emptySeats
+                return {
+                    ...showtime,
+                    emptySeats: totalEmptySeats
+                };
+            })
+        );
+
+        return showtimesWithSeats;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const showtimeService = {
     getAll,
     create,
     getDetails,
     update,
     getDelete,
-    getSeatsByShowtime
+    getSeatsByShowtime,
+    getAllByMovie
 };

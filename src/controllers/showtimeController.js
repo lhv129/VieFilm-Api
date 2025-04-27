@@ -80,11 +80,25 @@ const getSeatsByShowtime = async (req, res, next) => {
     }
 }
 
+const getAllByMovie = async (req, res, next) => {
+    try {
+        const showtimes = await showtimeService.getAllByMovie(req.body);
+        res.status(200).json({
+            status: "success",
+            message: "Tìm danh sách suất chiếu thành công",
+            data: showtimes,
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
 export const showtimeController = {
     getAll,
     create,
     getDetails,
     update,
     getDelete,
-    getSeatsByShowtime
+    getSeatsByShowtime,
+    getAllByMovie
 };

@@ -254,5 +254,5 @@ export const showtimeModel = {
     create,
     update,
     getDelete,
-    getSeatsByShowtime
+    getSeatsByShowtime,
 }
