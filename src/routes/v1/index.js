@@ -5,6 +5,8 @@ import { authRouter } from "./authRouter";
 import { provinceRouter } from "./provinceRouter";
 import { cinemaRouter } from "./cinemaRouter";
 import { screenRouter } from "./screenRouter";
+import { seatRouter } from "./seatRouter";
+import { MovieRouter } from "./movieRouter";
 
 const Router = express.Router();
 
@@ -25,6 +27,12 @@ Router.use('/cinemas',cinemaRouter);
 
 // Screen APIs
 Router.use('/screens',screenRouter);
+
+// Seat APIs
+Router.use('/seats',seatRouter);
+
+// Movies APIs
+Router.use('/movies',MovieRouter);
 
 
 export const APIs_v1 = Router;
