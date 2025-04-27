@@ -7,7 +7,7 @@ import { autoCalculateEndDate } from "../utils/autoCalculateEndDate";
 import moment from "moment";
 import { ObjectId } from "mongodb";
 import { showtimeValidation } from "../validations/showtimeValidation";
-import { cinemaModel } from "@/models/cinemaModel";
+import { cinemaModel } from "../models/cinemaModel";
 
 const getAll = async (date) => {
     try {
