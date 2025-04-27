@@ -1,5 +1,5 @@
-import { env } from "@/config/environment";
-import { userModel } from "@/models/userModel";
+import { env } from "../config/environment";
+import { userModel } from "../models/userModel";
 import jwt from "jsonwebtoken";
 
 const refreshTokenSecret = env.ACCESS_TOKEN_SECRET;

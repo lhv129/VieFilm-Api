@@ -1,5 +1,5 @@
-import { roleModel } from "@/models/roleModel";
-import { roleService } from "@/services/roleService";
+import { roleModel } from "../models/roleModel";
+import { roleService } from "../services/roleService";
 
 const getAll = async (req, res, next) => {
   try {

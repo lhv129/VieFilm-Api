@@ -1,6 +1,6 @@
-import { slugify } from "@/utils/formatters";
-import { roleModel } from "@/models/roleModel";
-import ApiError from "@/utils/ApiError";
+import { slugify } from "../utils/formatters";
+import { roleModel } from "../models/roleModel";
+import ApiError from "../utils/ApiError";
 import { StatusCodes } from "http-status-codes";
 
 const getAll = async () => {

@@ -1,4 +1,4 @@
-import { userService } from "@/services/userService";
+import { userService } from "../services/userService";
 
 const getAll = async (req, res, next) => {
   try {

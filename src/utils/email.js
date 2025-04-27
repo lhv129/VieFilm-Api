@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { env } from '@/config/environment'; // Giả sử bạn có file cấu hình
+import { env } from '../config/environment'; // Giả sử bạn có file cấu hình
 
 const transporter = nodemailer.createTransport({
     service: env.EMAIL_SERVICE, // Ví dụ: 'Gmail'

@@ -1,10 +1,10 @@
-import { userModel } from "@/models/userModel";
-import { roleModel } from "@/models/roleModel";
-import ApiError from "@/utils/ApiError";
+import { userModel } from "../models/userModel";
+import { roleModel } from "../models/roleModel";
+import ApiError from "../utils/ApiError";
 import { StatusCodes } from "http-status-codes";
-import { convertDateToTimestamp } from "@/utils/convertDate";
+import { convertDateToTimestamp } from "../utils/convertDate";
 import { ObjectId } from "mongodb";
-const { uploadImage, deleteImage } = require("@/config/cloudinary");
+const { uploadImage, deleteImage } = require("../config/cloudinary");
 
 const getAll = async () => {
   try {

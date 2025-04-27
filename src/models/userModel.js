@@ -1,9 +1,9 @@
 import Joi from "joi";
-import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from "@/utils/validators";
-import { GET_DB } from "@/config/mongodb";
+import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from "../utils/validators";
+import { GET_DB } from "../config/mongodb";
 import { ObjectId } from "mongodb";
-import { roleModel } from "@/models/roleModel";
-import ApiError from "@/utils/ApiError";
+import { roleModel } from "../models/roleModel";
+import ApiError from "../utils/ApiError";
 import { StatusCodes } from "http-status-codes";
 
 const USER_COLLECTION_NAME = "users";
