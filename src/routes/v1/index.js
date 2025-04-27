@@ -4,6 +4,7 @@ import { roleRouter } from "./roleRouter";
 import { authRouter } from "./authRouter";
 import { provinceRouter } from "./provinceRouter";
 import { cinemaRouter } from "./cinemaRouter";
+import { screenRouter } from "./screenRouter";
 
 const Router = express.Router();
 
@@ -20,7 +21,10 @@ Router.use('/roles',roleRouter);
 Router.use('/provinces',provinceRouter);
 
 // Cinema APIs
-Router.use('/provinces',cinemaRouter);
+Router.use('/cinemas',cinemaRouter);
+
+// Screen APIs
+Router.use('/screens',screenRouter);
 
 
 export const APIs_v1 = Router;
