@@ -1,5 +1,5 @@
-import { verifyAccessToken } from "@utils/jwt";
-import { userModel } from "@models/userModel";
+import { verifyAccessToken } from "../utils/jwt";
+import { userModel } from "../models/userModel";
 
 const authenticateToken = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
