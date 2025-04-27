@@ -2,8 +2,7 @@
   "name": "nodejs-expressjs-mongodb-base-project",
   "private": true,
   "version": "1.0.0",
-  "author": "TrungQuanDev - Một Lập Trình Viên",
-  "description": "https://youtube.com/@trungquandev",
+  "author": "vietlh",
   "engines": {
     "node": ">=18.x"
   },
@@ -15,6 +14,18 @@
     "production": "npm run build && node ./build/src/server.js",
     "dev": "nodemon --exec babel-node ./src/server.js"
   },
+  "_moduleAliases": {
+    "@": "src",
+    "@config": "src/config",
+    "@controllers": "src/controllers",
+    "@middlewares": "src/middlewares",
+    "@models": "src/models",
+    "@providers": "src/providers",
+    "@routes": "src/routes",
+    "@services": "src/services",
+    "@utils": "src/utils",
+    "@validations": "src/validations"
+  },
   "dependencies": {
     "@babel/runtime": "^7.22.10",
     "async-exit-hook": "^2.0.1",
@@ -25,6 +36,7 @@
     "http-status-codes": "^2.3.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3",
     "mongodb": "^6.16.0",
     "multer": "^1.4.5-lts.2",
     "nodemailer": "^6.10.1",

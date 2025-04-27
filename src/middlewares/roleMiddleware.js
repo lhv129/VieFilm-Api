@@ -1,3 +1,4 @@
+require('module-alias/register');
 import { roleModel } from "@/models/roleModel";
 
 const checkRole = (...roles) => {

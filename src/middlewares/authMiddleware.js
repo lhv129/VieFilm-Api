@@ -1,4 +1,4 @@
-
+require('module-alias/register');
 import { verifyAccessToken } from "@/utils/jwt";
 import { userModel } from "@/models/userModel";
 
