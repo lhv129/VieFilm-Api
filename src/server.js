@@ -1,26 +1,43 @@
 import express from 'express'
-import { mapOrder } from '~/utils/sorts.js'
+import exitHook from "async-exit-hook"
+import { CONNECT_DB, CLOSE_DB } from "./config/mongodb";
+import { env } from "./config/environment";
+import { APIs_v1 } from "./routes/v1/index";
+import { errorHandlingMiddleware } from "./middlewares/errorHandlingMiddleware";  
 
-const app = express()
+const START_SERVER = () => {
+  const app = express();
+  // Cho phép sử dụng req.body json
+  app.use(express.json());
 
-const hostname = 'localhost'
-const port = 8017
+  // Sử dụng APIs v1
+  app.use('/v1', APIs_v1);
 
-app.get('/', (req, res) => {
-  // Test Absolute import mapOrder
-  console.log(mapOrder(
-    [ { id: 'id-1', name: 'One' },
-      { id: 'id-2', name: 'Two' },
-      { id: 'id-3', name: 'Three' },
-      { id: 'id-4', name: 'Four' },
-      { id: 'id-5', name: 'Five' } ],
-    ['id-5', 'id-4', 'id-2', 'id-3', 'id-1'],
-    'id'
-  ))
-  res.end('<h1>Hello World!</h1><hr>')
-})
+  app.use(errorHandlingMiddleware);
 
-app.listen(port, hostname, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Sever running at ${ hostname }:${ port }/`)
-})
+  app.listen(env.APP_PORT, () => {
+    console.log(
+      `3.Xin chào ${env.APP}, Back-end Server Api đang được chạy tại ${env.APP_PORT}`
+    );
+  });
+
+  exitHook(() => {
+    console.log("4.Back-end Server Api đã dừng");
+    CLOSE_DB();
+  });
+};
+
+// Chỉ khi kết nối tới database thì mới start server backend api
+// Cách viết function IIFE
+(async () => {
+  try {
+    console.log("1.Đang kết nối tới MongoDB Cloud Atlas");
+    await CONNECT_DB();
+    console.log("2.Kết nối thành công tới MongoDB Cloud Atlas");
+
+    START_SERVER();
+  } catch (error) {
+    console.error(error);
+    process.exit(0);
+  }
+})();
