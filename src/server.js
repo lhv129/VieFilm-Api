@@ -4,12 +4,22 @@ import exitHook from "async-exit-hook"
 import { CONNECT_DB, CLOSE_DB } from "./config/mongodb";
 import { env } from "./config/environment";
 import { APIs_v1 } from "./routes/v1/index";
-import { errorHandlingMiddleware } from "./middlewares/errorHandlingMiddleware";  
+import { errorHandlingMiddleware } from "./middlewares/errorHandlingMiddleware";
+import cors from "cors";
 
 const START_SERVER = () => {
   const app = express();
   // Cho phép sử dụng req.body json
   app.use(express.json());
+
+  // Cấu hình CORS để chỉ cho phép một domain cụ thể
+  const corsOptions = {
+    origin: 'http://localhost:5173/',  // Thay 'http://localhost:5173/' bằng domain mà bạn tin tưởng
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Các phương thức HTTP bạn cho phép
+    allowedHeaders: ['Content-Type', 'Authorization'],  // Các header bạn cho phép
+  };
+
+  app.use(cors(corsOptions));  // Sử dụng cors với các tùy chọn trên
 
   // Sử dụng APIs v1
   app.use('/v1', APIs_v1);
