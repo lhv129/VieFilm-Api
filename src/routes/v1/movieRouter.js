@@ -23,4 +23,7 @@ Router.route("/:slug")
 Router.route("/update-status-movie/:slug")
     .put(authenticateToken, roleMiddleware.checkRole('Admin'),movieController.updateStatus)
 
+Router.route("/get-all-by-date")
+    .post(movieController.getAllByDate)
+
 export const MovieRouter = Router;

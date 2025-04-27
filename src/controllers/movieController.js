@@ -79,11 +79,25 @@ const updateStatus = async (req, res, next) => {
     }
 }
 
+const getAllByDate = async (req, res, next) => {
+    try {
+        const movies = await movieService.getAllByDate(req.body.date);
+        return res.status(200).json({
+            status: "success",
+            message: "Lấy danh sách phim thành công",
+            data: movies
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
 export const movieController = {
     getAll,
     create,
     getDetails,
     update,
     getDelete,
-    updateStatus
+    updateStatus,
+    getAllByDate
 }

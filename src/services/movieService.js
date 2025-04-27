@@ -108,10 +108,10 @@ const update = async (slug, data, reqImage) => {
             fileImage = movie.filePoster;
         }
         //Kiểm tra, phim đã xuất bản rồi thì không chỉnh sửa được ngày công chiếu 
-        if(movie.status === 'active'){
+        if (movie.status === 'active') {
             var releaseDate = movie.releaseDate;
             var endDate = movie.endDate;
-        }else{
+        } else {
             var releaseDate = convertDateToTimestamp(data.releaseDate);
             var endDate = convertDateToTimestamp(data.endDate);
         }
@@ -168,6 +168,15 @@ const updateStatus = async (slug) => {
     }
 }
 
+const getAllByDate = async (date) => {
+    try {
+        const movies = await movieModel.getAllByDate(date);
+        return movies;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const movieService = {
     getAll,
     findOneById,
@@ -176,5 +185,6 @@ export const movieService = {
     getDetails,
     update,
     getDelete,
-    updateStatus
+    updateStatus,
+    getAllByDate
 }

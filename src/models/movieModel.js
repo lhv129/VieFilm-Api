@@ -28,7 +28,11 @@ const MOVIE_COLLECTION_SCHEMA = Joi.object({
 
 const getAll = async (req, res, next) => {
     try {
-        const movies = await GET_DB().collection(MOVIE_COLLECTION_NAME).find({ _deletedAt: false }).toArray();
+        const today = Date.now();
+        const movies = await GET_DB().collection(MOVIE_COLLECTION_NAME).find({
+            _deletedAt: false,
+            endDate: { $gte: today },
+        }).toArray();
         return movies;
     } catch (error) {
         throw new Error(error);
@@ -121,6 +125,31 @@ const getDelete = async (slug) => {
     }
 };
 
+const getAllByDate = async (date) => {
+    try {
+        const today = Date.now(); // lấy timestamp hiện tại
+        let query = { _deletedAt: false };
+
+        if (date === 'showing') {
+            query = {
+                ...query,
+                releaseDate: { $lte: today },
+                endDate: { $gte: today },
+            };
+        } else if (date === 'upcoming') {
+            query = {
+                ...query,
+                releaseDate: { $gt: today },
+            };
+        }
+
+        const movies = await GET_DB().collection(MOVIE_COLLECTION_NAME).find(query).toArray();
+        return movies;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 export const movieModel = {
     getAll,
     create,
@@ -128,5 +157,6 @@ export const movieModel = {
     findOne,
     checkUnique,
     update,
-    getDelete
+    getDelete,
+    getAllByDate
 }
