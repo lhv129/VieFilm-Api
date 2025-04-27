@@ -7,6 +7,10 @@ import { cinemaRouter } from "./cinemaRouter";
 import { screenRouter } from "./screenRouter";
 import { seatRouter } from "./seatRouter";
 import { MovieRouter } from "./movieRouter";
+import { showtimeRouter } from "./showtimeRouter";
+import { paymentMethodRouter } from "./paymentMethodRouter";
+import { productRouter } from "./productRouter";
+import { ticketRouter } from "./ticketRouter";
 
 const Router = express.Router();
 
@@ -33,6 +37,18 @@ Router.use('/seats',seatRouter);
 
 // Movies APIs
 Router.use('/movies',MovieRouter);
+
+// ShowTimes APIs
+Router.use('/showtimes',showtimeRouter);
+
+// PaymentMethods APIs
+Router.use('/payment-methods',paymentMethodRouter);
+
+// Products APIs
+Router.use('/products', productRouter);
+
+// PaymentMethods APIs
+Router.use('/tickets', ticketRouter);
 
 
 export const APIs_v1 = Router;
