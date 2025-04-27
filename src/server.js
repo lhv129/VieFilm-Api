@@ -1,4 +1,3 @@
-require('module-alias/register');
 import express from 'express'
 import exitHook from "async-exit-hook"
 import { CONNECT_DB, CLOSE_DB } from "./config/mongodb";

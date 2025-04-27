@@ -1,5 +1,4 @@
-require('module-alias/register');
-import { roleModel } from "@/models/roleModel";
+import { roleModel } from "../models/roleModel";
 
 const checkRole = (...roles) => {
     return async (req, res, next) => {
