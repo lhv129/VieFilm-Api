@@ -18,7 +18,7 @@ const START_SERVER = () => {
 
   app.listen(env.APP_PORT, () => {
     console.log(
-      `3.Xin chào ${env.APP}, Back-end Server Api đang được chạy tại ${env.APP_PORT}`
+      `3.Xin chào ${env.APP}, Back-end Server Api đang được chạy tại ${env.APP_HOST}:${env.APP_PORT}`
     );
   });
 

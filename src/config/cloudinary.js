@@ -1,8 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import { env } from "../config/environment";
 
-const fs = require("fs");
-
 // Configuration
 cloudinary.config({
   cloud_name: env.CLOUD_NAME,
@@ -10,27 +8,28 @@ cloudinary.config({
   api_secret: env.API_SECRET,
 });
 
-async function uploadImage(reqImages, folderStorage, width, height) {
+async function uploadImage(reqImage, folderStorage, width, height) {
   try {
-    // reqImages trả về mã nhị phân
-    // -> Biến đổi thành path
-    // Ghi buffer vào tệp tạm thời
-    const tempFilePath = reqImages.originalname;
-    fs.writeFileSync(tempFilePath, reqImages.buffer);
-
-    const result = await cloudinary.uploader.upload(tempFilePath, {
-      folder: `VieFilm/${folderStorage}`,
-      width: width, // Chiều rộng ảnh
-      height: height, // Chiều cao ảnh
-      crop: "fill",
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: `VieFilm/${folderStorage}`,
+          width: width,
+          height: height,
+          crop: "fill",
+          resource_type: "image",
+        },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        }
+      );
+      stream.end(reqImage.buffer);
     });
-    // Xóa tệp tạm thời
-    fs.unlinkSync(tempFilePath);
 
-    // Trả về URL,tên ảnh của ảnh đã tải lên
     return {
       url: result.secure_url,
-      fileImage: result.display_name,
+      fileImage: result.public_id.split("/").pop(), // lấy tên file
     };
   } catch (error) {
     console.error("Lỗi khi tải ảnh lên Cloudinary:", error);
@@ -40,9 +39,8 @@ async function uploadImage(reqImages, folderStorage, width, height) {
 
 async function deleteImage(folderStorage, fileImage) {
   try {
-    const result = await cloudinary.uploader.destroy(
-      `VieFilm/${folderStorage}/${fileImage}`
-    );
+    const publicId = `VieFilm/${folderStorage}/${fileImage}`;
+    const result = await cloudinary.uploader.destroy(publicId);
     return result;
   } catch (error) {
     console.error("Lỗi khi xóa ảnh:", error);
@@ -52,27 +50,30 @@ async function deleteImage(folderStorage, fileImage) {
 
 async function uploadImages(reqImagesArray, folderStorage, width, height) {
   try {
-    const uploadPromises = reqImagesArray.map(async (reqImage) => {
-      const tempFilePath = reqImage.originalname;
-      fs.writeFileSync(tempFilePath, reqImage.buffer);
-
-      const result = await cloudinary.uploader.upload(tempFilePath, {
-        folder: `VieFilm/${folderStorage}`,
-        width: width,
-        height: height,
-        crop: "fill",
-      });
-      fs.unlinkSync(tempFilePath);
-
-      return {
-        url: result.secure_url,
-        fileImage: result.display_name,
-      };
-    });
+    const uploadPromises = reqImagesArray.map((reqImage) =>
+      new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: `VieFilm/${folderStorage}`,
+            width: width,
+            height: height,
+            crop: "fill",
+            resource_type: "image",
+          },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve({
+              url: result.secure_url,
+              fileImage: result.public_id.split("/").pop(),
+            });
+          }
+        );
+        stream.end(reqImage.buffer);
+      })
+    );
 
     const uploadResults = await Promise.all(uploadPromises);
     return uploadResults;
-
   } catch (error) {
     console.error("Lỗi khi tải nhiều ảnh lên Cloudinary:", error);
     throw error;
@@ -81,14 +82,12 @@ async function uploadImages(reqImagesArray, folderStorage, width, height) {
 
 async function deleteImages(folderStorage, fileImagesArray) {
   try {
-    const deleteResults = [];
+    const deletePromises = fileImagesArray.map((image) => {
+      const publicId = `VieFilm/${folderStorage}/${image.fileImage}`;
+      return cloudinary.uploader.destroy(publicId);
+    });
 
-    for (const images of fileImagesArray) {
-      const result = await cloudinary.uploader.destroy(
-        `VieFilm/${folderStorage}/${images.fileImage}`
-      );
-      deleteResults.push(result);
-    }
+    const deleteResults = await Promise.all(deletePromises);
     return deleteResults;
   } catch (error) {
     console.error("Lỗi khi xóa nhiều ảnh:", error);
