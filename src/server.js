@@ -14,7 +14,7 @@ const START_SERVER = () => {
 
   // Cấu hình CORS để chỉ cho phép một domain cụ thể
   const corsOptions = {
-    origin: 'http://localhost:5173/',  // Thay 'http://localhost:5173/' bằng domain mà bạn tin tưởng
+    origin: 'http://localhost:5173',  // Thay 'http://localhost:5173/' bằng domain mà bạn tin tưởng
     methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Các phương thức HTTP bạn cho phép
     allowedHeaders: ['Content-Type', 'Authorization'],  // Các header bạn cho phép
   };
