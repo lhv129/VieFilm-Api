@@ -26,6 +26,7 @@ Router.route("/:slug")
 Router.route("/update-status-movie/:slug")
     .put(authenticateToken, roleMiddleware.checkRole('Admin'), movieController.updateStatus)
 
-
+Router.route("/get-one-by-id/:id")
+    .post(movieController.getOneById)
 
 export const MovieRouter = Router;

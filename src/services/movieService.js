@@ -177,6 +177,15 @@ const getAllByDate = async (date) => {
     }
 }
 
+const getOneById = async (id) => {
+    try {
+        const movies = await movieModel.findOneById(id);
+        return movies;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const movieService = {
     getAll,
     findOneById,
@@ -186,5 +195,6 @@ export const movieService = {
     update,
     getDelete,
     updateStatus,
-    getAllByDate
+    getAllByDate,
+    getOneById
 }

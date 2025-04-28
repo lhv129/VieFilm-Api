@@ -92,6 +92,19 @@ const getAllByDate = async (req, res, next) => {
     }
 }
 
+const getOneById = async (req, res, next) => {
+    try {
+        const movies = await movieService.getOneById(req.params.id);
+        return res.status(200).json({
+            status: "success",
+            message: "Lấy danh sách phim thành công",
+            data: movies
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
 export const movieController = {
     getAll,
     create,
@@ -99,5 +112,6 @@ export const movieController = {
     update,
     getDelete,
     updateStatus,
-    getAllByDate
+    getAllByDate,
+    getOneById
 }
