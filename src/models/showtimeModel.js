@@ -199,6 +199,7 @@ const getSeatsByShowtime = async (showtimeId) => {
                             {
                                 $project: {
                                     seatId: "$ticketDetails.seatId",
+                                    ticketStatus: "$status",
                                     _id: 0,
                                 },
                             },
@@ -229,7 +230,25 @@ const getSeatsByShowtime = async (showtimeId) => {
                                         seatCode: "$$seat.seatCode",
                                         status: "$$seat.status",
                                         isBooked: {
-                                            $in: ["$$seat._id", "$bookedSeats.seatId"],
+                                            $let: {
+                                                vars: {
+                                                    matchedBooking: {
+                                                        $arrayElemAt: [
+                                                            {
+                                                                $filter: {
+                                                                    input: "$bookedSeats",
+                                                                    as: "b",
+                                                                    cond: { $eq: ["$$b.seatId", "$$seat._id"] },
+                                                                },
+                                                            },
+                                                            0,
+                                                        ],
+                                                    },
+                                                },
+                                                in: {
+                                                    $ifNull: ["$$matchedBooking.ticketStatus", false],
+                                                },
+                                            },
                                         },
                                     },
                                 },

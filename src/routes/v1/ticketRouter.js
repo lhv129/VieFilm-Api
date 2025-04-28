@@ -24,5 +24,11 @@ Router.route('/vnpay-return').get(paymentController.handlePaymentReturn);
 Router.route('/staff/create')
     .post(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), ticketValidation.staffCreateTicket, ticketController.staffCreateTicket)
 
+Router.route('/:id')
+    .get(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), ticketController.getDetails)
+
+Router.route('/update/:id/status')
+    .put(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), ticketController.updateStatus)
+
 
 export const ticketRouter = Router;

@@ -1,44 +1,71 @@
+import { ticketModel } from "../models/ticketModel";
 import { ticketService } from "../services/ticketService";
 
 
 
 const getAll = async (req, res, next) => {
-    try{
+    try {
         const tickets = await ticketService.getAll();
         res.status(200).json({
-            status:"success",
+            status: "success",
             message: "Lấy danh sách vé thành công",
             data: tickets
         })
-    }catch (error){
+    } catch (error) {
         next(error)
     }
 }
 
 const staffCreateTicket = async (req, res, next) => {
-    try{
+    try {
         const user = req.user;
-        const tickets = await ticketService.staffCreateTicket(user,req.body);
+        const tickets = await ticketService.staffCreateTicket(user, req.body);
         res.status(201).json({
-            status:"success",
+            status: "success",
             message: "Tạo vé thành công",
             data: tickets
         })
-    }catch (error){
+    } catch (error) {
         next(error)
     }
 }
 
 const create = async (req, res, next) => {
-    try{
+    try {
         const user = req.user;
-        const tickets = await ticketService.create(user,req.body);
+        const tickets = await ticketService.create(user, req.body);
         res.status(201).json({
-            status:"success",
+            status: "success",
             message: "Đặt vé thành công",
             data: tickets
         })
-    }catch (error){
+    } catch (error) {
+        next(error)
+    }
+}
+
+const getDetails = async (req, res, next) => {
+    try {
+        const ticket = await ticketService.getDetails(req.params.id)
+        return res.status(201).json({
+            status: "success",
+            message: "Lấy thông tin vé thành công",
+            data: ticket
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+const updateStatus = async (req, res, next) => {
+    try {
+        const ticket = await ticketService.updateStatus(req.params.id,"used")
+        return res.status(201).json({
+            status: "success",
+            message: "Cập trạng thái nhật vé thành công",
+            data: ticket
+        })
+    } catch (error) {
         next(error)
     }
 }
@@ -46,5 +73,7 @@ const create = async (req, res, next) => {
 export const ticketController = {
     getAll,
     staffCreateTicket,
-    create
+    create,
+    getDetails,
+    updateStatus
 }

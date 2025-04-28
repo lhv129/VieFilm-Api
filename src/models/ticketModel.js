@@ -4,6 +4,7 @@ import { GET_DB } from "../config/mongodb";
 import { ObjectId } from "mongodb";
 import { ticketDetailModel } from "./ticketDetailModel";
 import { ticketProductDetail } from "./ticketProductDetailModel";
+import { showtimeModel } from "./showtimeModel";
 
 
 const TICKET_COLLECTION_NAME = "tickets";
@@ -128,7 +129,7 @@ const updateStatus = async (id, status) => {
   }
 };
 
-const getDetails = async (ticketId) => {
+const getDetailAfterPayment = async (ticketId) => {
   try {
     const ticket = await findOneById(ticketId);
     if (!ticket) {
@@ -146,17 +147,45 @@ const getDetails = async (ticketId) => {
     }
 
     return {
-      ticket: {
-        _id: ticket._id,
-        customer: ticket.customer,
-        code: ticket.code,
-        totalAmount: ticket.totalAmount,
-        details: {
-          ticket_details: ticketDetails,
-          product_details: ticketProducts,
-        },
-        showtime: showtimeInfo,
+      _id: ticket._id,
+      customer: ticket.customer,
+      code: ticket.code,
+      totalAmount: ticket.totalAmount,
+      details: {
+        ticket_details: ticketDetails,
+        product_details: ticketProducts,
       },
+      showtime: showtimeInfo,
+    };
+  } catch (error) {
+    console.error("Lỗi khi lấy chi tiết vé:", error);
+    throw error;
+  }
+};
+
+const getDetails = async (ticketId) => {
+  try {
+    const ticket = await findOneById(ticketId);
+    if (!ticket) {
+      return null;
+    }
+    const ticketDetails = await ticketDetailModel.find({ ticketId: new ObjectId(ticketId) });
+
+    const ticketProducts = await ticketProductDetail.find({ ticketId: new ObjectId(ticketId) });
+
+    const showtime = await showtimeModel.find({ _id: ticket.showtimeId });
+
+    return {
+      _id: ticket._id,
+      customer: ticket.customer,
+      code: ticket.code,
+      totalAmount: ticket.totalAmount,
+      status: ticket.status,
+      details: {
+        ticket_details: ticketDetails,
+        product_details: ticketProducts,
+      },
+      showtime: showtime,
     };
   } catch (error) {
     console.error("Lỗi khi lấy chi tiết vé:", error);
@@ -175,5 +204,6 @@ export const ticketModel = {
   getDelete,
   updateTotalAmount,
   updateStatus,
+  getDetailAfterPayment,
   getDetails
 }

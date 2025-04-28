@@ -289,8 +289,31 @@ const create = async (user, reqBody) => {
     }
 }
 
+const getDetails = async (id) => {
+    try{
+        const ticket = await ticketModel.getDetails(id);
+        return ticket;
+    }catch(error){
+        throw error;
+    }
+}
+
+const updateStatus = async (id,status) => {
+    try{
+        const ticket = await ticketModel.updateStatus(id,status);
+
+        const getNewTicket = await ticketModel.findOneById(id);
+
+        return getNewTicket;
+    }catch(error){
+        throw error;
+    }
+}
+
 export const ticketService = {
     getAll,
     staffCreateTicket,
-    create
+    create,
+    getDetails,
+    updateStatus
 }
