@@ -177,10 +177,7 @@ const getSeatsByShowtime = async (showtimeId) => {
 
 const getAllByMovie = async (reqBody) => {
     try {
-        const { date, cinemaId, movieId } = reqBody;
-        if (!date) {
-            throw new ApiError(StatusCodes.NOT_FOUND, "Vui lòng chọn ngày để lấy ra suất chiếu");
-        }
+        const { cinemaId, movieId } = reqBody;
         const cinema = await cinemaModel.findOneById(cinemaId);
         if (!cinema) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Rạp phim không tồn tại vui lòng kiểm tra lại");
@@ -200,7 +197,6 @@ const getAllByMovie = async (reqBody) => {
         const showtimes = await showtimeModel.find({
             screenId: { $in: screenIds },
             movieId: new ObjectId(movieId),
-            date: date,
             _deletedAt: false
         });
 
