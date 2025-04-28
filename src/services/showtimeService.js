@@ -194,11 +194,17 @@ const getAllByMovie = async (reqBody) => {
             throw new ApiError(StatusCodes.NOT_FOUND, "Không tìm thấy phòng chiếu thuộc rạp này");
         }
 
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
         const showtimes = await showtimeModel.find({
             screenId: { $in: screenIds },
             movieId: new ObjectId(movieId),
+            date: { $gte: today },
             _deletedAt: false
         });
+
+
 
         // Đếm tổng số ghế đang trống của suất chiếu đó
         // Lấy danh sách ghế từng suất chiếu
