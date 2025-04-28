@@ -19,7 +19,7 @@ const SHOWTIME_COLLECTION_SCHEMA = Joi.object({
         .message(OBJECT_ID_RULE_MESSAGE),
     startTime: Joi.string().required(),
     endTime: Joi.string().required(),
-    date: Joi.date().required(),
+    date: Joi.string().required(),
     createdAt: Joi.date().timestamp("javascript").default(Date.now),
     updatedAt: Joi.date().timestamp("javascript").default(null),
     _deletedAt: Joi.boolean().default(false),
@@ -94,11 +94,6 @@ const find = async (filter) => {
 };
 
 const validateBeforeCreate = async (data) => {
-    // ep kieu cho date tu string sang ISODate
-    if (typeof data.date === 'string') {
-        const [day, month, year] = data.date.split('/').map(Number);
-        data.date = new Date(year, month - 1, day); // tạo đối tượng Date
-    }
     return await SHOWTIME_COLLECTION_SCHEMA.validateAsync(data, {
         abortEarly: false,
     });
