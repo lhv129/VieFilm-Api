@@ -88,10 +88,20 @@ const getDelete = async (slug) => {
     }
 };
 
+const getCinemaByProvince = async () => {
+    try {
+        const provinces = await provinceModel.getCinemaByProvince();
+        return provinces;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const provinceService = {
     getAll,
     create,
     getDetails,
     update,
     getDelete,
+    getCinemaByProvince
 };

@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import { GET_DB } from "../config/mongodb";
 import { StatusCodes } from "http-status-codes";
 import ApiError from "../utils/ApiError";
+import { cinemaModel } from "./cinemaModel";
 
 const PROVINCE_COLLECTION_NAME = "provinces";
 const PROVINCE_COLLECTION_SCHEMA = Joi.object({
@@ -94,9 +95,48 @@ const getDelete = async (slug) => {
     try {
         const province = await GET_DB()
             .collection(PROVINCE_COLLECTION_NAME)
-            .updateOne({ slug: slug }, { $set: { _deletedAt:true } });
+            .updateOne({ slug: slug }, { $set: { _deletedAt: true } });
         return province;
     } catch (error) {
+        throw new Error(error);
+    }
+};
+
+const getCinemaByProvince = async () => {
+    try {
+        const result = await GET_DB().collection('provinces').aggregate([
+            {
+                $match: { _deletedAt: false } // chỉ lấy tỉnh còn hoạt động
+            },
+            {
+                $lookup: {
+                    from: 'cinemas',
+                    localField: '_id',
+                    foreignField: 'provinceId',
+                    as: 'cinemas'
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    cinemas: {
+                        $map: {
+                            input: '$cinemas',
+                            as: 'cinema',
+                            in: {
+                                _id: '$$cinema._id',
+                                name: '$$cinema.name'
+                            }
+                        }
+                    }
+                }
+            }
+        ]).toArray();
+
+        return result;
+    } catch (error) {
+        console.error("Error getting provinces:", error);
         throw new Error(error);
     }
 };
@@ -110,4 +150,5 @@ export const provinceModel = {
     findOne,
     update,
     getDelete,
+    getCinemaByProvince
 };

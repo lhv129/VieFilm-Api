@@ -66,10 +66,24 @@ const getDelete = async (req, res, next) => {
     }
 };
 
+const getCinemaByProvince = async (req, res, next) => {
+    try {
+        const provinces = await provinceService.getCinemaByProvince();
+        return res.status(200).json({
+            status: "success",
+            message: "Lấy danh sách tỉnh thành, thành công",
+            data: provinces
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
 export const provinceController = {
     getAll,
     create,
     getDetails,
     update,
     getDelete,
+    getCinemaByProvince
 }
