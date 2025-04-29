@@ -89,10 +89,24 @@ const getDelete = async (slug) => {
   }
 };
 
+const getOne = async (id) => {
+  try {
+    const role = await roleModel.findOneById(id);
+    if (!role) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Chức vụ không tồn tại");
+    }
+    return role;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
 export const roleService = {
   getAll,
   create,
   getDetails,
   updateRole,
   getDelete,
+  getOne
 };

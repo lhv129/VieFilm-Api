@@ -5,14 +5,16 @@ import { authenticateToken } from "../../middlewares/authMiddleware";
 import { roleMiddleware } from "../../middlewares/roleMiddleware";
 
 const Router = express.Router();
-Router.use(authenticateToken,roleMiddleware.checkRole('Admin'));
 
 Router.route("/")
-  .get(roleController.getAll)
-  .post(roleValidation.createRole, roleController.create);
+  .get(authenticateToken, roleMiddleware.checkRole('Admin'), roleController.getAll)
+  .post(authenticateToken, roleMiddleware.checkRole('Admin'), roleValidation.createRole, roleController.create);
 Router.route("/:slug")
-    .get(roleController.getDetails)
-    .put(roleValidation.createRole,roleController.updateRole)
-    .delete(roleController.getDelete);
+  .get(authenticateToken, roleMiddleware.checkRole('Admin'), roleController.getDetails)
+  .put(authenticateToken, roleMiddleware.checkRole('Admin'), roleValidation.createRole, roleController.updateRole)
+  .delete(authenticateToken, roleMiddleware.checkRole('Admin'), roleController.getDelete);
+
+Router.route("/get-one/:id")
+  .get(roleController.getOne)
 
 export const roleRouter = Router;
