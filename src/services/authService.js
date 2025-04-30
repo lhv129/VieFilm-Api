@@ -27,13 +27,19 @@ const login = async (reqBody) => {
             throw new ApiError(StatusCodes.FORBIDDEN, "Tài khoản của bạn đã bị khóa, vui lòng liên hệ tới admin");
         }
 
+        //Trả lại roleName
+        const role = await roleModel.findOne({ _id: user.roleId });
+
         // Tạo Access Token và Refresh Token
         const accessToken = generateAccessToken(user);
         let refreshToken = await generateRefreshToken(user);
         const newUser = {
             access_token: accessToken,
             refresh_token: refreshToken,
-            user: user
+            user: {
+                ...user,
+                roleName: role?.name
+            }
         }
         return newUser;
     } catch (error) {
