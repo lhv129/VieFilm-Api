@@ -14,7 +14,7 @@ Router.route("/:slug")
   .put(authenticateToken, roleMiddleware.checkRole('Admin'), roleValidation.createRole, roleController.updateRole)
   .delete(authenticateToken, roleMiddleware.checkRole('Admin'), roleController.getDelete);
 
-Router.route("/get-one/:id")
-  .get(roleController.getOne)
+Router.route("/get-one")
+  .post(roleController.getOne)
 
 export const roleRouter = Router;

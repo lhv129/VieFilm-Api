@@ -74,7 +74,7 @@ const getDelete = async (req, res, next) => {
 
 const getOne = async (req, res, next) => {
   try{
-    const role = await roleService.getOne(req.params.id);
+    const role = await roleService.getOne(req.body.roleId);
     res.status(200).json({
       status: "success",
       message: "Tìm kiếm chức vụ thành công",
