@@ -92,7 +92,7 @@ const register = async (reqBody) => {
         );
 
         // Xây dựng liên kết xác thực
-        const verificationLink = `${env.CLIENT_URL}/v1/auth/verify-email/${verificationToken}`;
+        const verificationLink = `${env.CLIENT_URL}/verify-email/${verificationToken}`;
 
         // Nội dung email
         const subject = 'Vui lòng xác thực địa chỉ email của bạn';
