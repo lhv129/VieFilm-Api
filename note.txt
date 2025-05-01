@@ -1,0 +1,1 @@
+- Tạo suất chiếu thì chưa kiểm tra Staff.

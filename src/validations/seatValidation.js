@@ -3,6 +3,11 @@ import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from "../utils/validators";
 
 const createSeat = async (req, res, next) => {
     const correctCondition = Joi.object({
+        cinemaId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE).messages({
+            "string.empty": "cinemaId không được để trống",
+            "any.required": "Vui lòng nhập cinemaId",
+            "string.trim": "Không được để khoảng trắng ở đầu hoặc cuối"
+        }),
         screenId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE).messages({
             "string.empty": "screenId không được để trống",
             "any.required": "Vui lòng nhập screenId",
@@ -53,6 +58,21 @@ const createSeat = async (req, res, next) => {
 
 const updateSeat = async (req, res, next) => {
     const correctCondition = Joi.object({
+        cinemaId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE).messages({
+            "string.empty": "cinemaId không được để trống",
+            "any.required": "Vui lòng nhập cinemaId",
+            "string.trim": "Không được để khoảng trắng ở đầu hoặc cuối"
+        }),
+        screenId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE).messages({
+            "string.empty": "screenId không được để trống",
+            "any.required": "Vui lòng nhập screenId",
+            "string.trim": "Không được để khoảng trắng ở đầu hoặc cuối"
+        }),
+        seatId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE).messages({
+            "string.empty": "seatId không được để trống",
+            "any.required": "Vui lòng nhập seatId",
+            "string.trim": "Không được để khoảng trắng ở đầu hoặc cuối"
+        }),
         row: Joi.string().required().trim().strict().messages({
             "string.empty": "Hàng ghế không được để trống",
             "any.required": "Vui lòng nhập hàng ghế",

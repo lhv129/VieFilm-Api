@@ -22,8 +22,8 @@ const create = async (reqBody) => {
             screenCode: slugify(cinema._id + '-' + reqBody.name)
         };
         const existingScreen = await screenModel.findOne({ screenCode: data.screenCode });
-        if(existingScreen){
-            throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY,`${data.name} đã có trong rạp ${cinema.name}, vui lòng kiểm tra lại`);
+        if (existingScreen) {
+            throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `${data.name} đã có trong rạp ${cinema.name}, vui lòng kiểm tra lại`);
         }
 
         // Nếu chưa tồn tại thì thêm mới
@@ -51,22 +51,28 @@ const getDetails = async (id) => {
     }
 };
 
-const update = async (id, data) => {
+const update = async (data) => {
     try {
-        const screen = await screenModel.findOneById(id);
+        const { cinemaId, screenId, name } = data;
+        const screen = await screenModel.findOneById(screenId);
 
         if (!screen) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Phòng chiếu không tồn tại");
         }
+        //Kiểm tra Screen đó có trong rạp đó không
+        if (screen.cinemaId.toString() !== cinemaId) {
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Phòng chiếu không thuộc rạp này");
+        }
+
         // Nếu có tồn tại thì cập nhật
         let newScreen = {
             ...data,
-            screenCode: slugify(screen.cinemaId + '-' + data.name),
+            screenCode: slugify(screen.cinemaId + '-' + name),
             updatedAt: Date.now()
         };
 
         // Cập nhật
-        newScreen = await screenModel.update(screen._id, newScreen);
+        newScreen = await screenModel.update(screenId, newScreen);
 
         //Lấy bản ghi sau khi cập nhật
         const getNewScreen = await screenModel.findOneById(screen._id.toString());
@@ -78,12 +84,20 @@ const update = async (id, data) => {
     }
 };
 
-const getDelete = async (id) => {
+const getDelete = async (data) => {
     try {
-        const screen = await screenModel.getDelete(id);
-        if (screen.modifiedCount === 0) {
+        const { cinemaId, screenId } = data;
+        const screen = await screenModel.findOneById(screenId);
+        if (!screen) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Phòng chiếu không tồn tại");
         }
+
+        //Kiểm tra Screen đó có trong rạp đó không
+        if (screen.cinemaId.toString() !== cinemaId) {
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Phòng chiếu không thuộc rạp này");
+        }
+        await screenModel.getDelete(screenId);
+
         return [];
     } catch (error) {
         throw error;
@@ -93,7 +107,7 @@ const getDelete = async (id) => {
 const getAllByCinema = async (cinemaId) => {
     try {
         const cinema = await cinemaModel.findOneById(cinemaId);
-        if(!cinema){
+        if (!cinema) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Rạp phim không tồn tại")
         }
 

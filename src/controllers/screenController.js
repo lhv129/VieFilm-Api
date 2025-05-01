@@ -42,7 +42,7 @@ const getDetails = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const screen = await screenService.update(req.params.id, req.body);
+        const screen = await screenService.update(req.body);
         res.status(200).json({
             status: "success",
             message: "Cập nhật phòng chiếu thành công",
@@ -55,7 +55,7 @@ const update = async (req, res, next) => {
 
 const getDelete = async (req, res, next) => {
     try {
-        const screen = await screenService.getDelete(req.params.id);
+        const screen = await screenService.getDelete(req.body);
         res.status(200).json({
             status: "success",
             message: "Xóa phòng chiếu thành công",

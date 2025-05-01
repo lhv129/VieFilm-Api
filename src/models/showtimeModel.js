@@ -168,8 +168,15 @@ const getSeatsByShowtime = async (showtimeId) => {
                 {
                     $lookup: {
                         from: seatModel.SEAT_COLLECTION_NAME,
-                        localField: "screenId",
-                        foreignField: "screenId",
+                        let: { screenId: "$screenId" },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: { $eq: ["$screenId", "$$screenId"] },
+                                    _deletedAt: false,
+                                },
+                            },
+                        ],
                         as: "seats",
                     },
                 },

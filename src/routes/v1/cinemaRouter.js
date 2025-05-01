@@ -13,11 +13,11 @@ Router.use(upload.single('images'));
 
 Router.route("/")
     .get(cinemaController.getAll)
-    .post(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'),cinemaValidation.createCinema, cinemaController.create);
+    .post(authenticateToken, roleMiddleware.checkRole('Admin'),cinemaValidation.createCinema, cinemaController.create);
 Router.route("/:slug")
-    .get(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'),cinemaController.getDetails)
-    .put(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'),cinemaValidation.updateCinema, cinemaController.update)
-    .delete(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'),cinemaController.getDelete);
+    .get(authenticateToken, roleMiddleware.checkRole('Admin'),cinemaController.getDetails)
+    .put(authenticateToken, roleMiddleware.checkRole('Admin'),cinemaValidation.updateCinema, cinemaController.update)
+    .delete(authenticateToken, roleMiddleware.checkRole('Admin'),cinemaController.getDelete);
 Router.route("/get-all-by-province")
     .post(cinemaController.getAllByProvince);
 

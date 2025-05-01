@@ -99,7 +99,9 @@ const getAllByScreen = async (screenId) => {
 const update = async (id, data) => {
     try {
         if (data.seatCode) {
-            const existingSeat = await GET_DB().collection(SEAT_COLLECTION_NAME).findOne({ seatCode: data.seatCode, _id: { $ne: new ObjectId(id) }, });
+            const existingSeat = await GET_DB().collection(SEAT_COLLECTION_NAME).findOne({ seatCode: data.seatCode,screenId: data.screenId, _id: { $ne: new ObjectId(id) }, });
+
+            
             if (existingSeat) {
                 throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `Ghế ${data.seatCode} đã tồn tại, vui lòng kiểm tra lại`);
             }
