@@ -76,7 +76,7 @@ const update = async (id, data) => {
                     _id: { $ne: new ObjectId(id) },
                 });
             if (existingProvince) {
-                throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, "Tên chức vụ đã có, vui lòng chọn tên khác");
+                throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, "Tên tỉnh thành đã có, vui lòng chọn tên khác");
             }
         }
 

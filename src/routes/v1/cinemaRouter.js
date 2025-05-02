@@ -15,7 +15,7 @@ Router.route("/")
     .get(cinemaController.getAll)
     .post(authenticateToken, roleMiddleware.checkRole('Admin'),cinemaValidation.createCinema, cinemaController.create);
 Router.route("/:slug")
-    .get(authenticateToken, roleMiddleware.checkRole('Admin'),cinemaController.getDetails)
+    .get(authenticateToken,cinemaController.getDetails)
     .put(authenticateToken, roleMiddleware.checkRole('Admin'),cinemaValidation.updateCinema, cinemaController.update)
     .delete(authenticateToken, roleMiddleware.checkRole('Admin'),cinemaController.getDelete);
 Router.route("/get-all-by-province")
