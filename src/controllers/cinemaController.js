@@ -79,11 +79,25 @@ const getAllByProvince = async (req, res, next) => {
     }
 }
 
+const getOneById = async (req, res, next) => {
+    try {
+        const cinema = await cinemaService.getOneById(req.params.id);
+        return res.status(200).json({
+            status: "success",
+            message: "Tìm thành công rạp phim",
+            data: cinema
+        });
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const cinemaController = {
     getAll,
     create,
     getDetails,
     update,
     getDelete,
-    getAllByProvince
+    getAllByProvince,
+    getOneById
 }

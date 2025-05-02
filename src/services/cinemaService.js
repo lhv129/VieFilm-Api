@@ -131,11 +131,24 @@ const getAllByProvince = async (provinceId) => {
     }
 }
 
+const getOneById = async (id) => {
+    try {
+        const cinema = await cinemaModel.findOneById(id);
+        if (!cinema) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Rạp phim không tồn tại");
+        }
+        return cinema;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const cinemaService = {
     getAll,
     create,
     getDetails,
     update,
     getDelete,
-    getAllByProvince
+    getAllByProvince,
+    getOneById
 };
