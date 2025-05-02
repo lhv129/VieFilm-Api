@@ -79,11 +79,25 @@ const getAllByCinema = async (req, res, next) => {
     }
 }
 
+const getOne = async (req, res, next) => {
+    try {
+        const screen = await screenService.getOne(req.body);
+        return res.status(200).json({
+            status: "success",
+            message: "Tìm thành công phòng chiếu",
+            data: screen
+        });
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const screenController = {
     getAll,
     create,
     getDetails,
     update,
     getDelete,
-    getAllByCinema
+    getAllByCinema,
+    getOne
 }

@@ -118,11 +118,24 @@ const getAllByCinema = async (cinemaId) => {
     }
 }
 
+const getOne = async (data) => {
+    try {
+        const screen = await screenModel.findOneById(data.screenId);
+        if (!screen) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Phòng chiếu không tồn tại");
+        }
+        return screen;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const screenService = {
     getAll,
     create,
     getDetails,
     update,
     getDelete,
-    getAllByCinema
+    getAllByCinema,
+    getOne
 };
