@@ -8,6 +8,10 @@ const staffCreateTicket = async (req, res, next) => {
             .allow(null, '')
             .pattern(OBJECT_ID_RULE)
             .message(OBJECT_ID_RULE_MESSAGE),
+        cinemaId: Joi.string()
+            .allow(null, '')
+            .pattern(OBJECT_ID_RULE)
+            .message(OBJECT_ID_RULE_MESSAGE),
         showtimeId: Joi.string()
             .required()
             .pattern(OBJECT_ID_RULE)
