@@ -149,7 +149,7 @@ const getAllByScreen = async (screenId) => {
 
 const update = async (data) => {
     try {
-        const { cinemaId, screenId, seatId, row, number, type, price } = data;
+        const { cinemaId, screenId, seatId, row, number, type, price,status } = data;
 
         // Kiểm tra xem phòng đó có tồn tại không
         const screen = await screenModel.findOneById(screenId);
@@ -173,19 +173,23 @@ const update = async (data) => {
             throw new ApiError(StatusCodes.NOT_FOUND, "Ghế không tồn tại");
         }
 
+        // Chuyển row thành chữ hoa
+        const upperCaseRow = row.toUpperCase();
+
         // Nếu là Ghế đôi, cần xử lý seatCode cho cả cặp ghế
         let newSeat;
         if (type === 'Ghế đôi') {
             // Kiểm tra và tạo seatCode cho ghế đôi
-            const seatCode1 = `${row}${number * 2 - 1}`;  // Ghế đầu tiên của cặp
-            const seatCode2 = `${row}${number * 2}`;      // Ghế thứ hai của cặp
+            const seatCode1 = `${upperCaseRow}${number * 2 - 1}`;  // Ghế đầu tiên của cặp
+            const seatCode2 = `${upperCaseRow}${number * 2}`;      // Ghế thứ hai của cặp
 
             newSeat = {
                 screenId: new ObjectId(screenId),
-                row: row,
+                row: upperCaseRow,
                 number: number,
                 type: type,
                 price: price,
+                status: status,
                 seatCode: `${seatCode1} ${seatCode2}`,  // seatCode chứa cả 2 ghế của cặp
                 updatedAt: Date.now(),
             };
@@ -194,11 +198,12 @@ const update = async (data) => {
             // Nếu là Ghế thường hoặc Ghế VIP
             newSeat = {
                 screenId: new ObjectId(screenId),
-                row: row,
+                row: upperCaseRow,
                 number: number,
                 type: type,
                 price: price,
-                seatCode: row + number,  // seatCode cho ghế đơn
+                status: status,
+                seatCode: upperCaseRow + number,  // seatCode cho ghế đơn
                 updatedAt: Date.now(),
             };
         }
