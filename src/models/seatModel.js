@@ -99,9 +99,9 @@ const getAllByScreen = async (screenId) => {
 const update = async (id, data) => {
     try {
         if (data.seatCode) {
-            const existingSeat = await GET_DB().collection(SEAT_COLLECTION_NAME).findOne({ seatCode: data.seatCode,screenId: data.screenId, _id: { $ne: new ObjectId(id) }, });
+            const existingSeat = await GET_DB().collection(SEAT_COLLECTION_NAME).findOne({ seatCode: data.seatCode, screenId: data.screenId, _id: { $ne: new ObjectId(id) }, });
 
-            
+
             if (existingSeat) {
                 throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `Ghế ${data.seatCode} đã tồn tại, vui lòng kiểm tra lại`);
             }
@@ -117,10 +117,10 @@ const update = async (id, data) => {
 
 const getDelete = async (id) => {
     try {
-        const seat = await GET_DB()
+        const screen = await GET_DB()
             .collection(SEAT_COLLECTION_NAME)
-            .updateOne({ _id: new ObjectId(id) }, { $set: { _deletedAt: true } });
-        return seat;
+            .deleteOne({ _id: new ObjectId(id) });
+        return screen;
     } catch (error) {
         throw new Error(error);
     }
