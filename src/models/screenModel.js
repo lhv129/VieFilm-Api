@@ -121,6 +121,7 @@ const getDetails = async (id) => {
 
 const update = async (id, data) => {
     try {
+        delete data.screenId;
         // Kiểm tra xem screenCode mới có bị trùng với bản ghi khác không, ngoại trừ bản ghi đang cập nhật
         if (data.screenCode) {
             const existingScreen = await GET_DB()

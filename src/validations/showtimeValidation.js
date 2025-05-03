@@ -5,6 +5,7 @@ import { StatusCodes } from "http-status-codes";
 
 const createShowtime = async (req, res, next) => {
     const correctCondition = Joi.object({
+        cinemaId: Joi.string().required(),
         movieId: Joi.string().required(),
         screenId: Joi.string().required(),
         startTime: Joi.string().required(),

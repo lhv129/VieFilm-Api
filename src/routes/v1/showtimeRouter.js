@@ -11,7 +11,7 @@ Router.route("/")
     .post(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), showtimeValidation.createShowtime, showtimeController.create)
 
 Router.route("/:id")
-    .get(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), showtimeController.getDetails)
+    .get(showtimeController.getDetails)
     .put(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), showtimeController.update)
     .delete(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), showtimeController.getDelete)
 

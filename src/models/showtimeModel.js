@@ -94,6 +94,7 @@ const find = async (filter) => {
 };
 
 const validateBeforeCreate = async (data) => {
+    delete data.cinemaId;
     return await SHOWTIME_COLLECTION_SCHEMA.validateAsync(data, {
         abortEarly: false,
     });
@@ -121,6 +122,7 @@ const create = async (data) => {
 
 const update = async (id, data) => {
     try {
+        delete data.cinemaId;
         // Cập nhật bản ghi
         const showtime = await GET_DB()
             .collection(SHOWTIME_COLLECTION_NAME)
