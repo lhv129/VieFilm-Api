@@ -26,37 +26,60 @@ const SHOWTIME_COLLECTION_SCHEMA = Joi.object({
 });
 
 
-const getAll = async (date) => {
+const getAll = async (date, cinemaId) => {
     try {
-        const shotimes = await GET_DB().collection(SHOWTIME_COLLECTION_NAME).find({ _deletedAt: false }).toArray();
+        const db = GET_DB();
 
-        let dateFilter = "";
-        let filteredResults = [];
+        // Nếu có cinemaId, lấy screenIds
+        let screenIds = [];
+        if (cinemaId) {
+            const screens = await screenModel.getAllByCinema(cinemaId);
+            screenIds = screens.map(screen => screen._id.toString());
+        }
 
+        // Lấy tất cả suất chiếu
+        const showtimes = await db.collection(SHOWTIME_COLLECTION_NAME)
+            .find({ _deletedAt: false })
+            .toArray();
+
+        // Xử lý ngày lọc
+        let todayFilter = "";
         if (!date) {
             const today = new Date();
             const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0'); // Tháng trong JavaScript bắt đầu từ 0
+            const month = String(today.getMonth() + 1).padStart(2, '0');
             const day = String(today.getDate()).padStart(2, '0');
-
-            dateFilter = `${day}/${month}/${year}`;
-
-            // Lọc các suất chiếu có date lớn hơn hoặc bằng ngày hiện tại
-            filteredResults = shotimes.filter(showtime => {
-                return showtime.date >= dateFilter;
-            });
-        } else {
-            dateFilter = date;
-            // Lọc các suất chiếu có date lớn hơn hoặc bằng ngày hiện tại
-            filteredResults = shotimes.filter(showtime => {
-                return showtime.date === dateFilter;
-            });
+            todayFilter = `${day}/${month}/${year}`;
         }
+
+        const filteredResults = showtimes.filter(showtime => {
+            const showtimeDate = showtime.date;
+
+            // Nếu truyền date: chỉ lấy đúng ngày đó
+            if (date) {
+                return showtimeDate === date &&
+                    (!cinemaId || screenIds.includes(showtime.screenId.toString()));
+            }
+
+            // Nếu không truyền date: lấy từ hôm nay trở đi
+            const [d1, m1, y1] = showtimeDate.split('/').map(Number);
+            const [d2, m2, y2] = todayFilter.split('/').map(Number);
+
+            const showtimeTime = new Date(y1, m1 - 1, d1).getTime();
+            const todayTime = new Date(y2, m2 - 1, d2).getTime();
+
+            return showtimeTime >= todayTime &&
+                (!cinemaId || screenIds.includes(showtime.screenId.toString()));
+        });
+
         return filteredResults;
     } catch (error) {
-        throw new Error(error);
+        throw new Error(error.message);
     }
 };
+
+
+
 
 const findOneById = async (id) => {
     try {

@@ -2,7 +2,7 @@ import { showtimeService } from "../services/showtimeService";
 
 const getAll = async (req, res, next) => {
     try {
-        const showtimes = await showtimeService.getAll(req.body.date);
+        const showtimes = await showtimeService.getAll(req.body.date,req.body.cinemaId);
         res.status(200).json({
             status: "success",
             message: "Tìm danh sách suất chiếu thành công",

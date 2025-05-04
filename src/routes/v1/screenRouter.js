@@ -13,7 +13,7 @@ Router.route("/")
     .put(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), screenValidation.updateScreen, screenController.update)
     .delete(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), screenController.getDelete);
 Router.route("/:id")
-    .get(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), screenController.getDetails)
+    .get(screenController.getDetails)
 
 Router.route("/:get-one")
     .post(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), screenController.getOne)

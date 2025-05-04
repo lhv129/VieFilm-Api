@@ -6,8 +6,10 @@ import { showtimeValidation } from "../../validations/showtimeValidation";
 
 const Router = express.Router();
 
+Router.route("/get-all")
+    .post(showtimeController.getAll)
+
 Router.route("/")
-    .get(showtimeController.getAll)
     .post(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), showtimeValidation.createShowtime, showtimeController.create)
 
 Router.route("/:id")

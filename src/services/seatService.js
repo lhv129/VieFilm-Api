@@ -203,7 +203,7 @@ const update = async (data) => {
                 type: type,
                 price: price,
                 status: status,
-                seatCode: upperCaseRow + number,  // seatCode cho ghế đơn
+                seatCode: upperCaseRow   + number,  // seatCode cho ghế đơn
                 updatedAt: Date.now(),
             };
         }
