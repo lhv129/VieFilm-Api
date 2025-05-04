@@ -6,6 +6,7 @@ import { screenModel } from "./screenModel";
 import { seatModel } from "./seatModel";
 import { ticketModel } from "./ticketModel";
 import { ticketDetailModel } from "./ticketDetailModel";
+import { movieModel } from "./movieModel";
 
 const SHOWTIME_COLLECTION_NAME = "showtimes";
 const SHOWTIME_COLLECTION_SCHEMA = Joi.object({
@@ -30,54 +31,77 @@ const getAll = async (date, cinemaId) => {
     try {
         const db = GET_DB();
 
-        // Nếu có cinemaId, lấy screenIds
-        let screenIds = [];
-        if (cinemaId) {
-            const screens = await screenModel.getAllByCinema(cinemaId);
-            screenIds = screens.map(screen => screen._id.toString());
-        }
+        const pipeline = [
+            { $match: { _deletedAt: false } },
 
-        // Lấy tất cả suất chiếu
-        const showtimes = await db.collection(SHOWTIME_COLLECTION_NAME)
-            .find({ _deletedAt: false })
+            {
+                $lookup: {
+                    from: 'movies', // đảm bảo đây đúng tên collection
+                    localField: 'movieId',
+                    foreignField: '_id',
+                    as: 'movie'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'screens',
+                    localField: 'screenId',
+                    foreignField: '_id',
+                    as: 'screen'
+                }
+            },
+            { $unwind: { path: '$movie', preserveNullAndEmptyArrays: true } },
+            { $unwind: { path: '$screen', preserveNullAndEmptyArrays: true } },
+
+            ...(date
+                ? [{ $match: { date: date } }]
+                : [
+                    {
+                        $addFields: {
+                            parsedDate: {
+                                $dateFromString: {
+                                    dateString: '$date',
+                                    format: '%d/%m/%Y'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        $match: {
+                            parsedDate: { $gte: new Date() }
+                        }
+                    }
+                ]),
+
+            ...(cinemaId
+                ? [{ $match: { 'screen.cinemaId': new ObjectId(cinemaId) } }]
+                : []),
+
+            {
+                $project: {
+                    _id: 1,
+                    screenId: 1,
+                    movieId: 1,
+                    startTime: 1,
+                    date: 1,
+                    endTime: 1,
+                    createdAt: 1,
+                    movieTitle: '$movie.title',
+                    screenName: '$screen.name'
+                }
+            }
+        ];
+
+        const showtimes = await db
+            .collection(SHOWTIME_COLLECTION_NAME)
+            .aggregate(pipeline)
             .toArray();
 
-        // Xử lý ngày lọc
-        let todayFilter = "";
-        if (!date) {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            todayFilter = `${day}/${month}/${year}`;
-        }
-
-        const filteredResults = showtimes.filter(showtime => {
-            const showtimeDate = showtime.date;
-
-            // Nếu truyền date: chỉ lấy đúng ngày đó
-            if (date) {
-                return showtimeDate === date &&
-                    (!cinemaId || screenIds.includes(showtime.screenId.toString()));
-            }
-
-            // Nếu không truyền date: lấy từ hôm nay trở đi
-            const [d1, m1, y1] = showtimeDate.split('/').map(Number);
-            const [d2, m2, y2] = todayFilter.split('/').map(Number);
-
-            const showtimeTime = new Date(y1, m1 - 1, d1).getTime();
-            const todayTime = new Date(y2, m2 - 1, d2).getTime();
-
-            return showtimeTime >= todayTime &&
-                (!cinemaId || screenIds.includes(showtime.screenId.toString()));
-        });
-
-        return filteredResults;
+        return showtimes;
     } catch (error) {
         throw new Error(error.message);
     }
 };
-
 
 
 
