@@ -9,9 +9,9 @@ import { ObjectId } from "mongodb";
 import { showtimeValidation } from "../validations/showtimeValidation";
 import { cinemaModel } from "../models/cinemaModel";
 
-const getAll = async (date, cinemaId) => {
+const getAll = async (reqBody) => {
     try {
-        const showtimes = await showtimeModel.getAll(date, cinemaId);
+        const showtimes = await showtimeModel.getAll(reqBody);
         return showtimes;
     } catch (error) {
         throw error;

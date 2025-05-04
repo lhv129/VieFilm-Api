@@ -27,7 +27,7 @@ const SHOWTIME_COLLECTION_SCHEMA = Joi.object({
 });
 
 
-const getAll = async (date, cinemaId) => {
+const getAll = async (data) => {
     try {
         const db = GET_DB();
 
@@ -53,8 +53,9 @@ const getAll = async (date, cinemaId) => {
             { $unwind: { path: '$movie', preserveNullAndEmptyArrays: true } },
             { $unwind: { path: '$screen', preserveNullAndEmptyArrays: true } },
 
-            ...(date
-                ? [{ $match: { date: date } }]
+            // Kiểm tra nếu có 'date' trong data
+            ...(data.date
+                ? [{ $match: { date: data.date } }]
                 : [
                     {
                         $addFields: {
@@ -73,8 +74,19 @@ const getAll = async (date, cinemaId) => {
                     }
                 ]),
 
-            ...(cinemaId
-                ? [{ $match: { 'screen.cinemaId': new ObjectId(cinemaId) } }]
+            // Kiểm tra nếu có 'cinemaId' trong data
+            ...(data.cinemaId
+                ? [{ $match: { 'screen.cinemaId': new ObjectId(data.cinemaId) } }]
+                : []),
+
+            // Kiểm tra nếu có 'movieId' trong data
+            ...(data.movieId
+                ? [{ $match: { 'movie._id': new ObjectId(data.movieId) } }]
+                : []),
+
+            // Kiểm tra nếu có 'screenId' trong data
+            ...(data.screenId
+                ? [{ $match: { 'screen._id': new ObjectId(data.screenId) } }]
                 : []),
 
             {
@@ -102,6 +114,8 @@ const getAll = async (date, cinemaId) => {
         throw new Error(error.message);
     }
 };
+
+
 
 
 
