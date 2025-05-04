@@ -299,6 +299,7 @@ const getSeatsByShowtime = async (showtimeId) => {
                                         type: "$$seat.type",
                                         seatCode: "$$seat.seatCode",
                                         status: "$$seat.status",
+                                        price: "$$seat.price",
                                         isBooked: {
                                             $let: {
                                                 vars: {
