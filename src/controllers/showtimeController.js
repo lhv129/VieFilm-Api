@@ -56,7 +56,7 @@ const update = async (req, res, next) => {
 
 const getDelete = async (req, res, next) => {
     try {
-        const showtime = await showtimeService.getDelete(req.params.id);
+        const showtime = await showtimeService.getDelete(req.body);
         res.status(200).json({
             status: "success",
             message: "Xóa suất chiếu thành công",

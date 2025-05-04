@@ -150,8 +150,9 @@ const update = async (id, reqBody) => {
     }
 }
 
-const getDelete = async (id) => {
+const getDelete = async (reqBody) => {
     try {
+        const id = reqBody.showtimeId;
         const showtime = await showtimeModel.findOneById(id);
         if (!showtime) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Suất chiếu không tồn tại, vui lòng kiểm tra lại");

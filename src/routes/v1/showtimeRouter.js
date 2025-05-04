@@ -11,12 +11,12 @@ Router.route("/get-all")
 
 Router.route("/")
     .post(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), showtimeValidation.createShowtime, showtimeController.create)
+    .delete(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), showtimeController.getDelete)
 
 Router.route("/:id")
     .get(showtimeController.getDetails)
     .put(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), showtimeController.update)
-    .delete(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), showtimeController.getDelete)
-
+    
 Router.route("/get-seats-by-showtime")
     .post(showtimeController.getSeatsByShowtime)
 
