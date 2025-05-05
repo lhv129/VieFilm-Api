@@ -382,13 +382,16 @@ const checkOut = async (reqBody) => {
     }
 }
 
-const deleteHoldsSeats = async (user,ticketId) => {
+const deleteHoldsSeats = async (user,showtimeId) => {
     try {
-        const ticket = await ticketModel.findOneById(ticketId);
+        const ticket = await ticketModel.findOne({userId: user._id, showtimeId : new ObjectId(showtimeId)});
         if(!ticket){
             throw new ApiError(StatusCodes.NOT_FOUND, "Vé không tồn tại, vui lòng kiểm tra lại");
         }
-        await ticketModel.getDelete(ticketId);
+        if(ticket.status != 'hold'){
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Vé này không trong trạng thái giữ");
+        }
+        await ticketModel.getDelete(ticket._id.toString());
         return [];
     } catch (error) {
         throw error;

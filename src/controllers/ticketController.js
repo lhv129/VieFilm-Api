@@ -86,7 +86,7 @@ const checkOut = async (req, res, next) => {
 const deleteHoldsSeats = async (req, res, next) => {
     try {
         const user = req.user;
-        const ticket = await ticketService.deleteHoldsSeats(user,req.body.ticketId);
+        const ticket = await ticketService.deleteHoldsSeats(user,req.body.showtimeId);
         res.status(201).json({
             status: "success",
             message: "Xóa vé thành công",
