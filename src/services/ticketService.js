@@ -382,11 +382,25 @@ const checkOut = async (reqBody) => {
     }
 }
 
+const deleteHoldsSeats = async (user,ticketId) => {
+    try {
+        const ticket = await ticketModel.findOneById(ticketId);
+        if(!ticket){
+            throw new ApiError(StatusCodes.NOT_FOUND, "Vé không tồn tại, vui lòng kiểm tra lại");
+        }
+        await ticketModel.getDelete(ticketId);
+        return [];
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const ticketService = {
     getAll,
     staffCreateTicket,
     create,
     getDetails,
     updateStatus,
-    checkOut
+    checkOut,
+    deleteHoldsSeats
 }

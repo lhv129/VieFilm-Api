@@ -83,11 +83,26 @@ const checkOut = async (req, res, next) => {
     }
 }
 
+const deleteHoldsSeats = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const ticket = await ticketService.deleteHoldsSeats(user,req.body.ticketId);
+        res.status(201).json({
+            status: "success",
+            message: "Xóa vé thành công",
+            data: ticket
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const ticketController = {
     getAll,
     staffCreateTicket,
     create,
     getDetails,
     updateStatus,
-    checkOut
+    checkOut,
+    deleteHoldsSeats
 }

@@ -17,6 +17,8 @@ Router.route('/')
 
 Router.route('/hold/seats')
     .post(authenticateToken, ticketValidation.create, ticketController.create)
+    .delete(authenticateToken, ticketController.deleteHoldsSeats)
+
 Router.route('/checkout')
     .post(authenticateToken,ticketController.checkOut);
 
