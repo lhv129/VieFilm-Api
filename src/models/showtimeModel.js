@@ -252,7 +252,7 @@ const getSeatsByShowtime = async (showtimeId) => {
                                 $match: {
                                     $expr: { $eq: ["$showtimeId", "$$showtimeId"] },
                                     _deletedAt: false,
-                                    status: { $in: ["used", "pending", "paid"] },
+                                    status: { $in: ["used", "pending", "paid", "hold"] },
                                 },
                             },
                             {
@@ -270,6 +270,7 @@ const getSeatsByShowtime = async (showtimeId) => {
                                 $project: {
                                     seatId: "$ticketDetails.seatId",
                                     ticketStatus: "$status",
+                                    userId: "$userId",
                                     _id: 0,
                                 },
                             },
@@ -321,6 +322,33 @@ const getSeatsByShowtime = async (showtimeId) => {
                                                 },
                                             },
                                         },
+                                        bookedBy: {
+                                            $let: {
+                                                vars: {
+                                                    matchedBooking: {
+                                                        $arrayElemAt: [
+                                                            {
+                                                                $filter: {
+                                                                    input: "$bookedSeats",
+                                                                    as: "b",
+                                                                    cond: { $eq: ["$$b.seatId", "$$seat._id"] },
+                                                                },
+                                                            },
+                                                            0,
+                                                        ],
+                                                    },
+                                                },
+                                                in: {
+                                                    $cond: {
+                                                        if: {
+                                                            $in: ["$$matchedBooking.ticketStatus", ["hold", "paid", "pending", "used"]],
+                                                        },
+                                                        then: "$$matchedBooking.userId",
+                                                        else: null,
+                                                    },
+                                                },
+                                            },
+                                        },
                                     },
                                 },
                             },
@@ -335,6 +363,7 @@ const getSeatsByShowtime = async (showtimeId) => {
         throw new Error(error);
     }
 };
+
 
 export const showtimeModel = {
     getAll,

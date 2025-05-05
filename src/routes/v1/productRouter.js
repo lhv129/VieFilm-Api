@@ -10,14 +10,13 @@ const upload = multer();
 
 //Cho phép sử dụng form-data
 Router.use(upload.single('images'));
-Router.use(authenticateToken, roleMiddleware.checkRole('Admin'));
 
 Router.route("/")
     .get(productController.getAll)
-    .post(productValidation.createProduct, productController.create);
+    .post(authenticateToken, roleMiddleware.checkRole('Admin','Staff'),productValidation.createProduct, productController.create);
 Router.route("/:slug")
     .get(productController.getDetails)
-    .put(productValidation.createProduct, productController.update)
-    .delete(productController.getDelete);
+    .put(authenticateToken, roleMiddleware.checkRole('Admin','Staff'),productValidation.createProduct, productController.update)
+    .delete(authenticateToken, roleMiddleware.checkRole('Admin','Staff'),productController.getDelete);
 
 export const productRouter = Router;

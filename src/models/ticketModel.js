@@ -22,7 +22,7 @@ const TICKET_COLLECTION_SCHEMA = Joi.object({
     .pattern(OBJECT_ID_RULE)
     .message(OBJECT_ID_RULE_MESSAGE),
   paymentMethodId: Joi.string()
-    .required()
+    .allow(null, '')
     .pattern(OBJECT_ID_RULE)
     .message(OBJECT_ID_RULE_MESSAGE),
   code: Joi.string().required(),
@@ -30,7 +30,7 @@ const TICKET_COLLECTION_SCHEMA = Joi.object({
   customer: Joi.string().allow(null, '').min(5).max(100).trim().strict(),
   totalAmount: Joi.number().min(0).default(0),
   discountPrice: Joi.number().min(0).default(0),
-  status: Joi.string().valid('pending', 'paid', 'used', 'cancelled').default('pending'),
+  status: Joi.string().valid('pending', 'paid', 'used', 'cancelled','hold').default('pending'),
   createdAt: Joi.date().timestamp("javascript").default(Date.now),
   updatedAt: Joi.date().timestamp("javascript").default(null),
   _deletedAt: Joi.boolean().default(false),
@@ -53,7 +53,6 @@ const validateBeforeCreate = async (data) => {
     ...validatedData,
     userId: new ObjectId(validatedData.userId),
     showtimeId: new ObjectId(validatedData.showtimeId),
-    paymentMethodId: new ObjectId(validatedData.paymentMethodId)
   }
 };
 
@@ -193,6 +192,20 @@ const getDetails = async (ticketId) => {
   }
 };
 
+const updateOne = async (ticketId, dataToUpdate) => {
+  try {
+      const result = await GET_DB()
+          .collection(TICKET_COLLECTION_NAME)
+          .updateOne(
+              { _id: new ObjectId(ticketId) },
+              { $set: dataToUpdate }
+          );
+      return result;
+  } catch (error) {
+      throw new Error("Không thể cập nhật ticket: " + error.message);
+  }
+};
+
 
 export const ticketModel = {
   TICKET_COLLECTION_NAME,
@@ -205,5 +218,6 @@ export const ticketModel = {
   updateTotalAmount,
   updateStatus,
   getDetailAfterPayment,
-  getDetails
+  getDetails,
+  updateOne
 }

@@ -10,6 +10,7 @@ import { randomCodeTicket } from "../utils/randomCodeTick";
 import { StatusCodes } from "http-status-codes";
 import { ObjectId } from "mongodb";
 import { paymentService } from "./paymentService";
+import { promoModel } from "@/models/promoModel";
 
 
 const getAll = async (req, res, next) => {
@@ -157,15 +158,12 @@ const staffCreateTicket = async (user, reqBody) => {
 
 const create = async (user, reqBody) => {
     try {
-        const { showtimeId, seatIds, paymentMethodId, products, customer } = reqBody;
+        const { showtimeId, seatIds } = reqBody;
         const showtime = await showtimeModel.findOneById(showtimeId);
         if (!showtime) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Id suất chiếu không tồn tại");
         }
-        const paymentMethod = await paymentMethodModel.findOneById(paymentMethodId);
-        if (!paymentMethod) {
-            throw new ApiError(StatusCodes.NOT_FOUND, "Id phương thức thanh toán không tồn tại");
-        }
+
         // Kiểm tra xem ghế đó có tồn tại không dựa vào collection seats
         const objectSeatIds = seatIds.map(id => new ObjectId(id));
         const seats = await seatModel.find({ _id: { $in: objectSeatIds }, _deletedAt: false, status: "available" });
@@ -177,7 +175,11 @@ const create = async (user, reqBody) => {
         // Lấy ra danh sách ghế của suất chiếu đó để kiểm tra ghế đã được đặt chưa thông qua suất chiếu đó
         const exitStingSeats = await showtimeModel.getSeatsByShowtime(showtimeId);
         for (const seat of exitStingSeats.screen.seats) {
-            if (seat.isBooked && objectSeatIds.some(id => id.equals(seat._id))) {
+            if (
+                seat.isBooked &&
+                seat.bookedBy?.toString() !== user._id.toString() &&
+                objectSeatIds.some(id => id.equals(seat._id))
+            ) {
                 throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `Lỗi: Ghế ${seat.seatCode} đã được đặt trước đó.`);
             }
         }
@@ -235,6 +237,98 @@ const create = async (user, reqBody) => {
             throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `Lỗi: Không được đặt quá 8 ghế cùng một lúc.`);
         }
 
+        // === Logic chính xử lý giữ ghế ===
+        let ticket = await ticketModel.findOne({
+            userId: user._id,
+            showtimeId: new ObjectId(showtimeId),
+            status: "hold"
+        });
+
+        if (ticket) {
+            // Nếu người dùng đó đã giữ ghế trong suất chiếu đó
+            //Xóa những ticket_details
+            await ticketDetailModel.deleteMany({ ticketId: new ObjectId(ticket._id) });
+
+            // Tạo mới những ticket_details mới cho ticket đó
+            const ticketDetails = await ticketDetailModel.getTicketDetailsWithPriceFromSeats(ticket._id.toString(), seatIds);
+            await ticketDetailModel.insertMany(ticketDetails);
+
+            // Tính tổng giá trị của ticket_details đó
+            const getTotalPriceTicketDetail = await ticketDetailModel.getTotalPriceTicketDetails({ ticketId: new ObjectId(ticket._id), _deletedAt: false })
+            // Cập nhật ngược lại lên cho ticket
+            await ticketModel.updateTotalAmount(ticket._id, getTotalPriceTicketDetail)
+            ticket = await ticketModel.findOneById(ticket._id.toString());
+        } else {
+            // Nếu chưa có vé, tạo mới
+            const dataTicket = {
+                customer: user.fullname,
+                showtimeId: showtimeId,
+                userId: user._id.toString(),
+                code: randomCodeTicket.random(),
+                status: "hold",
+            };
+            // Tạo ra ticket mới
+            const newTicket = await ticketModel.create(dataTicket);
+            // Lấy ra danh sách details của ticket đó
+            const ticketDetails = await ticketDetailModel.getTicketDetailsWithPriceFromSeats(newTicket.insertedId.toString(), seatIds);
+            // Thêm ticket_details
+            await ticketDetailModel.insertMany(ticketDetails);
+            // Lấy ra tổng giá của ticket_details rồi cập nhật ngược lên cho ticket
+            const getTotalPriceTicketDetail = await ticketDetailModel.getTotalPriceTicketDetails({ ticketId: new ObjectId(newTicket.insertedId.toString()), _deletedAt: false })
+            await ticketModel.updateTotalAmount(newTicket.insertedId.toString(), getTotalPriceTicketDetail)
+            ticket = await ticketModel.findOneById(newTicket.insertedId.toString());
+        }
+        return ticket;
+    } catch (error) {
+        throw error;
+    }
+}
+
+const getDetails = async (id) => {
+    try {
+        const ticket = await ticketModel.getDetails(id);
+        return ticket;
+    } catch (error) {
+        throw error;
+    }
+}
+
+const updateStatus = async (id, status) => {
+    try {
+        await ticketModel.updateStatus(id, status);
+
+        const getNewTicket = await ticketModel.findOneById(id);
+
+        return getNewTicket;
+    } catch (error) {
+        throw error;
+    }
+}
+
+const checkOut = async (reqBody) => {
+    try {
+        const { ticketId, paymentMethodId, products, promoId } = reqBody;
+        let totalAmount = 0;
+
+        const ticket = await ticketModel.findOneById(ticketId);
+        if (!ticket) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Id vé không tồn tại");
+        }
+
+        const paymentMethod = await paymentMethodModel.findOneById(paymentMethodId);
+        if (!paymentMethod) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Id phương thức thanh toán không tồn tại");
+        }
+
+        let discountPrice = 0;
+        if (promoId) {
+            const promoCode = await promoModel.findOneById(promoId);
+            if (!promoCode) {
+                throw new ApiError(StatusCodes.NOT_FOUND, "Id mã giảm giá không tồn tại");
+            }
+            discountPrice = promoCode.price;
+        }
+
         // Nếu chọn sản phẩm thì kiểm tra id sản phẩm đó có tồn tại không
         if (products) {
             // Trích xuất mảng productId từ mảng products
@@ -248,64 +342,42 @@ const create = async (user, reqBody) => {
                 throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `Products ID: ${nonExistingProductIds} không tồn tại`);
             }
         }
-        const dataTicket = {
-            customer: user.fullname,
-            showtimeId: showtimeId,
-            userId: user._id.toString(),
-            paymentMethodId: paymentMethodId,
-            code: randomCodeTicket.random()
-        };
-        // Tạo vé
-        const ticket = await ticketModel.create(dataTicket);
+        // Giới hạn sản phẩm nếu có
+        if (products) {
+            if (products.length > 10) {
+                throw new ApiError(StatusCodes.BAD_REQUEST, "Không được chọn quá 10 sản phẩm");
+            }
 
-        // Tạo chi tiết vé (ghế)
-        const ticketDetails = await ticketDetailModel.getTicketDetailsWithPriceFromSeats(ticket.insertedId.toString(), seatIds);
-        await ticketDetailModel.insertMany(ticketDetails);
+            const invalidQuantity = products.find(product => product.quantity > 10);
+            if (invalidQuantity) {
+                throw new ApiError(StatusCodes.BAD_REQUEST, "Không được chọn quá 10 cho mỗi sản phẩm");
+            }
+        }
 
-        // Tính tổng giá tiền để cập nhật lại lên cho ticket đó
-        const getTotalPriceTicketDetail = await ticketDetailModel.getTotalPriceTicketDetails({ ticketId: new ObjectId(ticket.insertedId.toString()), _deletedAt: false })
-
+        // Nếu người dùng mua trong sự cho phép thì tiếp tục
         let totalTotalPriceTicketProductDetail = 0;
         if (products) {
             // Tạo chi tiết vé (sản phẩm)
-            const ticketProductDetails = await ticketProductDetail.getTicketDetailsWithPriceFromProducts(ticket.insertedId.toString(), products);
+            const ticketProductDetails = await ticketProductDetail.getTicketDetailsWithPriceFromProducts(ticketId, products);
             await ticketProductDetail.insertMany(ticketProductDetails);
-            totalTotalPriceTicketProductDetail = await ticketProductDetail.getTotalPriceTicketDetails({ ticketId: new ObjectId(ticket.insertedId.toString()), _deletedAt: false })
+            totalTotalPriceTicketProductDetail = await ticketProductDetail.getTotalPriceTicketDetails({ ticketId: new ObjectId(ticketId), _deletedAt: false })
         } else {
             totalTotalPriceTicketProductDetail = 0;
         }
-        // Có được tổng tiền thì update ngược lại cho ticket
-        const totalAmount = getTotalPriceTicketDetail + totalTotalPriceTicketProductDetail;
 
-        await ticketModel.updateTotalAmount(ticket.insertedId.toString(), totalAmount)
+        totalAmount = ticket.totalAmount + totalTotalPriceTicketProductDetail - discountPrice;
 
-        const getTicket = await ticketModel.findOneById(ticket.insertedId.toString());
+        await ticketModel.updateTotalAmount(ticketId, totalAmount);
+        //Cập nhật paymentMethodId vào trong ticket;
+        await ticketModel.updateOne(ticketId, { paymentMethodId: new ObjectId(paymentMethodId) })
 
-        const getPaymentUrl = paymentService.createPaymentUrl(getTicket);
+        const getTicket = await ticketModel.findOneById(ticket._id.toString());
 
-        return getPaymentUrl;
+        const url = paymentService.createPaymentUrl(getTicket);
+
+        return url;
+
     } catch (error) {
-        throw error;
-    }
-}
-
-const getDetails = async (id) => {
-    try{
-        const ticket = await ticketModel.getDetails(id);
-        return ticket;
-    }catch(error){
-        throw error;
-    }
-}
-
-const updateStatus = async (id,status) => {
-    try{
-        const ticket = await ticketModel.updateStatus(id,status);
-
-        const getNewTicket = await ticketModel.findOneById(id);
-
-        return getNewTicket;
-    }catch(error){
         throw error;
     }
 }
@@ -315,5 +387,6 @@ export const ticketService = {
     staffCreateTicket,
     create,
     getDetails,
-    updateStatus
+    updateStatus,
+    checkOut
 }

@@ -6,14 +6,13 @@ import { roleMiddleware } from "../../middlewares/roleMiddleware";
 
 
 const Router = express.Router();
-Router.use(authenticateToken, roleMiddleware.checkRole('Admin'));
 
 Router.route("/")
     .get(paymentMethodController.getAll)
-    .post(paymentMethodValidation.createPaymentMethod, paymentMethodController.create);
+    .post(authenticateToken, roleMiddleware.checkRole('Admin'),paymentMethodValidation.createPaymentMethod, paymentMethodController.create);
 Router.route("/:slug")
     .get(paymentMethodController.getDetails)
-    .put(paymentMethodValidation.createPaymentMethod, paymentMethodController.update)
-    .delete(paymentMethodController.getDelete);
+    .put(authenticateToken, roleMiddleware.checkRole('Admin'),paymentMethodValidation.createPaymentMethod, paymentMethodController.update)
+    .delete(authenticateToken, roleMiddleware.checkRole('Admin'),paymentMethodController.getDelete);
 
 export const paymentMethodRouter = Router;

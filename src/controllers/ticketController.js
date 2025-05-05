@@ -36,7 +36,7 @@ const create = async (req, res, next) => {
         const tickets = await ticketService.create(user, req.body);
         res.status(201).json({
             status: "success",
-            message: "Đặt vé thành công",
+            message: "Giữ ghế thành công",
             data: tickets
         })
     } catch (error) {
@@ -59,11 +59,24 @@ const getDetails = async (req, res, next) => {
 
 const updateStatus = async (req, res, next) => {
     try {
-        const ticket = await ticketService.updateStatus(req.params.id,"used")
+        const ticket = await ticketService.updateStatus(req.params.id, "used")
         return res.status(201).json({
             status: "success",
             message: "Cập trạng thái nhật vé thành công",
             data: ticket
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+const checkOut = async (req, res, next) => {
+    try {
+        const tickets = await ticketService.checkOut(req.body);
+        res.status(201).json({
+            status: "success",
+            message: "Đặt vé thành công",
+            data: tickets
         })
     } catch (error) {
         next(error)
@@ -75,5 +88,6 @@ export const ticketController = {
     staffCreateTicket,
     create,
     getDetails,
-    updateStatus
+    updateStatus,
+    checkOut
 }

@@ -11,6 +11,7 @@ import { showtimeRouter } from "./showtimeRouter";
 import { paymentMethodRouter } from "./paymentMethodRouter";
 import { productRouter } from "./productRouter";
 import { ticketRouter } from "./ticketRouter";
+import { promoRouter } from "./promoRouter";
 
 const Router = express.Router();
 
@@ -47,8 +48,11 @@ Router.use('/payment-methods',paymentMethodRouter);
 // Products APIs
 Router.use('/products', productRouter);
 
-// PaymentMethods APIs
+// Tickets APIs
 Router.use('/tickets', ticketRouter);
+
+// PaymentMethods APIs
+Router.use('/promo', promoRouter);
 
 
 export const APIs_v1 = Router;

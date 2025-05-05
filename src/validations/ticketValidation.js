@@ -78,7 +78,7 @@ const create = async (req, res, next) => {
             .pattern(OBJECT_ID_RULE)
             .message(OBJECT_ID_RULE_MESSAGE),
         paymentMethodId: Joi.string()
-            .required()
+        .allow(null, '')
             .pattern(OBJECT_ID_RULE)
             .message(OBJECT_ID_RULE_MESSAGE).messages({
                 "string.empty": "Phương thức thanh toán không được để trống",

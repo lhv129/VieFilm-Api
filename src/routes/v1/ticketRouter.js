@@ -15,8 +15,10 @@ Router.use(upload.single('images'));
 Router.route('/')
     .get(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), ticketController.getAll)
 
-    // Router cho khách hàng tự động thanh toán online
+Router.route('/hold/seats')
     .post(authenticateToken, ticketValidation.create, ticketController.create)
+Router.route('/checkout')
+    .post(authenticateToken,ticketController.checkOut);
 
 Router.route('/vnpay-return').get(paymentController.handlePaymentReturn);
 
