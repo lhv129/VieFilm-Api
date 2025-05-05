@@ -10,7 +10,7 @@ import { randomCodeTicket } from "../utils/randomCodeTick";
 import { StatusCodes } from "http-status-codes";
 import { ObjectId } from "mongodb";
 import { paymentService } from "./paymentService";
-import { promoModel } from "@/models/promoModel";
+import { promoModel } from "../models/promoModel";
 
 
 const getAll = async (req, res, next) => {
