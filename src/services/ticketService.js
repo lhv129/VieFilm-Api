@@ -163,6 +163,11 @@ const create = async (user, reqBody) => {
         if (!showtime) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Id suất chiếu không tồn tại");
         }
+        if(!seatIds){
+            const ticketOld = ticketModel.find(user._id.toString(), showtimeId);
+            await ticketModel.getDelete(ticketOld._id.toString());
+            throw new ApiError(StatusCodes.NOT_FOUND, "Hủy giữ ghế thành công");
+        }
 
         // Kiểm tra xem ghế đó có tồn tại không dựa vào collection seats
         const objectSeatIds = seatIds.map(id => new ObjectId(id));
