@@ -165,7 +165,7 @@ const create = async (user, reqBody) => {
         }
 
         if(!seatIds || seatIds.length === 0){
-            const ticketOld = ticketModel.find(user._id.toString(), showtimeId);
+            const ticketOld = ticketModel.find({ userId: user._id, _deletedAt: false, status: "hold", showtimeId: new ObjectId(showtimeId) });
             await ticketModel.getDelete(ticketOld._id.toString());
             throw new ApiError(StatusCodes.NOT_FOUND, "Hủy giữ ghế thành công");
         }
