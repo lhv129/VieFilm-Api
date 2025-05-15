@@ -33,6 +33,7 @@ const TICKET_COLLECTION_SCHEMA = Joi.object({
   status: Joi.string().valid('pending', 'paid', 'used', 'cancelled','hold').default('pending'),
   createdAt: Joi.date().timestamp("javascript").default(Date.now),
   updatedAt: Joi.date().timestamp("javascript").default(null),
+  expireAt: Joi.date().timestamp("javascript"),
   _deletedAt: Joi.boolean().default(false),
 });
 
@@ -110,7 +111,7 @@ const updateTotalAmount = async (id, totalAmount) => {
   try {
     const ticket = await GET_DB()
       .collection(TICKET_COLLECTION_NAME)
-      .updateOne({ _id: new ObjectId(id) }, { $set: { totalAmount: totalAmount } });
+      .updateOne({ _id: new ObjectId(id) }, { $set: { totalAmount: totalAmount, expireAt: new Date(Date.now() + 10 * 60 * 1000) } });
     return ticket;
   } catch (error) {
     throw error;

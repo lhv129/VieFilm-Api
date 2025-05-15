@@ -6,6 +6,7 @@ import { env } from "./config/environment";
 import { APIs_v1 } from "./routes/v1/index";
 import { errorHandlingMiddleware } from "./middlewares/errorHandlingMiddleware";
 import cors from "cors";
+import { scheduleCleanupTickets } from './utils/cronJobs.js'; // sửa đúng đường dẫn
 
 const START_SERVER = () => {
   const app = express();
@@ -33,11 +34,15 @@ const START_SERVER = () => {
     );
   });
 
+  scheduleCleanupTickets();
+
   exitHook(() => {
     console.log("4.Back-end Server Api đã dừng");
     CLOSE_DB();
   });
 };
+
+
 
 // Chỉ khi kết nối tới database thì mới start server backend api
 // Cách viết function IIFE

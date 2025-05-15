@@ -167,7 +167,6 @@ const create = async (user, reqBody) => {
         if (!seatIds || seatIds.length === 0) {
             const ticketOld = await ticketModel.findOne({ userId: user._id, _deletedAt: false, status: "hold", showtimeId: new ObjectId(showtimeId) });
             await ticketModel.getDelete(ticketOld._id.toString());
-            throw new ApiError(StatusCodes.NOT_FOUND, "Hủy giữ ghế thành công");
         }
 
         // Kiểm tra xem ghế đó có tồn tại không dựa vào collection seats
@@ -180,13 +179,19 @@ const create = async (user, reqBody) => {
         }
         // Lấy ra danh sách ghế của suất chiếu đó để kiểm tra ghế đã được đặt chưa thông qua suất chiếu đó
         const exitStingSeats = await showtimeModel.getSeatsByShowtime(showtimeId);
+
         for (const seat of exitStingSeats.screen.seats) {
-            if (
-                seat.isBooked &&
-                seat.bookedBy?.toString() !== user._id.toString() &&
-                objectSeatIds.some(id => id.equals(seat._id))
-            ) {
-                throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `Lỗi: Ghế ${seat.seatCode} đã được đặt trước đó.`);
+
+            const isSelected = objectSeatIds.some(id => id.equals(seat._id));
+
+            // Nếu ghế đã được thanh toán
+            if (seat.isBooked === "paid" && isSelected) {
+                throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `Lỗi: Ghế ${seat.seatCode} đã được thanh toán, không thể giữ lại.`);
+            }
+
+            // Nếu ghế đang được giữ bởi người khác
+            if (seat.isBooked === "hold" && seat.bookedBy?.toString() !== user._id.toString() && isSelected) {
+                throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `Lỗi: Ghế ${seat.seatCode} đang được giữ bởi người dùng khác.`);
             }
         }
         const exitStingSeatsList = exitStingSeats.screen.seats;
@@ -272,6 +277,7 @@ const create = async (user, reqBody) => {
                 userId: user._id.toString(),
                 code: randomCodeTicket.random(),
                 status: "hold",
+                expireAt: new Date(Date.now() + 10 * 60 * 1000)
             };
             // Tạo ra ticket mới
             const newTicket = await ticketModel.create(dataTicket);
