@@ -3,7 +3,7 @@ import { cleanupExpiredTickets } from '../../utils/cronJobs.js';
 
 const Router = express.Router();
 
-Router.post('/cleanup-tickets', async (req, res) => {
+Router.get('/cleanup-tickets', async (req, res) => {
     try {
         const result = await cleanupExpiredTickets();
         res.status(200).json({
