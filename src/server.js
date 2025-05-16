@@ -34,7 +34,7 @@ const START_SERVER = () => {
     );
   });
 
-  scheduleCleanupTickets();
+  // scheduleCleanpTickets();
 
   exitHook(() => {
     console.log("4.Back-end Server Api đã dừng");

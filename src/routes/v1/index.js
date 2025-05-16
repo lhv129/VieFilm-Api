@@ -12,6 +12,7 @@ import { paymentMethodRouter } from "./paymentMethodRouter";
 import { productRouter } from "./productRouter";
 import { ticketRouter } from "./ticketRouter";
 import { promoRouter } from "./promoRouter";
+import { cronRouter } from "./cronRouter";
 
 const Router = express.Router();
 
@@ -53,6 +54,9 @@ Router.use('/tickets', ticketRouter);
 
 // PaymentMethods APIs
 Router.use('/promo', promoRouter);
+
+// Cron APIs
+Router.use('/cron',cronRouter);
 
 
 export const APIs_v1 = Router;
