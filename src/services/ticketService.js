@@ -167,6 +167,7 @@ const create = async (user, reqBody) => {
         if (!seatIds || seatIds.length === 0) {
             const ticketOld = await ticketModel.findOne({ userId: user._id, _deletedAt: false, status: "hold", showtimeId: new ObjectId(showtimeId) });
             await ticketModel.getDelete(ticketOld._id.toString());
+            return [];
         }
 
         // Kiểm tra xem ghế đó có tồn tại không dựa vào collection seats
@@ -394,11 +395,11 @@ const checkOut = async (reqBody) => {
     }
 }
 
-const deleteHoldsSeats = async (user, showtimeId) => {
+const deleteHoldsSeats = async (user, ticketId) => {
     try {
-        const ticket = await ticketModel.findOne({ userId: user._id, showtimeId: new ObjectId(showtimeId) });
+        const ticket = await ticketModel.findOne({ userId: user._id, _id: new ObjectId(ticketId) });
         if (!ticket) {
-            throw new ApiError(StatusCodes.NOT_FOUND, "Vé không tồn tại, vui lòng kiểm tra lại");
+            throw new ApiError(StatusCodes.NOT_FOUND, "Vé không tồn tại hoặc không phải vé của bạn, vui lòng kiểm tra lại");
         }
         if (ticket.status != 'hold') {
             throw new ApiError(StatusCodes.BAD_REQUEST, "Vé này không trong trạng thái giữ");

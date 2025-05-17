@@ -37,7 +37,7 @@ const create = async (req, res, next) => {
         res.status(201).json({
             status: "success",
             message: "Giữ ghế thành công",
-            data: tickets
+            data: Array.isArray(tickets) ? tickets : tickets ? [tickets] : []
         })
     } catch (error) {
         next(error)
@@ -86,7 +86,7 @@ const checkOut = async (req, res, next) => {
 const deleteHoldsSeats = async (req, res, next) => {
     try {
         const user = req.user;
-        const ticket = await ticketService.deleteHoldsSeats(user,req.body.showtimeId);
+        const ticket = await ticketService.deleteHoldsSeats(user, req.body.ticketId);
         res.status(201).json({
             status: "success",
             message: "Xóa vé thành công",
