@@ -111,7 +111,7 @@ const updateTotalAmount = async (id, totalAmount) => {
   try {
     const ticket = await GET_DB()
       .collection(TICKET_COLLECTION_NAME)
-      .updateOne({ _id: new ObjectId(id) }, { $set: { totalAmount: totalAmount, expireAt: new Date(Date.now() + 10 * 60 * 1000) } });
+      .updateOne({ _id: new ObjectId(id) }, { $set: { totalAmount: totalAmount } });
     return ticket;
   } catch (error) {
     throw error;
