@@ -20,7 +20,7 @@ const handlePaymentReturn = async (req, res) => {
             await ticketModel.getDelete(ticket._id);
             res.status(200).json({
                 status: true,
-                message: "Thanh toán thất bại"
+                message: "Hủy thanh toán thành công"
             })
         } else {
             await ticketModel.updateStatus(ticket._id.toString(),"paid");
