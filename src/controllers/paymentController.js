@@ -18,7 +18,7 @@ const handlePaymentReturn = async (req, res) => {
         }
         if (vnp_ResponseCode !== "00") {
             await ticketModel.getDelete(ticket._id);
-            return res.status(400).json({
+            return res.status(402).json({
                 status: false,
                 message: "Thanh toán thất bại"
             })
@@ -28,7 +28,7 @@ const handlePaymentReturn = async (req, res) => {
 
             // console.log(getTicket);
 
-            res.status(400).json({
+            res.status(200).json({
                 status: true,
                 message: "Đặt vé thành công",
                 data: getTicket
