@@ -12,14 +12,14 @@ const handlePaymentReturn = async (req, res) => {
         const ticket = await ticketModel.findOne({ code: vnp_TxnRef });
         if (!ticket) {
             return res.status(401).json({
-                success: false,
+                status: false,
                 message: "TicketId không tồn tại",
             });
         }
         if (vnp_ResponseCode !== "00") {
             await ticketModel.getDelete(ticket._id);
-            return res.status(402).json({
-                status: false,
+            res.status(200).json({
+                status: true,
                 message: "Thanh toán thất bại"
             })
         } else {
@@ -36,7 +36,7 @@ const handlePaymentReturn = async (req, res) => {
         }
     } catch (error) {
         return res.status(500).json({
-            success: false,
+            status: false,
             message: "Error server",
         });
     }
