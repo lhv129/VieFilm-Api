@@ -5,9 +5,11 @@ import crypto from "crypto";
 
 const createPaymentUrl = async (ticket) => {
     let ipAddr = "1.55.200.158";
+    const moment = require("moment-timezone");
     let date = new Date();
-    let createDate = moment(date).format("YYYYMMDDHHmmss");
-    let expireDate = moment(date).add(15, "minutes").format("YYYYMMDDHHmmss");
+    let createDate = moment.tz(date, "Asia/Ho_Chi_Minh").format("YYYYMMDDHHmmss");
+    let expireDate = moment.tz(date, "Asia/Ho_Chi_Minh").add(15, "minutes").format("YYYYMMDDHHmmss");
+
     const tmnCode = vnpayConfig.vnp_TmnCode;
     const secretKey = vnpayConfig.vnp_HashSecret;
     const vnpUrl = vnpayConfig.vnp_Url;
