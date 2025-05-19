@@ -148,14 +148,68 @@ const getDetailAfterPayment = async (ticketId) => {
       return null;
     }
 
+    // Lấy chi tiết vé và sản phẩm
     const ticketDetails = await ticketDetailModel.find({ ticketId: new ObjectId(ticketId) });
-
     const ticketProducts = await ticketProductDetail.find({ ticketId: new ObjectId(ticketId) });
 
+    // Map seatId -> seatCode
+    const seatIds = ticketDetails.map(detail => new ObjectId(detail.seatId));
+    const seats = await GET_DB().collection('seats')
+      .find({ _id: { $in: seatIds } })
+      .toArray();
+
+    const seatMap = seats.reduce((acc, seat) => {
+      acc[seat._id.toString()] = seat.seatCode;
+      return acc;
+    }, {});
+
+    const ticketDetailsWithSeatCode = ticketDetails.map(detail => ({
+      ...detail,
+      seatCode: seatMap[detail.seatId.toString()] || null,
+    }));
+
+    // Map productId -> name
+    const productIds = ticketProducts.map(tp => new ObjectId(tp.productId));
+    const products = await GET_DB().collection('products')
+      .find({ _id: { $in: productIds } })
+      .toArray();
+
+    const productMap = products.reduce((acc, product) => {
+      acc[product._id.toString()] = product.name;
+      return acc;
+    }, {});
+
+    const ticketProductsWithName = ticketProducts.map(tp => ({
+      ...tp,
+      name: productMap[tp.productId.toString()] || null,
+    }));
+
+    // Lấy showtime, screen, cinema, movie
     let showtimeInfo = null;
+    let screenInfo = null;
+    let cinemaInfo = null;
+    let movieInfo = null;
+
     if (ticket.showtimeId) {
-      const showtimes = await GET_DB().collection('showtimes').findOne({ _id: new ObjectId(ticket.showtimeId) });
-      showtimeInfo = showtimes;
+      showtimeInfo = await GET_DB().collection('showtimes')
+        .findOne({ _id: new ObjectId(ticket.showtimeId) });
+
+      if (showtimeInfo) {
+        if (showtimeInfo.screenId) {
+          screenInfo = await GET_DB().collection('screens')
+            .findOne({ _id: new ObjectId(showtimeInfo.screenId) });
+
+          if (screenInfo?.cinemaId) {
+            cinemaInfo = await GET_DB().collection('cinemas')
+              .findOne({ _id: new ObjectId(screenInfo.cinemaId) });
+          }
+        }
+
+        if (showtimeInfo.movieId) {
+          movieInfo = await GET_DB().collection('movies')
+            .findOne({ _id: new ObjectId(showtimeInfo.movieId) });
+        }
+      }
     }
 
     return {
@@ -164,10 +218,13 @@ const getDetailAfterPayment = async (ticketId) => {
       code: ticket.code,
       totalAmount: ticket.totalAmount,
       details: {
-        ticket_details: ticketDetails,
-        product_details: ticketProducts,
+        ticket_details: ticketDetailsWithSeatCode,
+        product_details: ticketProductsWithName,
       },
       showtime: showtimeInfo,
+      screen: screenInfo,
+      cinema: cinemaInfo,
+      movie: movieInfo,
     };
   } catch (error) {
     console.error("Lỗi khi lấy chi tiết vé:", error);
