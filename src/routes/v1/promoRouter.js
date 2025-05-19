@@ -16,4 +16,6 @@ Router.route("/:id")
   .put(authenticateToken, roleMiddleware.checkRole("Admin"), promoValidation.createPromo, promoController.updatePromo)
   .delete(authenticateToken, roleMiddleware.checkRole("Admin"), promoController.deletePromo);
 
+Router.route("/get-one-by-name")
+  .post(authenticateToken,promoController.getOneByName)
 export const promoRouter = Router;

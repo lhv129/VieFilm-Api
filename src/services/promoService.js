@@ -90,10 +90,38 @@ const deletePromo = async (promoId) => {
     }
 };
 
+const getOneByName = async (reqBody) => {
+    try {
+        const promo = await promoModel.find({ name: reqBody.name });
+        if (promo.length === 0) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Mã giảm giá không tồn tại");
+        }
+        if (promo[0].status === 'inactive') {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Mã giảm giá đã bị vô hiệu hóa");
+        }
+        const today = new Date();
+        const startDate = new Date(promo[0].startDate);
+        const endDate = new Date(promo[0].endDate);
+
+        // Đặt giờ của ngày hiện tại về 00:00:00 để so sánh chính xác
+        today.setHours(0, 0, 0, 0);
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(0, 0, 0, 0);
+
+        if (today < startDate || today > endDate) {
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Mã giảm giá không còn hiệu lực");
+        }
+        return promo[0];
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const promoService = {
     getAll,
     create,
     getDetails,
     updatePromo,
-    deletePromo
+    deletePromo,
+    getOneByName
 };

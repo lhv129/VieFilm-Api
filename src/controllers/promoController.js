@@ -49,10 +49,20 @@ const deletePromo = async (req, res, next) => {
     }
 };
 
+const getOneByName = async (req, res, next) => {
+    try {
+        const promo = await promoService.getOneByName(req.body);
+        res.status(200).json({ status: "success", message: "Áp dụng mã giảm giá thành công", data: promo });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const promoController = {
     getAll,
     create,
     getDetails,
     updatePromo,
     deletePromo,
+    getOneByName
 };
