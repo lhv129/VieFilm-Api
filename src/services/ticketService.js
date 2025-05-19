@@ -170,7 +170,6 @@ const create = async (user, reqBody) => {
             return [];
         }
 
-        // Kiểm tra xem ghế đó có tồn tại không dựa vào collection seats
         const objectSeatIds = seatIds.map(id => new ObjectId(id));
         const seats = await seatModel.find({ _id: { $in: objectSeatIds }, _deletedAt: false, status: "available" });
         if (seats.length != seatIds.length) {
@@ -178,36 +177,37 @@ const create = async (user, reqBody) => {
             const nonExistingSeatIds = seatIds.filter(id => !existingSeatIds.includes(id));
             throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `Các ghế có ID: ${nonExistingSeatIds} không tồn tại`);
         }
-        // Lấy ra danh sách ghế của suất chiếu đó để kiểm tra ghế đã được đặt chưa thông qua suất chiếu đó
+
         const exitStingSeats = await showtimeModel.getSeatsByShowtime(showtimeId);
 
         for (const seat of exitStingSeats.screen.seats) {
-
             const isSelected = objectSeatIds.some(id => id.equals(seat._id));
 
-            // Nếu ghế đã được thanh toán
             if (seat.isBooked === "paid" && isSelected) {
                 throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `Lỗi: Ghế ${seat.seatCode} đã được thanh toán, không thể giữ lại.`);
             }
 
-            // Nếu ghế đang được giữ bởi người khác
             if (seat.isBooked === "hold" && seat.bookedBy?.toString() !== user._id.toString() && isSelected) {
                 throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `Lỗi: Ghế ${seat.seatCode} đang được giữ bởi người dùng khác.`);
             }
         }
+
         const exitStingSeatsList = exitStingSeats.screen.seats;
-        const rows = [...new Set(exitStingSeatsList.map(seat => seat.row))].sort(); // Lấy danh sách các hàng duy nhất và sắp xếp
+        const rows = [...new Set(exitStingSeatsList.map(seat => seat.row))].sort();
+
         for (const row of rows) {
             const seatsInRow = exitStingSeatsList
                 .filter(seat => seat.row === row)
-                .sort((a, b) => a.number - b.number); // Lọc ghế theo hàng và sắp xếp theo số
+                .sort((a, b) => a.number - b.number);
 
-            const bookedInRow = seatsInRow.filter(seat => seat.isBooked || objectSeatIds.some(id => id.equals(seat._id)));
-            const bookedIndices = bookedInRow.map(seat => seatsInRow.findIndex(s => s._id.equals(seat._id))).sort((a, b) => a - b);
+            const selectedIndices = seatsInRow
+                .map((seat, index) => ({ seat, index }))
+                .filter(({ seat }) => objectSeatIds.some(id => id.equals(seat._id)))
+                .map(({ index }) => index)
+                .sort((a, b) => a - b);
 
-            // Kiểm tra không đặt ghế liền kề ghế đầu hoặc cuối hàng nếu ghế đầu hoặc cuối chưa được đặt
-            const isFirstSeatBooked = bookedInRow.some(seat => seatsInRow[0]._id.equals(seat._id));
-            const isLastSeatBooked = bookedInRow.some(seat => seatsInRow[seatsInRow.length - 1]._id.equals(seat._id));
+            const isFirstSeatBooked = selectedIndices.includes(0) || seatsInRow[0].isBooked;
+            const isLastSeatBooked = selectedIndices.includes(seatsInRow.length - 1) || seatsInRow[seatsInRow.length - 1].isBooked;
 
             if (!isFirstSeatBooked && seatsInRow.length > 1) {
                 const secondSeatIndex = 1;
@@ -223,33 +223,26 @@ const create = async (user, reqBody) => {
                 }
             }
 
-            // Kiểm tra không đặt bỏ trống giữa các ghế đã đặt (chỉ kiểm tra các ghế liền kề)
-            if (bookedIndices.length > 1) {
-                // Sắp xếp lại các index đã đặt để dễ kiểm tra các ghế liền kề
-                bookedIndices.sort((a, b) => a - b);
-
-                for (let i = 0; i < bookedIndices.length - 1; i++) {
-                    // Kiểm tra xem ghế tiếp theo có phải là ghế liền kề hay không
-                    if (bookedIndices[i + 1] - bookedIndices[i] === 1) {
-                        // Nếu là ghế liền kề, không cần kiểm tra khoảng trống
-                        continue;
-                    } else {
-                        // Nếu không phải ghế liền kề, kiểm tra xem có ghế trống liền kề giữa chúng không
-                        if (bookedIndices[i + 1] - bookedIndices[i] === 2) {
-                            const emptySeatIndex = bookedIndices[i] + 1;
-                            throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `Lỗi: Không được đặt ghế bỏ trống giữa các ghế đã chọn. Ghế ${seatsInRow[emptySeatIndex].seatCode} cần được đặt trước.`);
+            if (selectedIndices.length > 1) {
+                for (let i = 0; i < selectedIndices.length - 1; i++) {
+                    if (selectedIndices[i + 1] - selectedIndices[i] === 2) {
+                        const emptySeatIndex = selectedIndices[i] + 1;
+                        const emptySeat = seatsInRow[emptySeatIndex];
+                        if (
+                            emptySeat.status === "available" &&
+                            (!emptySeat.isBooked || emptySeat.isBooked === "available")
+                        ) {
+                            throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `Lỗi: Không được bỏ trống ghế ở giữa. Ghế ${emptySeat.seatCode} cần được đặt.`);
                         }
                     }
                 }
             }
         }
 
-        // Kiểm tra không đặt quá 8 ghế
         if (objectSeatIds.length > 8) {
             throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `Lỗi: Không được đặt quá 8 ghế cùng một lúc.`);
         }
 
-        // === Logic chính xử lý giữ ghế ===
         let ticket = await ticketModel.findOne({
             userId: user._id,
             showtimeId: new ObjectId(showtimeId),
@@ -257,21 +250,36 @@ const create = async (user, reqBody) => {
         });
 
         if (ticket) {
-            // Nếu người dùng đó đã giữ ghế trong suất chiếu đó
-            //Xóa những ticket_details
-            await ticketDetailModel.deleteMany({ ticketId: new ObjectId(ticket._id) });
+            // B1: Lấy danh sách seatIds hiện tại trong ticket_details
+            const existingDetails = await ticketDetailModel.find({ ticketId: new ObjectId(ticket._id), _deletedAt: false });
+            const existingSeatIds = existingDetails.map(detail => detail.seatId.toString());
 
-            // Tạo mới những ticket_details mới cho ticket đó
-            const ticketDetails = await ticketDetailModel.getTicketDetailsWithPriceFromSeats(ticket._id.toString(), seatIds);
-            await ticketDetailModel.insertMany(ticketDetails);
+            // B2: So sánh
+            const newSeatIdSet = new Set(seatIds);
+            const existingSeatIdSet = new Set(existingSeatIds);
 
-            // Tính tổng giá trị của ticket_details đó
-            const getTotalPriceTicketDetail = await ticketDetailModel.getTotalPriceTicketDetails({ ticketId: new ObjectId(ticket._id), _deletedAt: false })
-            // Cập nhật ngược lại lên cho ticket
-            await ticketModel.updateTotalAmount(ticket._id, getTotalPriceTicketDetail)
+            const toInsertSeatIds = seatIds.filter(id => !existingSeatIdSet.has(id));
+            const toDeleteSeatIds = existingSeatIds.filter(id => !newSeatIdSet.has(id));
+
+            // B3: Xóa những ghế không còn được giữ
+            if (toDeleteSeatIds.length > 0) {
+                await ticketDetailModel.deleteMany({
+                    ticketId: new ObjectId(ticket._id),
+                    seatId: { $in: toDeleteSeatIds.map(id => new ObjectId(id)) }
+                });
+            }
+
+            // B4: Thêm mới những ghế chưa có
+            if (toInsertSeatIds.length > 0) {
+                const ticketDetails = await ticketDetailModel.getTicketDetailsWithPriceFromSeats(ticket._id.toString(), toInsertSeatIds);
+                await ticketDetailModel.insertMany(ticketDetails);
+            }
+
+            // B5: Cập nhật lại tổng tiền
+            const getTotalPriceTicketDetail = await ticketDetailModel.getTotalPriceTicketDetails({ ticketId: new ObjectId(ticket._id), _deletedAt: false });
+            await ticketModel.updateTotalAmount(ticket._id, getTotalPriceTicketDetail);
             ticket = await ticketModel.findOneById(ticket._id.toString());
         } else {
-            // Nếu chưa có vé, tạo mới
             const dataTicket = {
                 customer: user.fullname,
                 showtimeId: showtimeId,
@@ -280,22 +288,19 @@ const create = async (user, reqBody) => {
                 status: "hold",
                 expireAt: new Date(Date.now() + 10 * 60 * 1000)
             };
-            // Tạo ra ticket mới
             const newTicket = await ticketModel.create(dataTicket);
-            // Lấy ra danh sách details của ticket đó
             const ticketDetails = await ticketDetailModel.getTicketDetailsWithPriceFromSeats(newTicket.insertedId.toString(), seatIds);
-            // Thêm ticket_details
             await ticketDetailModel.insertMany(ticketDetails);
-            // Lấy ra tổng giá của ticket_details rồi cập nhật ngược lên cho ticket
-            const getTotalPriceTicketDetail = await ticketDetailModel.getTotalPriceTicketDetails({ ticketId: new ObjectId(newTicket.insertedId.toString()), _deletedAt: false })
-            await ticketModel.updateTotalAmount(newTicket.insertedId.toString(), getTotalPriceTicketDetail)
+            const getTotalPriceTicketDetail = await ticketDetailModel.getTotalPriceTicketDetails({ ticketId: new ObjectId(newTicket.insertedId.toString()), _deletedAt: false });
+            await ticketModel.updateTotalAmount(newTicket.insertedId.toString(), getTotalPriceTicketDetail);
             ticket = await ticketModel.findOneById(newTicket.insertedId.toString());
         }
         return ticket;
     } catch (error) {
         throw error;
     }
-}
+};
+
 
 const getDetails = async (id) => {
     try {
@@ -320,8 +325,7 @@ const updateStatus = async (id, status) => {
 
 const checkOut = async (reqBody) => {
     try {
-        const { ticketId, paymentMethodId, products, promoId } = reqBody;
-        let totalAmount = 0;
+        const { ticketId, paymentMethodId, products = [], promoName } = reqBody;
 
         const ticket = await ticketModel.findOneById(ticketId);
         if (!ticket) {
@@ -334,66 +338,66 @@ const checkOut = async (reqBody) => {
         }
 
         let discountPrice = 0;
-        if (promoId) {
-            const promoCode = await promoModel.findOneById(promoId);
-            if (!promoCode) {
-                throw new ApiError(StatusCodes.NOT_FOUND, "Id mã giảm giá không tồn tại");
+        if (promoName) {
+            const promoCode = await promoModel.find({ name: promoName });
+            if (promoCode.length === 0) {
+                throw new ApiError(StatusCodes.NOT_FOUND, "Mã giảm giá không tồn tại");
             }
-            discountPrice = promoCode.price;
+            discountPrice = promoCode[0].price;
         }
 
-        // Nếu chọn sản phẩm thì kiểm tra id sản phẩm đó có tồn tại không
-        if (products) {
-            // Trích xuất mảng productId từ mảng products
-            const productIds = products.map(product => product.productId);
-            // Kiểm tra xem sản phẩm đó có tồn tại không
-            const objectProductIds = productIds.map(id => new ObjectId(id));
-            const arrayProducts = await productModel.find({ _id: { $in: objectProductIds }, _deletedAt: false, status: "active" });
-            if (arrayProducts.length != productIds.length) {
-                const existingProductIds = arrayProducts.map(product => product._id.toString());
-                const nonExistingProductIds = productIds.filter(id => !existingProductIds.includes(id));
-                throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `Products ID: ${nonExistingProductIds} không tồn tại`);
-            }
-        }
-        // Giới hạn sản phẩm nếu có
-        if (products) {
+        // Kiểm tra sản phẩm nếu có
+        if (products.length > 0) {
             if (products.length > 10) {
                 throw new ApiError(StatusCodes.BAD_REQUEST, "Không được chọn quá 10 sản phẩm");
             }
 
-            const invalidQuantity = products.find(product => product.quantity > 10);
-            if (invalidQuantity) {
+            const invalidProduct = products.find(p => p.quantity > 10);
+            if (invalidProduct) {
                 throw new ApiError(StatusCodes.BAD_REQUEST, "Không được chọn quá 10 cho mỗi sản phẩm");
+            }
+
+            const productIds = products.map(p => new ObjectId(p.productId));
+            const existingProducts = await productModel.find({ _id: { $in: productIds }, _deletedAt: false, status: "active" });
+
+            if (existingProducts.length !== products.length) {
+                const existingIds = existingProducts.map(p => p._id.toString());
+                const nonExistingIds = products.map(p => p.productId).filter(id => !existingIds.includes(id));
+                throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, `Products ID: ${nonExistingIds} không tồn tại`);
             }
         }
 
-        // Nếu người dùng mua trong sự cho phép thì tiếp tục
-        let totalTotalPriceTicketProductDetail = 0;
-        if (products) {
-            // Tạo chi tiết vé (sản phẩm)
-            const ticketProductDetails = await ticketProductDetail.getTicketDetailsWithPriceFromProducts(ticketId, products);
-            await ticketProductDetail.insertMany(ticketProductDetails);
-            totalTotalPriceTicketProductDetail = await ticketProductDetail.getTotalPriceTicketDetails({ ticketId: new ObjectId(ticketId), _deletedAt: false })
-        } else {
-            totalTotalPriceTicketProductDetail = 0;
+        // Tính tổng giá sản phẩm
+        let totalProductAmount = 0;
+        if (products.length > 0) {
+            if (products.length > 0) {
+                await ticketProductDetail.deleteMany({ ticketId: new ObjectId(ticketId) });
+
+                // Tạo lại chi tiết sản phẩm
+                const ticketProductDetails = await ticketProductDetail.getTicketDetailsWithPriceFromProducts(ticketId, products);
+                await ticketProductDetail.insertMany(ticketProductDetails);
+
+                // Tính lại tổng giá trị chi tiết sản phẩm
+                totalProductAmount = await ticketProductDetail.getTotalPriceTicketDetails({ ticketId: new ObjectId(ticketId), _deletedAt: false });
+            }
+
         }
 
-        totalAmount = ticket.totalAmount + totalTotalPriceTicketProductDetail - discountPrice;
+        const totalAmount = ticket.baseAmount + totalProductAmount - discountPrice;
 
-        await ticketModel.updateTotalAmount(ticketId, totalAmount);
-        //Cập nhật paymentMethodId vào trong ticket;
-        await ticketModel.updateOne(ticketId, { paymentMethodId: new ObjectId(paymentMethodId) })
+        // Cập nhật vé
+        await ticketModel.updateTotalAmountAfterProduct(ticketId, totalAmount);
+        await ticketModel.updateOne(ticketId, { paymentMethodId: new ObjectId(paymentMethodId) });
 
-        const getTicket = await ticketModel.findOneById(ticket._id.toString());
+        const updatedTicket = await ticketModel.findOneById(ticketId);
 
-        const url = paymentService.createPaymentUrl(getTicket);
-
-        return url;
+        return paymentService.createPaymentUrl(updatedTicket);
 
     } catch (error) {
         throw error;
     }
-}
+};
+
 
 const deleteHoldsSeats = async (user, ticketId) => {
     try {

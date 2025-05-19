@@ -29,8 +29,9 @@ const TICKET_COLLECTION_SCHEMA = Joi.object({
   staff: Joi.string().allow(null, '').min(5).max(100).trim().strict(),
   customer: Joi.string().allow(null, '').min(5).max(100).trim().strict(),
   totalAmount: Joi.number().min(0).default(0),
+  baseAmount: Joi.number().min(0).default(0),
   discountPrice: Joi.number().min(0).default(0),
-  status: Joi.string().valid('pending', 'paid', 'used', 'cancelled','hold').default('pending'),
+  status: Joi.string().valid('pending', 'paid', 'used', 'cancelled', 'hold').default('pending'),
   createdAt: Joi.date().timestamp("javascript").default(Date.now),
   updatedAt: Joi.date().timestamp("javascript").default(null),
   expireAt: Joi.date().timestamp("javascript"),
@@ -108,6 +109,17 @@ const getDelete = async (id) => {
 }
 
 const updateTotalAmount = async (id, totalAmount) => {
+  try {
+    const ticket = await GET_DB()
+      .collection(TICKET_COLLECTION_NAME)
+      .updateOne({ _id: new ObjectId(id) }, { $set: { totalAmount: totalAmount, baseAmount: totalAmount } });
+    return ticket;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const updateTotalAmountAfterProduct = async (id, totalAmount) => {
   try {
     const ticket = await GET_DB()
       .collection(TICKET_COLLECTION_NAME)
@@ -195,15 +207,15 @@ const getDetails = async (ticketId) => {
 
 const updateOne = async (ticketId, dataToUpdate) => {
   try {
-      const result = await GET_DB()
-          .collection(TICKET_COLLECTION_NAME)
-          .updateOne(
-              { _id: new ObjectId(ticketId) },
-              { $set: dataToUpdate }
-          );
-      return result;
+    const result = await GET_DB()
+      .collection(TICKET_COLLECTION_NAME)
+      .updateOne(
+        { _id: new ObjectId(ticketId) },
+        { $set: dataToUpdate }
+      );
+    return result;
   } catch (error) {
-      throw new Error("Không thể cập nhật ticket: " + error.message);
+    throw new Error("Không thể cập nhật ticket: " + error.message);
   }
 };
 
@@ -217,6 +229,7 @@ export const ticketModel = {
   findOneById,
   getDelete,
   updateTotalAmount,
+  updateTotalAmountAfterProduct,
   updateStatus,
   getDetailAfterPayment,
   getDetails,
