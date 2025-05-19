@@ -344,6 +344,8 @@ const checkOut = async (reqBody) => {
                 throw new ApiError(StatusCodes.NOT_FOUND, "Mã giảm giá không tồn tại");
             }
             discountPrice = promoCode[0].price;
+            // Cập nhật discountPrice vào ticket
+            await ticketModel.updateOne(ticketId, { discountPrice });
         }
 
         // Kiểm tra sản phẩm nếu có
