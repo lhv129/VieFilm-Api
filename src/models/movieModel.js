@@ -135,11 +135,13 @@ const getAllByDate = async (date) => {
                 ...query,
                 releaseDate: { $lte: today },
                 endDate: { $gte: today },
+                status: 'active',
             };
         } else if (date === 'upcoming') {
             query = {
                 ...query,
                 releaseDate: { $gt: today },
+                status: 'active',
             };
         }
 
