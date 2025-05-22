@@ -93,6 +93,19 @@ const getAllByMovie = async (req, res, next) => {
     }
 }
 
+const getAllShowtimeByCinemaHandler = async (req, res, next) => {
+    try {
+        const showtimes = await showtimeService.getAllShowtimeByCinemaGroupedByMovie(req.body);
+        res.status(200).json({
+            status: "success",
+            message: "Lấy danh sách suất chiếu theo ngày và rạp thành công",
+            data: showtimes,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
 export const showtimeController = {
     getAll,
     create,
@@ -100,5 +113,6 @@ export const showtimeController = {
     update,
     getDelete,
     getSeatsByShowtime,
-    getAllByMovie
+    getAllByMovie,
+    getAllShowtimeByCinemaHandler
 };

@@ -23,4 +23,7 @@ Router.route("/get-seats-by-showtime")
 Router.route("/get-all-by-movie")
     .post(showtimeController.getAllByMovie)
 
+Router.route("/get-all-by-date")
+    .post(showtimeController.getAllShowtimeByCinemaHandler);
+
 export const showtimeRouter = Router;

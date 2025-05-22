@@ -232,6 +232,83 @@ const getAllByMovie = async (reqBody) => {
     }
 }
 
+const getAllShowtimeByCinemaGroupedByMovie = async (reqBody) => {
+    try {
+        const { cinemaId, date } = reqBody;
+
+        if (!cinemaId || !date) {
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Thiếu cinemaId hoặc date");
+        }
+
+        const cinema = await cinemaModel.findOneById(cinemaId);
+        if (!cinema) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Rạp phim không tồn tại, vui lòng kiểm tra lại");
+        }
+
+        // 1. Lấy các screen thuộc cinema
+        const screens = await screenModel.find({ cinemaId: new ObjectId(cinemaId), _deletedAt: false });
+        const screenIds = screens.map(screen => screen._id);
+        if (screenIds.length === 0) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Không tìm thấy phòng chiếu nào thuộc rạp này");
+        }
+
+        // 2. Lấy showtimes trong ngày
+        const showtimes = await showtimeModel.find({
+            screenId: { $in: screenIds },
+            date: date,
+            _deletedAt: false
+        });
+
+        if (showtimes.length === 0) {
+            return {
+                status: "success",
+                message: "Không có suất chiếu nào trong ngày",
+                data: []
+            };
+        }
+
+        // 3. Gom suất chiếu theo movieId
+        const movieMap = new Map(); // key: movieId, value: { movieInfo, showtimes[] }
+
+        for (const showtime of showtimes) {
+            const { screen } = await getSeatsByShowtime(showtime._id);
+            const emptySeats = screen.seats.filter(seat => !seat.isBooked).length;
+
+            const movieIdStr = showtime.movieId.toString();
+
+            // Nếu movie chưa tồn tại trong map, fetch và khởi tạo
+            if (!movieMap.has(movieIdStr)) {
+                const movie = await movieModel.findOneById(showtime.movieId);
+                if (!movie) continue;
+
+                movieMap.set(movieIdStr, {
+                    _id: movie._id,
+                    title: movie.title,
+                    poster: movie.poster,
+                    genres: movie.genres,
+                    showtimes: []
+                });
+            }
+
+            movieMap.get(movieIdStr).showtimes.push({
+                _id: showtime._id,
+                screenId: showtime.screenId,
+                startTime: showtime.startTime,
+                endTime: showtime.endTime,
+                date: showtime.date,
+                emptySeats
+            });
+        }
+
+        const result = Array.from(movieMap.values());
+
+        return result;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
 export const showtimeService = {
     getAll,
     create,
@@ -239,5 +316,6 @@ export const showtimeService = {
     update,
     getDelete,
     getSeatsByShowtime,
-    getAllByMovie
+    getAllByMovie,
+    getAllShowtimeByCinemaGroupedByMovie
 };
