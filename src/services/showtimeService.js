@@ -286,6 +286,8 @@ const getAllShowtimeByCinemaGroupedByMovie = async (reqBody) => {
                     title: movie.title,
                     poster: movie.poster,
                     genres: movie.genres,
+                    trailer: movie.trailer,
+                    duration: movie.duration,
                     showtimes: []
                 });
             }
