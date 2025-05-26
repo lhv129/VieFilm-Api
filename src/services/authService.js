@@ -210,6 +210,9 @@ const updateProfile = async (user, reqBody, reqImage) => {
 
         // 6. Lấy lại ra user đó
         const getNewUser = await userModel.findOneById(user._id.toString());
+        //Trả lại roleName
+        const role = await roleModel.findOne({ _id: user.roleId });
+        getNewUser.roleName = role?.name;
         return getNewUser;
 
     } catch (error) {
