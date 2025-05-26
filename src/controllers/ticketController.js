@@ -16,6 +16,19 @@ const getAll = async (req, res, next) => {
     }
 }
 
+const getAllByUser = async (req, res, next) => {
+    try {
+        const tickets = await ticketService.getAll(req.user);
+        res.status(200).json({
+            status: "success",
+            message: "Lấy danh sách vé thành công",
+            data: tickets
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
 const staffCreateTicket = async (req, res, next) => {
     try {
         const user = req.user;
@@ -30,6 +43,8 @@ const staffCreateTicket = async (req, res, next) => {
     }
 }
 
+// còn 1 case chưa hoàn thành đó là:
+// Nếu showtimeId ở rạp A mà nhập cinemaId là rạp B thì chắc vẫn đặt được :3 tại case này mình chưa check
 const create = async (req, res, next) => {
     try {
         const user = req.user;
@@ -59,7 +74,7 @@ const getDetails = async (req, res, next) => {
 
 const updateStatus = async (req, res, next) => {
     try {
-        const ticket = await ticketService.updateStatus(req.params.id, "used")
+        const ticket = await ticketService.updateStatus(req.params.id,req.body,"used")
         return res.status(201).json({
             status: "success",
             message: "Cập trạng thái nhật vé thành công",
@@ -73,6 +88,19 @@ const updateStatus = async (req, res, next) => {
 const checkOut = async (req, res, next) => {
     try {
         const tickets = await ticketService.checkOut(req.body);
+        res.status(201).json({
+            status: "success",
+            message: "Đặt vé thành công",
+            data: tickets
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+const staffCheckOut = async (req, res, next) => {
+    try {
+        const tickets = await ticketService.staffCheckOut(req.body);
         res.status(201).json({
             status: "success",
             message: "Đặt vé thành công",
@@ -104,5 +132,7 @@ export const ticketController = {
     getDetails,
     updateStatus,
     checkOut,
-    deleteHoldsSeats
+    staffCheckOut,
+    deleteHoldsSeats,
+    getAllByUser
 }

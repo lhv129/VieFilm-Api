@@ -18,7 +18,9 @@ Router.route("/")
 
 Router.route("/:id")
   .get(userController.getDetails)
-  .put(userValidation.updateUser, userController.updateUser)
   .delete(userController.getDelete);
+
+Router.route("/update-role")
+  .put(userController.updateRole)
 
 export const userRouter = Router;

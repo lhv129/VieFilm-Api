@@ -3,8 +3,6 @@ import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from "../utils/validators";
 import { GET_DB } from "../config/mongodb";
 import { ObjectId } from "mongodb";
 import { roleModel } from "../models/roleModel";
-import ApiError from "../utils/ApiError";
-import { StatusCodes } from "http-status-codes";
 
 const USER_COLLECTION_NAME = "users";
 const USER_COLLECTION_SCHEMA = Joi.object({
@@ -148,41 +146,8 @@ const getDetails = async (userId) => {
   }
 };
 
-const updatedUser = async (userId, newUser) => {
+const updatedUser = async (userId,newUser) => {
   try {
-    // Kiểm tra xem username và email mới có bị trùng với bản ghi khác không, ngoại trừ bản ghi đang cập nhật
-    if (newUser) {
-      const existingUsername = await GET_DB()
-        .collection(USER_COLLECTION_NAME)
-        .findOne({
-          username: newUser.username,
-          _id: { $ne: new ObjectId(userId) },
-        });
-      const existingUserEmail = await GET_DB()
-        .collection(USER_COLLECTION_NAME)
-        .findOne({
-          email: newUser.email,
-          _id: { $ne: new ObjectId(userId) },
-        });
-
-      if (existingUsername && existingUserEmail) {
-        throw new ApiError(
-          StatusCodes.UNPROCESSABLE_ENTITY,
-          "Username and Email already exists"
-        );
-      } else if (existingUsername) {
-        throw new ApiError(
-          StatusCodes.UNPROCESSABLE_ENTITY,
-          "Username already exists!"
-        );
-      } else if (existingUserEmail) {
-        throw new ApiError(
-          StatusCodes.UNPROCESSABLE_ENTITY,
-          "Email already exists!"
-        );
-      }
-    }
-
     // Cập nhật bản ghi
     const updatedUser = await GET_DB()
       .collection(USER_COLLECTION_NAME)

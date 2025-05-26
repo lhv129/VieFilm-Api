@@ -44,13 +44,9 @@ const getDetails = async (req, res, next) => {
   }
 };
 
-const updateUser = async (req, res, next) => {
+const updateRole = async (req, res, next) => {
   try {
-    const userId = req.params.id;
-    const dataUpdate = req.body;
-    const reqImage = req.file;
-
-    const user = await userService.updateUser(userId, dataUpdate, reqImage);
+    const user = await userService.updateUser(req.body);
     res.status(200).json({
       status: "success",
       message: "Cập nhật người dùng thành công",
@@ -79,6 +75,6 @@ export const userController = {
   getAll,
   create,
   getDetails,
-  updateUser,
+  updateRole,
   getDelete,
 };

@@ -25,6 +25,10 @@ const TICKET_COLLECTION_SCHEMA = Joi.object({
     .allow(null, '')
     .pattern(OBJECT_ID_RULE)
     .message(OBJECT_ID_RULE_MESSAGE),
+  cinemaId: Joi.string()
+    .required()
+    .pattern(OBJECT_ID_RULE)
+    .message(OBJECT_ID_RULE_MESSAGE),
   code: Joi.string().required(),
   staff: Joi.string().allow(null, '').min(5).max(100).trim().strict(),
   customer: Joi.string().allow(null, '').min(5).max(100).trim().strict(),
@@ -40,12 +44,58 @@ const TICKET_COLLECTION_SCHEMA = Joi.object({
 
 const getAll = async () => {
   try {
-    const tickets = await GET_DB().collection(TICKET_COLLECTION_NAME).find({ _deletedAt: false }).toArray();
+    const tickets = await GET_DB().collection(TICKET_COLLECTION_NAME)
+      .find({ _deletedAt: false })
+      .sort({ createdAt: -1 })
+      .toArray();
     return tickets;
   } catch (error) {
     throw new Error(error);
   }
 }
+
+const getAllByUser = async (userId) => {
+  try {
+    const tickets = await GET_DB()
+      .collection(TICKET_COLLECTION_NAME)
+      .find({ userId: userId, _deletedAt: false })
+      .sort({ createdAt: -1 })
+      .project({
+        paymentMethodId: 0,
+        updatedAt: 0,
+        _deletedAt: 0,
+        baseAmount: 0,
+        expireAt: 0
+      })
+      .toArray();
+    return tickets;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+const validateBeforeStaffCreate = async (data) => {
+  const validatedData = await TICKET_COLLECTION_SCHEMA.validateAsync(data, {
+    abortEarly: false,
+  });
+  return {
+    ...validatedData,
+    showtimeId: new ObjectId(validatedData.showtimeId),
+    cinemaId: new ObjectId(validatedData.cinemaId),
+  }
+};
+
+const staffCreate = async (data) => {
+  try {
+    const validData = await validateBeforeStaffCreate(data);
+    const ticket = await GET_DB()
+      .collection(TICKET_COLLECTION_NAME)
+      .insertOne(validData);
+    return ticket;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 
 const validateBeforeCreate = async (data) => {
   const validatedData = await TICKET_COLLECTION_SCHEMA.validateAsync(data, {
@@ -55,6 +105,7 @@ const validateBeforeCreate = async (data) => {
     ...validatedData,
     userId: new ObjectId(validatedData.userId),
     showtimeId: new ObjectId(validatedData.showtimeId),
+    cinemaId: new ObjectId(validatedData.cinemaId),
   }
 };
 
@@ -134,7 +185,7 @@ const updateStatus = async (id, status) => {
   try {
     const ticket = await GET_DB()
       .collection(TICKET_COLLECTION_NAME)
-      .updateOne({ _id: new ObjectId(id) }, { $set: { status: status } });
+      .updateOne({ _id: new ObjectId(id) }, { $set: { status: status, updatedAt: Date.now() } });
     return ticket;
   } catch (error) {
     throw error;
@@ -281,7 +332,9 @@ export const ticketModel = {
   TICKET_COLLECTION_NAME,
   TICKET_COLLECTION_SCHEMA,
   getAll,
+  getAllByUser,
   create,
+  staffCreate,
   findOne,
   findOneById,
   getDelete,

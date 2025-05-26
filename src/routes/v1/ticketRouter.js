@@ -15,18 +15,23 @@ Router.use(upload.single('images'));
 Router.route('/')
     .get(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), ticketController.getAll)
 
+Router.route('/get-all-by-user')
+    .get(authenticateToken, ticketController.getAllByUser);
+
 Router.route('/hold/seats')
     .post(authenticateToken, ticketValidation.create, ticketController.create)
     .delete(authenticateToken, ticketController.deleteHoldsSeats)
 
 Router.route('/checkout')
-    .post(authenticateToken,ticketController.checkOut);
+    .post(authenticateToken, ticketController.checkOut);
 
 Router.route('/vnpay-return').get(paymentController.handlePaymentReturn);
 
 //Router nhân viên tạo vé tại quầy
 Router.route('/staff/create')
     .post(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), ticketValidation.staffCreateTicket, ticketController.staffCreateTicket)
+Router.route('/staff/checkout')
+    .post(authenticateToken, ticketController.staffCheckOut);
 
 Router.route('/:id')
     .get(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), ticketController.getDetails)

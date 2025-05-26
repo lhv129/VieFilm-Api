@@ -4,6 +4,7 @@ import ApiError from "../utils/ApiError";
 import { StatusCodes } from "http-status-codes";
 import { convertDateToTimestamp } from "../utils/convertDate";
 import { ObjectId } from "mongodb";
+import { cinemaModel } from "../models/cinemaModel";
 const { uploadImage, deleteImage } = require("../config/cloudinary");
 
 const getAll = async () => {
@@ -43,11 +44,11 @@ const create = async (reqBody) => {
       email: newUser.email,
     });
     if (existingUsername && existingUserEmail) {
-      throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY,"Tên và email đã tồn tại, vui lòng nhập lại");
+      throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, "Tên và email đã tồn tại, vui lòng nhập lại");
     } else if (existingUsername) {
-      throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY,"Tên đã tồn tại, vui lòng nhập tên khác");
+      throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, "Tên đã tồn tại, vui lòng nhập tên khác");
     } else if (existingUserEmail) {
-      throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY,"Email đã tồn tại, vui lòng nhập tên khác");
+      throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, "Email đã tồn tại, vui lòng nhập tên khác");
     }
 
     // Nếu chưa tồn tại thì thêm mới
@@ -77,40 +78,31 @@ const getDetails = async (userId) => {
   }
 };
 
-const updateUser = async (userId, dataUpdate, reqImage) => {
+const updateUser = async (reqBody) => {
   try {
+
+    const { userId, roleId, cinemaId } = reqBody;
+
     //Kiểm tra user đó có tồn tại không
     const user = await userModel.findOneById(userId);
     if (!user) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Người dùng không tồn tại");
     }
     //Kiểm tra roleId đó có tồn tại hay không
-    const role = await roleModel.findOneById(dataUpdate.roleId);
+    const role = await roleModel.findOneById(roleId);
     if (!role) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Chức vụ không tồn tại");
     }
-
-    let imageUrl = user.images;
-    let fileImage = user.fileImage;
-    if (reqImage) {
-      const deleteImageOld = await deleteImage("users", fileImage);
-
-      const uploadResult = await uploadImage(reqImage, "users", 230, 230);
-      imageUrl = uploadResult.url;
-      fileImage = uploadResult.fileImage;
+    const cinema = await cinemaModel.findOneById(cinemaId);
+    if (!cinema) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Rạp không tồn tại");
     }
-    // Chuyển đổi dd/mm/yyyy sang timestamp
-    const convertDate = convertDateToTimestamp(dataUpdate.birthday);
-    const roleId = new ObjectId(dataUpdate.roleId);
-    dataUpdate.roleId = roleId;
-    dataUpdate.birthday = convertDate;
 
     const newUser = {
-      ...dataUpdate,
-      images: imageUrl,
-      fileImage: fileImage,
-      updatedAt: Date.now(),
-    };
+      roleId: new ObjectId(roleId),
+      cinemaId: new ObjectId(cinemaId),
+      updatedAt: Date.now()
+    }
     await userModel.updatedUser(userId, newUser);
 
     const getNewUser = await userModel.getDetails(userId.toString());
