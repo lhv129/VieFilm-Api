@@ -208,6 +208,10 @@ const updateProfile = async (user, reqBody, reqImage) => {
         }
         await userModel.updateOne(user._id.toString(), newUser);
 
+        // 6. Lấy lại ra user đó
+        const getNewUser = await userModel.findOneById(user._id.toString());
+        return getNewUser;
+
     } catch (error) {
         throw error;
     }
