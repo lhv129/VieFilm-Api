@@ -78,7 +78,7 @@ const findOneById = async (id) => {
       .collection(USER_COLLECTION_NAME)
       .findOne(
         { _id: new ObjectId(id) },
-        { projection: { _id: 1, username: 1, username: 1, fullname: 1, email: 1, roleId: 1, images: 1, fileImage: 1, phone: 1, address: 1, birthday: 1, status: 1, email_verified_at: 1,cinemaId: 1 } }
+        { projection: { _id: 1, username: 1, fullname: 1, email: 1, roleId: 1, images: 1, fileImage: 1, phone: 1, address: 1, birthday: 1, status: 1, email_verified_at: 1, cinemaId: 1 } }
       );
     return result;
   } catch (error) {
@@ -220,7 +220,7 @@ const updateOne = async (id, data) => {
   try {
     const result = await GET_DB()
       .collection(USER_COLLECTION_NAME)
-      .updateOne({ _id: new ObjectId(id) }, { $set: { data } });
+      .updateOne({ _id: new ObjectId(id) }, { $set: data });
     return result;
   } catch (error) {
     throw new Error(error);
@@ -238,5 +238,5 @@ export const userModel = {
   updatedUser,
   getDelete,
   updateRefreshToken,
-  updateOne
+  updateOne,
 };

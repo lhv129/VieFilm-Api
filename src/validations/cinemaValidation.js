@@ -14,7 +14,9 @@ const createCinema = async (req, res, next) => {
         name: Joi.string().required().min(3).max(50).trim().strict().messages({
             "string.empty": "Tên rạp phim không được để trống",
             "string.required": "Vui lòng nhập tên rạp phim",
-            "string.trim": "Không được để khoảng trắng ở đầu hoặc cuối"
+            "string.trim": "Không được để khoảng trắng ở đầu hoặc cuối",
+            "string.min": "Tên rạp tối thiểu 3 kí tự",
+            "string.max": "Tên rạp quá dài, vui lòng chọn tên khác",
         }),
         address: Joi.string().required().min(3).max(100).trim().strict().messages({
             "string.empty": "Tên tỉnh thành không được để trống",
