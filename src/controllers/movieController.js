@@ -68,7 +68,7 @@ const getDelete = async (req, res, next) => {
 
 const updateStatus = async (req, res, next) => {
     try {
-        const movie = await movieService.updateStatus(req.params.slug);
+        const movie = await movieService.updateStatus(req.body);
         return res.status(200).json({
             status: "success",
             message: "Cập nhật trạng thái phim thành công",

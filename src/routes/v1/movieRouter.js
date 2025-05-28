@@ -23,8 +23,8 @@ Router.route("/:slug")
     .put(authenticateToken, roleMiddleware.checkRole('Admin'), movieValidation.createMovie, movieController.update)
     .delete(authenticateToken, roleMiddleware.checkRole('Admin'), movieController.getDelete)
 
-Router.route("/update-status-movie/:slug")
-    .put(authenticateToken, roleMiddleware.checkRole('Admin'), movieController.updateStatus)
+Router.route("/update-status-movie")
+    .post(authenticateToken, roleMiddleware.checkRole('Admin'), movieController.updateStatus)
 
 Router.route("/get-one-by-id/:id")
     .get(movieController.getOneById)

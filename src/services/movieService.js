@@ -4,6 +4,7 @@ import { StatusCodes } from "http-status-codes";
 import { uploadImage, deleteImage } from "../config/cloudinary";
 import { convertDateToTimestamp } from "../utils/convertDate";
 import { slugify } from "../utils/formatters";
+import { ObjectId } from "mongodb";
 
 const getAll = async (req, res, next) => {
     try {
@@ -148,21 +149,28 @@ const getDelete = async (slug) => {
     }
 };
 
-const updateStatus = async (slug) => {
+const updateStatus = async (reqBody) => {
     try {
-        const movie = await movieModel.findOne({ slug: slug });
+        const { movieId, status } = reqBody;
+        const movie = await movieModel.findOne({ _id: new ObjectId(movieId) });
         if (!movie) {
             throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, "Phim không tồn tại");
         }
-        const newMovie = {
-            ...movie,
-            status: "active"
+        if (status === 'active' || status === 'inactive') {
+            const newMovie = {
+                ...movie,
+                status: status,
+                updatedAt: Date.now()
+            }
+            await movieModel.update(movie._id, newMovie);
+
+            const getMovie = await movieModel.findOneById(movie._id);
+
+            return getMovie;
+        }else{
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Trạng thái của phim phải là active hoặc inactive");
         }
-        await movieModel.update(movie._id, newMovie);
 
-        const getMovie = await movieModel.findOneById(movie._id);
-
-        return getMovie;
     } catch (error) {
         throw error;
     }
