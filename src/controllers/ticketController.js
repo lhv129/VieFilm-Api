@@ -5,7 +5,7 @@ import { ticketService } from "../services/ticketService";
 
 const getAll = async (req, res, next) => {
     try {
-        const tickets = await ticketService.getAll();
+        const tickets = await ticketService.getAll(req.body);
         res.status(200).json({
             status: "success",
             message: "Lấy danh sách vé thành công",

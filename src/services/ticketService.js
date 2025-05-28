@@ -14,9 +14,10 @@ import { promoModel } from "../models/promoModel";
 import { cinemaModel } from "../models/cinemaModel";
 
 
-const getAll = async (req, res, next) => {
+const getAll = async (reqBody) => {
     try {
-        const tickets = await ticketModel.getAll();
+        const {code,cinemaId} = reqBody;
+        const tickets = await ticketModel.getAll(reqBody);
         return tickets
     } catch (error) {
         throw error;

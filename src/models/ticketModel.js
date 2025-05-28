@@ -42,17 +42,103 @@ const TICKET_COLLECTION_SCHEMA = Joi.object({
   _deletedAt: Joi.boolean().default(false),
 });
 
-const getAll = async () => {
+const getAll = async (reqBody) => {
   try {
+    const { code, cinemaId, movieId, date, status } = reqBody;
+
+    const pipeline = [];
+
+    // Điều kiện lọc từ tickets
+    const matchStage = {
+      _deletedAt: false,
+    };
+    if (cinemaId) matchStage.cinemaId = new ObjectId(cinemaId);
+    if (status) matchStage.status = Array.isArray(status) ? { $in: status } : status;
+    if (code) matchStage.code = code;
+
+    pipeline.push({ $match: matchStage });
+
+    // Join showtimes
+    pipeline.push({
+      $lookup: {
+        from: "showtimes",
+        localField: "showtimeId",
+        foreignField: "_id",
+        as: "showtime"
+      }
+    });
+    pipeline.push({ $unwind: "$showtime" });
+
+    // Join payment_methods
+    pipeline.push({
+      $lookup: {
+        from: "payment_methods",
+        localField: "paymentMethodId",
+        foreignField: "_id",
+        as: "payment"
+      }
+    });
+    pipeline.push({ $unwind: "$payment" });
+
+    // Join movies
+    pipeline.push({
+      $lookup: {
+        from: "movies",
+        localField: "showtime.movieId",
+        foreignField: "_id",
+        as: "movie"
+      }
+    });
+    pipeline.push({ $unwind: "$movie" });
+
+    // Lọc theo movieId và date (định dạng dd/mm/yyyy)
+    const showtimeMatch = {};
+    if (movieId) showtimeMatch["showtime.movieId"] = new ObjectId(movieId);
+    if (date) showtimeMatch["showtime.date"] = date;
+
+    if (Object.keys(showtimeMatch).length > 0) {
+      pipeline.push({ $match: showtimeMatch });
+    }
+
+    pipeline.push({ $sort: { createdAt: -1 } });
+
+    pipeline.push({
+      $project: {
+        // Các field bạn muốn giữ lại từ ticket
+        _id: 1,
+        code: 1,
+        cinemaId: 1,
+        showtimeId: 1,
+        paymentMethodId: 1,
+        totalAmount: 1,
+        discountPrice: 1,
+        customer: 1,
+        createdAt: 1,
+        status: 1,
+        seats: 1,
+        // Trường từ showtime
+        showtime: {
+          startTime: "$showtime.startTime",
+          date: "$showtime.date"
+        },
+        // Chỉ lấy name từ payment
+        payment: "$payment.name",
+        movie: "$movie.title"
+      }
+    });
+
+
     const tickets = await GET_DB().collection(TICKET_COLLECTION_NAME)
-      .find({ _deletedAt: false })
-      .sort({ createdAt: -1 })
+      .aggregate(pipeline)
       .toArray();
+
     return tickets;
   } catch (error) {
     throw new Error(error);
   }
-}
+};
+
+
 
 const getOneByUser = async (userId, ticketId) => {
   try {

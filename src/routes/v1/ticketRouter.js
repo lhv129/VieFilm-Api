@@ -12,8 +12,8 @@ Router.use(upload.single('images'));
 
 
 
-Router.route('/')
-    .get(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), ticketController.getAll)
+Router.route('/get-all')
+    .post(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), ticketController.getAll)
 
 Router.route('/get-all-by-user')
     .post(authenticateToken, ticketController.getAllByUser);
