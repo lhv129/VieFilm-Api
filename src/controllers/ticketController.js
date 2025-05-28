@@ -75,7 +75,7 @@ const create = async (req, res, next) => {
 
 const getDetails = async (req, res, next) => {
     try {
-        const ticket = await ticketService.getDetails(req.params.id)
+        const ticket = await ticketService.getDetails(req.body)
         return res.status(201).json({
             status: "success",
             message: "Lấy thông tin vé thành công",
@@ -88,7 +88,7 @@ const getDetails = async (req, res, next) => {
 
 const updateStatus = async (req, res, next) => {
     try {
-        const ticket = await ticketService.updateStatus(req.params.id, req.body, "used")
+        const ticket = await ticketService.updateStatus(req.body, "used")
         return res.status(201).json({
             status: "success",
             message: "Cập trạng thái nhật vé thành công",

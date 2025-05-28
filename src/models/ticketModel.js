@@ -54,7 +54,7 @@ const getAll = async (reqBody) => {
     };
     if (cinemaId) matchStage.cinemaId = new ObjectId(cinemaId);
     if (status) matchStage.status = Array.isArray(status) ? { $in: status } : status;
-    if (code) matchStage.code = code;
+    if (code) matchStage.code = { $regex: code, $options: 'i' };
 
     pipeline.push({ $match: matchStage });
 
@@ -137,8 +137,6 @@ const getAll = async (reqBody) => {
     throw new Error(error);
   }
 };
-
-
 
 const getOneByUser = async (userId, ticketId) => {
   try {
@@ -669,33 +667,180 @@ const getDetailAfterPayment = async (ticketId) => {
   }
 };
 
-const getDetails = async (ticketId) => {
+const getDetails = async (ticketId, cinemaId) => {
   try {
-    const ticket = await findOneById(ticketId);
-    if (!ticket) {
-      return null;
-    }
-    const ticketDetails = await ticketDetailModel.find({ ticketId: new ObjectId(ticketId) });
+    const tickets = await GET_DB()
+      .collection(TICKET_COLLECTION_NAME)
+      .aggregate([
+        {
+          $match: {
+            _id: new ObjectId(ticketId),
+            cinemaId: new ObjectId(cinemaId),
+            _deletedAt: false,
+            status: { $in: ["paid", "used"] }
+          }
+        },
+        {
+          $lookup: {
+            from: "payment_methods",
+            localField: "paymentMethodId",
+            foreignField: "_id",
+            as: "payment"
+          }
+        },
+        {
+          $unwind: "$payment"
+        },
+        {
+          $lookup: {
+            from: "cinemas",
+            localField: "cinemaId",
+            foreignField: "_id",
+            as: "cinema"
+          }
+        },
+        {
+          $unwind: "$cinema"
+        },
+        {
+          $lookup: {
+            from: "showtimes",
+            localField: "showtimeId",
+            foreignField: "_id",
+            as: "showtime"
+          }
+        },
+        {
+          $unwind: "$showtime"
+        },
+        {
+          $lookup: {
+            from: "screens",
+            localField: "showtime.screenId",
+            foreignField: "_id",
+            as: "screen"
+          }
+        },
+        {
+          $unwind: "$screen"
+        },
+        {
+          $lookup: {
+            from: "movies",
+            localField: "showtime.movieId",
+            foreignField: "_id",
+            as: "movie"
+          }
+        },
+        {
+          $unwind: "$movie"
+        },
+        // Thêm lookup lấy ticket_details
+        {
+          $lookup: {
+            from: "ticket_details",
+            let: { ticketId: "$_id" },
+            pipeline: [
+              { $match: { $expr: { $eq: ["$ticketId", "$$ticketId"] } } },
+              {
+                // lookup thêm seats để lấy seatCode theo seatId
+                $lookup: {
+                  from: "seats",
+                  localField: "seatId",
+                  foreignField: "_id",
+                  as: "seat"
+                }
+              },
+              {
+                // seat luôn là mảng, unwind để lấy 1 phần tử
+                $unwind: {
+                  path: "$seat",
+                  preserveNullAndEmptyArrays: true
+                }
+              },
+              {
+                // Chọn trường cần thiết, thêm seatCode từ seat
+                $project: {
+                  price: 1,
+                  seatCode: "$seat.seatCode"
+                }
+              }
+            ],
+            as: "seats"
+          }
+        },
+        // Thêm lookup lấy ticket_product_details
+        {
+          $lookup: {
+            from: "ticket_product_details",
+            let: { ticketId: "$_id" },
+            pipeline: [
+              { $match: { $expr: { $eq: ["$ticketId", "$$ticketId"] } } },
+              {
+                // lookup thêm seats để lấy seatCode theo seatId
+                $lookup: {
+                  from: "products",
+                  localField: "productId",
+                  foreignField: "_id",
+                  as: "product"
+                }
+              },
+              {
+                // seat luôn là mảng, unwind để lấy 1 phần tử
+                $unwind: {
+                  path: "$product",
+                  preserveNullAndEmptyArrays: true
+                }
+              },
+              {
+                // Chọn trường cần thiết, thêm seatCode từ seat
+                $project: {
+                  quantity: 1,
+                  price: 1,
+                  name: "$product.name"
+                }
+              }
+            ],
+            as: "products"
+          }
+        },
+        // Sắp xếp giảm dần theo ngày tạo
+        {
+          $sort: { createdAt: -1 }
+        },
+        {
+          $addFields: {
+            details: {
+              seats: "$seats",
+              products: "$products"
+            }
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            customer: 1,
+            code: 1,
+            totalAmount: 1,
+            discountPrice: 1,
+            createdAt: 1,
+            status: 1,
+            "payment.name": 1,
+            "cinema.name": 1,
+            "cinema.address": 1,
+            "showtime.startTime": 1,
+            "showtime.date": 1,
+            "screen.name": 1,
+            "movie.title": 1,
+            details: 1
+          }
+        }
+      ])
+      .toArray();
 
-    const ticketProducts = await ticketProductDetail.find({ ticketId: new ObjectId(ticketId) });
-
-    const showtime = await showtimeModel.find({ _id: ticket.showtimeId });
-
-    return {
-      _id: ticket._id,
-      customer: ticket.customer,
-      code: ticket.code,
-      totalAmount: ticket.totalAmount,
-      status: ticket.status,
-      details: {
-        ticket_details: ticketDetails,
-        product_details: ticketProducts,
-      },
-      showtime: showtime,
-    };
+    return tickets;
   } catch (error) {
-    console.error("Lỗi khi lấy chi tiết vé:", error);
-    throw error;
+    throw new Error(error);
   }
 };
 

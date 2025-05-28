@@ -36,10 +36,10 @@ Router.route('/staff/create')
 Router.route('/staff/checkout')
     .post(authenticateToken, ticketController.staffCheckOut);
 
-Router.route('/:id')
-    .get(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), ticketController.getDetails)
+Router.route('/get-one')
+    .post(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), ticketController.getDetails)
 
-Router.route('/update/:id/status')
+Router.route('/update/status')
     .put(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), ticketController.updateStatus)
 
 

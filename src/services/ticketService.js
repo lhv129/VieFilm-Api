@@ -16,7 +16,6 @@ import { cinemaModel } from "../models/cinemaModel";
 
 const getAll = async (reqBody) => {
     try {
-        const {code,cinemaId} = reqBody;
         const tickets = await ticketModel.getAll(reqBody);
         return tickets
     } catch (error) {
@@ -362,28 +361,39 @@ const create = async (user, reqBody) => {
 };
 
 
-const getDetails = async (id) => {
+const getDetails = async (reqBody) => {
     try {
-        const ticket = await ticketModel.getDetails(id);
-        return ticket;
+        const { ticketId, cinemaId } = reqBody;
+
+        const ticket = await ticketModel.findOneById(ticketId);
+        if (!ticket) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Vé không tồn tại, vui lòng kiểm tra lại");
+        }
+        const cinema = await cinemaModel.findOneById(cinemaId);
+        if (!cinema) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Vé không tồn tại, vui lòng kiểm tra lại");
+        }
+
+        const getTicket = await ticketModel.getDetails(ticketId, cinemaId);
+        return getTicket;
     } catch (error) {
         throw error;
     }
 }
 
-const updateStatus = async (id, reqBody, status) => {
+const updateStatus = async (reqBody, status) => {
     try {
-        const { cinemaId } = reqBody;
+        const { ticketId,cinemaId } = reqBody;
 
-        const ticket = await ticketModel.findOneById(id);
+        const ticket = await ticketModel.findOneById(ticketId);
         if (!ticket) throw new ApiError(StatusCodes.NOT_FOUND, "Không tìm thấy vé");
 
         const cinema = await cinemaModel.findOneById(ticket.cinemaId.toString());
         if (cinemaId != ticket.cinemaId.toString()) {
-            throw new ApiError(StatusCodes.BAD_GATEWAY, `Vui lòng đến rạp ${cinema.name} để nhận vé xem phim`);
+            throw new ApiError(StatusCodes.BAD_REQUEST, `Vui lòng đến rạp ${cinema.name} để nhận vé xem phim`);
         }
 
-        if(ticket.status === "used"){
+        if (ticket.status === "used") {
             throw new ApiError(StatusCodes.BAD_REQUEST, "Vé đã sử dụng rồi, vui lòng kiểm tra lại")
         }
 
@@ -408,8 +418,8 @@ const updateStatus = async (id, reqBody, status) => {
         }
 
         // ✅ Cập nhật status nếu hợp lệ
-        await ticketModel.updateStatus(id, status);
-        const getNewTicket = await ticketModel.findOneById(id);
+        await ticketModel.updateStatus(ticketId, status);
+        const getNewTicket = await ticketModel.findOneById(ticketId);
 
         return getNewTicket;
     } catch (error) {
