@@ -18,7 +18,7 @@ const getAll = async (req, res, next) => {
 
 const getOneByUser = async (req, res, next) => {
     try {
-        const tickets = await ticketService.getOneByUser(req.user,req.body);
+        const tickets = await ticketService.getOneByUser(req.user, req.body);
         res.status(200).json({
             status: "success",
             message: "Lấy chi tiết vé thành công",
@@ -31,12 +31,13 @@ const getOneByUser = async (req, res, next) => {
 
 const getAllByUser = async (req, res, next) => {
     try {
-        const tickets = await ticketService.getAllByUser(req.user,req.body);
+        const tickets = await ticketService.getAllByUser(req.user, req.body);
         res.status(200).json({
             status: "success",
             message: "Lấy danh sách vé thành công",
-            data: tickets
-        })
+            data: tickets.data,
+            pagination: tickets.pagination
+        });
     } catch (error) {
         next(error)
     }
@@ -87,7 +88,7 @@ const getDetails = async (req, res, next) => {
 
 const updateStatus = async (req, res, next) => {
     try {
-        const ticket = await ticketService.updateStatus(req.params.id,req.body,"used")
+        const ticket = await ticketService.updateStatus(req.params.id, req.body, "used")
         return res.status(201).json({
             status: "success",
             message: "Cập trạng thái nhật vé thành công",

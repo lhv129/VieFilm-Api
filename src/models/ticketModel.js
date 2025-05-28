@@ -233,20 +233,23 @@ const getOneByUser = async (userId, ticketId) => {
 
 const getAllByUser = async (userId, page, limit, dateFilter) => {
   try {
-
     const skip = (page - 1) * limit;
+
+    const matchStage = {
+      userId: userId,
+      _deletedAt: false,
+      status: { $in: ["paid", "used"] },
+      ...dateFilter
+    };
+
+    const totalCount = await GET_DB()
+      .collection(TICKET_COLLECTION_NAME)
+      .countDocuments(matchStage);
 
     const tickets = await GET_DB()
       .collection(TICKET_COLLECTION_NAME)
       .aggregate([
-        {
-          $match: {
-            userId: userId,
-            _deletedAt: false,
-            status: { $in: ["paid", "used"] },
-            ...dateFilter
-          }
-        },
+        { $match: matchStage },
         {
           $lookup: {
             from: "cinemas",
@@ -256,7 +259,10 @@ const getAllByUser = async (userId, page, limit, dateFilter) => {
           }
         },
         {
-          $unwind: "$cinema"
+          $unwind: {
+            path: "$cinema",
+            preserveNullAndEmptyArrays: true
+          }
         },
         {
           $lookup: {
@@ -267,7 +273,10 @@ const getAllByUser = async (userId, page, limit, dateFilter) => {
           }
         },
         {
-          $unwind: "$showtime"
+          $unwind: {
+            path: "$showtime",
+            preserveNullAndEmptyArrays: true
+          }
         },
         {
           $lookup: {
@@ -278,7 +287,10 @@ const getAllByUser = async (userId, page, limit, dateFilter) => {
           }
         },
         {
-          $unwind: "$screen"
+          $unwind: {
+            path: "$screen",
+            preserveNullAndEmptyArrays: true
+          }
         },
         {
           $lookup: {
@@ -289,9 +301,11 @@ const getAllByUser = async (userId, page, limit, dateFilter) => {
           }
         },
         {
-          $unwind: "$movie"
+          $unwind: {
+            path: "$movie",
+            preserveNullAndEmptyArrays: true
+          }
         },
-        // Thêm lookup lấy ticket_details
         {
           $lookup: {
             from: "ticket_details",
@@ -299,7 +313,6 @@ const getAllByUser = async (userId, page, limit, dateFilter) => {
             pipeline: [
               { $match: { $expr: { $eq: ["$ticketId", "$$ticketId"] } } },
               {
-                // lookup thêm seats để lấy seatCode theo seatId
                 $lookup: {
                   from: "seats",
                   localField: "seatId",
@@ -308,14 +321,12 @@ const getAllByUser = async (userId, page, limit, dateFilter) => {
                 }
               },
               {
-                // seat luôn là mảng, unwind để lấy 1 phần tử
                 $unwind: {
                   path: "$seat",
                   preserveNullAndEmptyArrays: true
                 }
               },
               {
-                // Chọn trường cần thiết, thêm seatCode từ seat
                 $project: {
                   _id: 1,
                   seatId: 1,
@@ -327,7 +338,6 @@ const getAllByUser = async (userId, page, limit, dateFilter) => {
             as: "seats"
           }
         },
-        // Sắp xếp trước, rồi phân trang
         { $sort: { createdAt: -1 } },
         { $skip: skip },
         { $limit: limit },
@@ -349,12 +359,19 @@ const getAllByUser = async (userId, page, limit, dateFilter) => {
       ])
       .toArray();
 
-    return tickets;
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return {
+      data: tickets,
+      pagination: {
+        page,
+        totalPages
+      }
+    };
   } catch (error) {
-    throw new Error(error);
+    throw error;
   }
 };
-
 
 
 const validateBeforeStaffCreate = async (data) => {
