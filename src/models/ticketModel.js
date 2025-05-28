@@ -54,25 +54,304 @@ const getAll = async () => {
   }
 }
 
-const getAllByUser = async (userId) => {
+const getOneByUser = async (userId, ticketId) => {
   try {
     const tickets = await GET_DB()
       .collection(TICKET_COLLECTION_NAME)
-      .find({ userId: userId, _deletedAt: false })
-      .sort({ createdAt: -1 })
-      .project({
-        paymentMethodId: 0,
-        updatedAt: 0,
-        _deletedAt: 0,
-        baseAmount: 0,
-        expireAt: 0
-      })
+      .aggregate([
+        {
+          $match: {
+            _id: new ObjectId(ticketId),
+            userId: userId,
+            _deletedAt: false,
+            status: "paid"
+          }
+        },
+        {
+          $lookup: {
+            from: "payment_methods",
+            localField: "paymentMethodId",
+            foreignField: "_id",
+            as: "payment"
+          }
+        },
+        {
+          $unwind: "$payment"
+        },
+        {
+          $lookup: {
+            from: "cinemas",
+            localField: "cinemaId",
+            foreignField: "_id",
+            as: "cinema"
+          }
+        },
+        {
+          $unwind: "$cinema"
+        },
+        {
+          $lookup: {
+            from: "showtimes",
+            localField: "showtimeId",
+            foreignField: "_id",
+            as: "showtime"
+          }
+        },
+        {
+          $unwind: "$showtime"
+        },
+        {
+          $lookup: {
+            from: "screens",
+            localField: "showtime.screenId",
+            foreignField: "_id",
+            as: "screen"
+          }
+        },
+        {
+          $unwind: "$screen"
+        },
+        {
+          $lookup: {
+            from: "movies",
+            localField: "showtime.movieId",
+            foreignField: "_id",
+            as: "movie"
+          }
+        },
+        {
+          $unwind: "$movie"
+        },
+        // Thêm lookup lấy ticket_details
+        {
+          $lookup: {
+            from: "ticket_details",
+            let: { ticketId: "$_id" },
+            pipeline: [
+              { $match: { $expr: { $eq: ["$ticketId", "$$ticketId"] } } },
+              {
+                // lookup thêm seats để lấy seatCode theo seatId
+                $lookup: {
+                  from: "seats",
+                  localField: "seatId",
+                  foreignField: "_id",
+                  as: "seat"
+                }
+              },
+              {
+                // seat luôn là mảng, unwind để lấy 1 phần tử
+                $unwind: {
+                  path: "$seat",
+                  preserveNullAndEmptyArrays: true
+                }
+              },
+              {
+                // Chọn trường cần thiết, thêm seatCode từ seat
+                $project: {
+                  price: 1,
+                  seatCode: "$seat.seatCode"
+                }
+              }
+            ],
+            as: "seats"
+          }
+        },
+        // Thêm lookup lấy ticket_product_details
+        {
+          $lookup: {
+            from: "ticket_product_details",
+            let: { ticketId: "$_id" },
+            pipeline: [
+              { $match: { $expr: { $eq: ["$ticketId", "$$ticketId"] } } },
+              {
+                // lookup thêm seats để lấy seatCode theo seatId
+                $lookup: {
+                  from: "products",
+                  localField: "productId",
+                  foreignField: "_id",
+                  as: "product"
+                }
+              },
+              {
+                // seat luôn là mảng, unwind để lấy 1 phần tử
+                $unwind: {
+                  path: "$product",
+                  preserveNullAndEmptyArrays: true
+                }
+              },
+              {
+                // Chọn trường cần thiết, thêm seatCode từ seat
+                $project: {
+                  quantity: 1,
+                  price: 1,
+                  name: "$product.name"
+                }
+              }
+            ],
+            as: "products"
+          }
+        },
+        // Sắp xếp giảm dần theo ngày tạo
+        {
+          $sort: { createdAt: -1 }
+        },
+        {
+          $addFields: {
+            details: {
+              seats: "$seats",
+              products: "$products"
+            }
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            customer: 1,
+            code: 1,
+            totalAmount: 1,
+            discountPrice: 1,
+            createdAt: 1,
+            status: 1,
+            "payment.name": 1,
+            "cinema.name": 1,
+            "cinema.address": 1,
+            "showtime.startTime": 1,
+            "showtime.date": 1,
+            "screen.name": 1,
+            "movie.title": 1,
+            details: 1
+          }
+        }
+      ])
       .toArray();
+
     return tickets;
   } catch (error) {
     throw new Error(error);
   }
-}
+};
+
+const getAllByUser = async (userId) => {
+  try {
+    const tickets = await GET_DB()
+      .collection(TICKET_COLLECTION_NAME)
+      .aggregate([
+        {
+          $match: {
+            userId: userId,
+            _deletedAt: false,
+            status: "paid"
+          }
+        },
+        {
+          $lookup: {
+            from: "cinemas",
+            localField: "cinemaId",
+            foreignField: "_id",
+            as: "cinema"
+          }
+        },
+        {
+          $unwind: "$cinema"
+        },
+        {
+          $lookup: {
+            from: "showtimes",
+            localField: "showtimeId",
+            foreignField: "_id",
+            as: "showtime"
+          }
+        },
+        {
+          $unwind: "$showtime"
+        },
+        {
+          $lookup: {
+            from: "screens",
+            localField: "showtime.screenId",
+            foreignField: "_id",
+            as: "screen"
+          }
+        },
+        {
+          $unwind: "$screen"
+        },
+        {
+          $lookup: {
+            from: "movies",
+            localField: "showtime.movieId",
+            foreignField: "_id",
+            as: "movie"
+          }
+        },
+        {
+          $unwind: "$movie"
+        },
+        // Thêm lookup lấy ticket_details
+        {
+          $lookup: {
+            from: "ticket_details",
+            let: { ticketId: "$_id" },
+            pipeline: [
+              { $match: { $expr: { $eq: ["$ticketId", "$$ticketId"] } } },
+              {
+                // lookup thêm seats để lấy seatCode theo seatId
+                $lookup: {
+                  from: "seats",
+                  localField: "seatId",
+                  foreignField: "_id",
+                  as: "seat"
+                }
+              },
+              {
+                // seat luôn là mảng, unwind để lấy 1 phần tử
+                $unwind: {
+                  path: "$seat",
+                  preserveNullAndEmptyArrays: true
+                }
+              },
+              {
+                // Chọn trường cần thiết, thêm seatCode từ seat
+                $project: {
+                  _id : 1,
+                  seatId: 1,
+                  price: 1,
+                  seatCode: "$seat.seatCode"
+                }
+              }
+            ],
+            as: "seats"
+          }
+        },
+        // Sắp xếp giảm dần theo ngày tạo
+        {
+          $sort: { createdAt: -1 }
+        },
+        {
+          $project: {
+            code: 1,
+            totalAmount: 1,
+            discountPrice: 1,
+            createdAt: 1,
+            status: 1,
+            "cinema.name": 1,
+            "showtime.startTime": 1,
+            "showtime.date": 1,
+            "screen.name": 1,
+            "movie.title": 1,
+            "seats.seatCode": 1,
+          }
+        }
+      ])
+      .toArray();
+
+    return tickets;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+
 
 const validateBeforeStaffCreate = async (data) => {
   const validatedData = await TICKET_COLLECTION_SCHEMA.validateAsync(data, {
@@ -332,6 +611,7 @@ export const ticketModel = {
   TICKET_COLLECTION_NAME,
   TICKET_COLLECTION_SCHEMA,
   getAll,
+  getOneByUser,
   getAllByUser,
   create,
   staffCreate,

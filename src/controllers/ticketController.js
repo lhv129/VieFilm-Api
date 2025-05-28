@@ -16,9 +16,22 @@ const getAll = async (req, res, next) => {
     }
 }
 
+const getOneByUser = async (req, res, next) => {
+    try {
+        const tickets = await ticketService.getOneByUser(req.user,req.body);
+        res.status(200).json({
+            status: "success",
+            message: "Lấy chi tiết vé thành công",
+            data: tickets
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
 const getAllByUser = async (req, res, next) => {
     try {
-        const tickets = await ticketService.getAll(req.user);
+        const tickets = await ticketService.getAllByUser(req.user);
         res.status(200).json({
             status: "success",
             message: "Lấy danh sách vé thành công",
@@ -134,5 +147,6 @@ export const ticketController = {
     checkOut,
     staffCheckOut,
     deleteHoldsSeats,
+    getOneByUser,
     getAllByUser
 }

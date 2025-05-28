@@ -18,6 +18,9 @@ Router.route('/')
 Router.route('/get-all-by-user')
     .get(authenticateToken, ticketController.getAllByUser);
 
+Router.route('/get-one-by-user')
+    .post(authenticateToken, ticketController.getOneByUser);
+
 Router.route('/hold/seats')
     .post(authenticateToken, ticketValidation.create, ticketController.create)
     .delete(authenticateToken, ticketController.deleteHoldsSeats)

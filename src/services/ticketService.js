@@ -23,6 +23,16 @@ const getAll = async (req, res, next) => {
     }
 }
 
+const getOneByUser = async (user,reqBody) => {
+    try {
+        const { ticketId } = reqBody
+        const tickets = await ticketModel.getOneByUser(user._id,ticketId);
+        return tickets
+    } catch (error) {
+        throw error;
+    }
+}
+
 const getAllByUser = async (user) => {
     try {
         const tickets = await ticketModel.getAllByUser(user._id);
@@ -567,6 +577,7 @@ const deleteHoldsSeats = async (user, ticketId) => {
 
 export const ticketService = {
     getAll,
+    getOneByUser,
     getAllByUser,
     staffCreateTicket,
     create,
