@@ -569,8 +569,8 @@ const getDetailAfterPayment = async (ticketId) => {
       code: ticket.code,
       totalAmount: ticket.totalAmount,
       details: {
-        ticket_details: ticketDetailsWithSeatCode,
-        product_details: ticketProductsWithName,
+        seats: ticketDetailsWithSeatCode,
+        products: ticketProductsWithName,
       },
       showtime: showtimeInfo,
       screen: screenInfo,
