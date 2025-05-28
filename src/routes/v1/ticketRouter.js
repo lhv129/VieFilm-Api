@@ -16,7 +16,7 @@ Router.route('/')
     .get(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), ticketController.getAll)
 
 Router.route('/get-all-by-user')
-    .get(authenticateToken, ticketController.getAllByUser);
+    .post(authenticateToken, ticketController.getAllByUser);
 
 Router.route('/get-one-by-user')
     .post(authenticateToken, ticketController.getOneByUser);

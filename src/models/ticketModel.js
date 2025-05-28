@@ -64,7 +64,7 @@ const getOneByUser = async (userId, ticketId) => {
             _id: new ObjectId(ticketId),
             userId: userId,
             _deletedAt: false,
-            status: "paid"
+            status: { $in: ["paid", "used"] }
           }
         },
         {
@@ -231,8 +231,11 @@ const getOneByUser = async (userId, ticketId) => {
   }
 };
 
-const getAllByUser = async (userId) => {
+const getAllByUser = async (userId, page, limit, dateFilter) => {
   try {
+
+    const skip = (page - 1) * limit;
+
     const tickets = await GET_DB()
       .collection(TICKET_COLLECTION_NAME)
       .aggregate([
@@ -240,7 +243,8 @@ const getAllByUser = async (userId) => {
           $match: {
             userId: userId,
             _deletedAt: false,
-            status: "paid"
+            status: { $in: ["paid", "used"] },
+            ...dateFilter
           }
         },
         {
@@ -313,7 +317,7 @@ const getAllByUser = async (userId) => {
               {
                 // Chọn trường cần thiết, thêm seatCode từ seat
                 $project: {
-                  _id : 1,
+                  _id: 1,
                   seatId: 1,
                   price: 1,
                   seatCode: "$seat.seatCode"
@@ -323,10 +327,10 @@ const getAllByUser = async (userId) => {
             as: "seats"
           }
         },
-        // Sắp xếp giảm dần theo ngày tạo
-        {
-          $sort: { createdAt: -1 }
-        },
+        // Sắp xếp trước, rồi phân trang
+        { $sort: { createdAt: -1 } },
+        { $skip: skip },
+        { $limit: limit },
         {
           $project: {
             code: 1,

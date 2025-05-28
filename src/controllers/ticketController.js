@@ -31,7 +31,7 @@ const getOneByUser = async (req, res, next) => {
 
 const getAllByUser = async (req, res, next) => {
     try {
-        const tickets = await ticketService.getAllByUser(req.user);
+        const tickets = await ticketService.getAllByUser(req.user,req.body);
         res.status(200).json({
             status: "success",
             message: "Lấy danh sách vé thành công",

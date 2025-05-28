@@ -23,24 +23,42 @@ const getAll = async (req, res, next) => {
     }
 }
 
-const getOneByUser = async (user,reqBody) => {
+const getOneByUser = async (user, reqBody) => {
     try {
         const { ticketId } = reqBody
-        const tickets = await ticketModel.getOneByUser(user._id,ticketId);
+        const tickets = await ticketModel.getOneByUser(user._id, ticketId);
         return tickets
     } catch (error) {
         throw error;
     }
 }
 
-const getAllByUser = async (user) => {
+const parseDateToRange = (dateStr) => {
+    const [dd, mm, yyyy] = dateStr.split('/').map(Number);
+    const startOfDay = new Date(yyyy, mm - 1, dd, 0, 0, 0, 0).getTime();
+    const endOfDay = new Date(yyyy, mm - 1, dd, 23, 59, 59, 999).getTime();
+    return { startOfDay, endOfDay };
+};
+
+const getAllByUser = async (user, reqBody) => {
     try {
-        const tickets = await ticketModel.getAllByUser(user._id);
-        return tickets
+        const { page, limit, date } = reqBody;
+        const pageNumber = parseInt(page) || 1;
+        const limitNumber = parseInt(limit) || 5;
+
+        let dateFilter = {};
+        if (date) {
+            const { startOfDay, endOfDay } = parseDateToRange(date);
+            dateFilter = { createdAt: { $gte: startOfDay, $lte: endOfDay } };
+        }
+
+        const tickets = await ticketModel.getAllByUser(user._id, pageNumber, limitNumber, dateFilter);
+        return tickets;
     } catch (error) {
         throw error;
     }
-}
+};
+
 
 const staffCreateTicket = async (user, reqBody) => {
     try {
@@ -485,7 +503,7 @@ const staffCheckOut = async (reqBody) => {
             throw new ApiError(StatusCodes.NOT_FOUND, "Phương thức thanh toán không tồn tại");
         }
 
-        if(!customer){
+        if (!customer) {
             throw new ApiError(StatusCodes.BAD_REQUEST, "Tên khách hàng không được để trống");
         }
 
@@ -542,7 +560,7 @@ const staffCheckOut = async (reqBody) => {
         // Cập nhật vé
         await ticketModel.updateTotalAmountAfterProduct(ticketId, totalAmount);
 
-        await ticketModel.updateOne(ticketId, { paymentMethodId: new ObjectId(paymentMethodId), customer:customer, updatedAt: Date.now(), status: "paid" });
+        await ticketModel.updateOne(ticketId, { paymentMethodId: new ObjectId(paymentMethodId), customer: customer, updatedAt: Date.now(), status: "paid" });
 
         const updatedTicket = await ticketModel.findOneById(ticketId);
 
