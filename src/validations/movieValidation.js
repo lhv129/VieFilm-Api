@@ -3,6 +3,13 @@ import { convertDateToTimestamp } from "../utils/convertDate";
 
 
 const createMovie = async (req, res, next) => {
+
+    const allowedLanguages = [
+        "Tiếng Anh",
+        "Tiếng Trung",
+        "Tiếng Việt"
+    ];
+
     const correctCondition = Joi.object({
         title: Joi.string().required().min(5).max(100).trim().strict().messages({
             "string.empty": "Tiêu đề phim thành không được để trống",
@@ -66,11 +73,14 @@ const createMovie = async (req, res, next) => {
             "string.trim": "Không được để khoảng trắng ở đầu hoặc cuối",
             'string.maxParts': 'Chỉ được nhập tối đa 2 thể loại phim, cách nhau bằng dấu phẩy.',
         }),
-        language: Joi.string().required().valid("Tiếng Việt").messages({
-            "string.empty": "Ngôn ngữ không được để trống",
-            "any.required": "Vui lòng nhập ngôn ngữ ghế",
-            "string.valid": "Ngôn ngữ chỉ có Tiếng Việt",
-        }),
+        language: Joi.string()
+            .required()
+            .valid(...allowedLanguages)
+            .messages({
+                "string.empty": "Ngôn ngữ không được để trống",
+                "any.required": "Vui lòng nhập ngôn ngữ ghế",
+                "any.only": `Ngôn ngữ chỉ được chọn trong danh sách ngôn ngữ hợp lệ: ${allowedLanguages.join(", ")}`,
+            }),
         duration: Joi.number().required().min(30).max(200).messages({
             "number.empty": "Thời lượng phim không được để trống",
             "any.required": "Vui lòng nhập thời lượng phim",
