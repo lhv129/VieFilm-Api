@@ -382,6 +382,10 @@ const updateStatus = async (id, reqBody, status) => {
             throw new ApiError(StatusCodes.BAD_GATEWAY, `Vui lòng đến rạp ${cinema.name} để nhận vé xem phim`);
         }
 
+        if(ticket.status === "used"){
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Vé đã sử dụng rồi, vui lòng kiểm tra lại")
+        }
+
         // ✅ Lấy thông tin showtime
         const showtime = await showtimeModel.findOneById(ticket.showtimeId.toString());
         if (!showtime) throw new ApiError(StatusCodes.NOT_FOUND, "Không tìm thấy lịch chiếu");

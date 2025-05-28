@@ -24,7 +24,7 @@ const handlePaymentReturn = async (req, res) => {
             })
         } else {
             await ticketModel.updateStatus(ticket._id.toString(),"paid");
-            const getTicket = await ticketModel.getDetailAfterPayment(ticket._id.toString());
+            const getTicket = await ticketModel.getOneByUser(req.user._id,ticket._id.toString());
 
             // console.log(getTicket);
 
