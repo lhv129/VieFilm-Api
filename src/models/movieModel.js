@@ -32,7 +32,9 @@ const getAll = async (req, res, next) => {
         const movies = await GET_DB().collection(MOVIE_COLLECTION_NAME).find({
             _deletedAt: false,
             endDate: { $gte: today },
-        }).toArray();
+        })
+        .sort({ createdAt: -1 })
+        .toArray();
         return movies;
     } catch (error) {
         throw new Error(error);

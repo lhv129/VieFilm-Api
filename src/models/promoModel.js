@@ -21,7 +21,7 @@ const validateBeforeCreate = async (data) => {
 };
 
 const getAll = async () => {
-  return await GET_DB().collection(PROMO_COLLECTION_NAME).find({ _deletedAt: false }).toArray();
+  return await GET_DB().collection(PROMO_COLLECTION_NAME).find({ _deletedAt: false }).sort({ createdAt: -1 }).toArray();
 };
 
 const create = async (data) => {

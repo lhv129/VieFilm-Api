@@ -99,8 +99,8 @@ const getDetails = async (id) => {
                         cinemaId: 1,
                         name: 1,
                         screenCode: 1,
-                        createdAt:1,
-                        updatedAt:1,
+                        createdAt: 1,
+                        updatedAt: 1,
                         cinema: {
                             _id: 1,
                             name: 1,
@@ -165,13 +165,35 @@ const getAllByCinema = async (cinemaId) => {
         }
         const screens = await GET_DB()
             .collection(SCREEN_COLLECTION_NAME)
-            .find({ cinemaId: new ObjectId(cinemaId), _deletedAt: false })
+            .aggregate([
+                {
+                    $match: {
+                        cinemaId: new ObjectId(cinemaId),
+                        _deletedAt: false
+                    }
+                },
+                {
+                    $addFields: {
+                        screenNumber: {
+                            $toInt: {
+                                $arrayElemAt: [
+                                    { $split: ["$name", " "] },
+                                    1
+                                ]
+                            }
+                        }
+                    }
+                },
+                { $sort: { screenNumber: 1 } },
+                { $project: { screenNumber: 0 } }
+            ])
             .toArray();
         return screens;
     } catch (error) {
         throw new Error(error);
     }
-}
+};
+
 
 const find = async (filter) => {
     try {

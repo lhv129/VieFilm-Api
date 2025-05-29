@@ -16,7 +16,7 @@ const PROVINCE_COLLECTION_SCHEMA = Joi.object({
 
 const getAll = async () => {
     try {
-        const provinces = await GET_DB().collection(PROVINCE_COLLECTION_NAME).find({ _deletedAt: false }).toArray();
+        const provinces = await GET_DB().collection(PROVINCE_COLLECTION_NAME).find({ _deletedAt: false }).sort({ createdAt: -1 }).toArray();
         return provinces;
     } catch (error) {
         throw new Error(error);

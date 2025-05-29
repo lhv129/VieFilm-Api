@@ -20,7 +20,7 @@ const PRODUCT_COLLECTION_SCHEMA = Joi.object({
 
 const getAll = async () => {
     try {
-        const products = await GET_DB().collection(PRODUCT_COLLECTION_NAME).find({ _deletedAt: false }).toArray();
+        const products = await GET_DB().collection(PRODUCT_COLLECTION_NAME).find({ _deletedAt: false }).sort({ createdAt: -1 }).toArray();
         return products;
     } catch (error) {
         throw new Error(error);
