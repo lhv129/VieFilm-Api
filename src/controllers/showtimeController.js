@@ -119,6 +119,19 @@ const getAllByScreen = async (req, res, next) => {
     }
 };
 
+const getEmptyShowtime = async (req, res, next) => {
+    try {
+        const showtimes = await showtimeService.getEmptyShowtime(req.body);
+        res.status(200).json({
+            status: "success",
+            message: "Suất chiếu trống",
+            data: showtimes,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
 export const showtimeController = {
     getAll,
     create,
@@ -128,5 +141,6 @@ export const showtimeController = {
     getSeatsByShowtime,
     getAllByMovie,
     getAllShowtimeByCinemaHandler,
-    getAllByScreen
+    getAllByScreen,
+    getEmptyShowtime
 };

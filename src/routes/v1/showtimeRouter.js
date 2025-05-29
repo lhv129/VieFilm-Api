@@ -28,5 +28,7 @@ Router.route("/get-all-by-date")
 
 Router.route("/get-all-by-screen")
     .post(showtimeController.getAllByScreen);
+Router.route("/get-empty-showtime")
+    .post(showtimeController.getEmptyShowtime);
 
 export const showtimeRouter = Router;
