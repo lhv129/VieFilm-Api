@@ -13,8 +13,12 @@ import { productRouter } from "./productRouter";
 import { ticketRouter } from "./ticketRouter";
 import { promoRouter } from "./promoRouter";
 import { cronRouter } from "./cronRouter";
+import { dashboardRouter } from "./dashboardRouter";
 
 const Router = express.Router();
+
+// Dashboard APIs
+Router.use('/dashboard', dashboardRouter);
 
 // Auth APIs
 Router.use('/auth',authRouter);
