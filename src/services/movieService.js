@@ -78,7 +78,7 @@ const create = async (reqBody, reqImage) => {
 
 const getDetails = async (slug) => {
     try {
-        const movie = await movieModel.findOne({ slug: slug });
+        const movie = await movieModel.findOne({ slug: slug, status:"active" });
         return movie;
     } catch (error) {
         throw error;
