@@ -41,6 +41,7 @@ const getAll = async (req, res, next) => {
 
 const validateBeforeCreate = async (data) => {
     data.duration = parseInt(data.duration, 10);
+    data.rating = Math.round(parseFloat(data.rating) * 10) / 10;
     return await MOVIE_COLLECTION_SCHEMA.validateAsync(data, {
         abortEarly: false
     });
@@ -104,10 +105,14 @@ const checkUnique = async (id, title) => {
 
 const update = async (id, data) => {
     try {
+        data.duration = parseInt(data.duration, 10);
+        data.rating = Math.round(parseFloat(data.rating) * 10) / 10;
         // Cập nhật bản ghi
         const province = await GET_DB()
             .collection(MOVIE_COLLECTION_NAME)
             .updateOne({ _id: new ObjectId(id) }, { $set: data });
+
+         console.log(data);
 
         return province;
     } catch (error) {
