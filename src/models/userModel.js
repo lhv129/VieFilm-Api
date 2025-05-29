@@ -165,6 +165,7 @@ const getDetails = async (userId) => {
             fileImage: 1,
             status: 1,
             roleId: 1,
+            cinemaId: 1,
             role: {
               _id: 1,
               name: 1,
