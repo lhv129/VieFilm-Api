@@ -13,7 +13,7 @@ const MOVIE_COLLECTION_SCHEMA = Joi.object({
     directors: Joi.string().required(),
     actors: Joi.string().trim().allow('').optional(),
     genres: Joi.string().required().trim().strict(),
-    language: Joi.string().required().valid("Tiếng Việt","Tiếng Anh","Tiếng Trung"),
+    language: Joi.string().required().valid("Tiếng Việt", "Tiếng Anh", "Tiếng Trung"),
     duration: Joi.number().integer().required(),
     rating: Joi.number().required(),
     releaseDate: Joi.date().timestamp("javascript"),
@@ -40,6 +40,7 @@ const getAll = async (req, res, next) => {
 }
 
 const validateBeforeCreate = async (data) => {
+    data.duration = parseInt(data.duration, 10);
     return await MOVIE_COLLECTION_SCHEMA.validateAsync(data, {
         abortEarly: false
     });
