@@ -329,18 +329,15 @@ const getEmptyShowtime = async (reqBody) => {
     try {
         const { screenId, date, movieId } = reqBody;
 
-        // 1. Lấy danh sách suất chiếu hiện có
         const showtimes = await showtimeModel.find({
             screenId: new ObjectId(screenId),
             date: date,
         });
 
-        // 2. Lấy duration phim từ movieId
         const movie = await movieModel.findOneById(movieId);
         if (!movie) throw new Error("Movie not found");
-        const duration = movie.duration; // phút, ví dụ 120
+        const duration = movie.duration;
 
-        // 3. Sắp xếp suất chiếu hiện có theo startTime (theo phút)
         const sortedShowtimes = showtimes
             .map(st => ({
                 startTime: st.startTime,
@@ -358,35 +355,32 @@ const getEmptyShowtime = async (reqBody) => {
         let currentTime = openTime;
 
         while (currentTime + duration <= closeTime) {
-            // Tạo đối tượng giả cho suất chiếu mới
-            const newShowtime = {
-                startTime: timeUtils.minutesToTimeRounded(currentTime),
-                endTime: timeUtils.minutesToTimeRounded(currentTime + duration)
-            };
+            const startTime = timeUtils.minutesToTimeRounded(currentTime);
+            const endTime = timeUtils.minutesToTimeRounded(currentTime + duration);
 
-            // Kiểm tra xung đột với tất cả suất chiếu hiện tại
+            const newStart = timeUtils.timeToMinutes(startTime);
+            const newEnd = timeUtils.timeToMinutes(endTime);
+
             const conflict = sortedShowtimes.some(st => {
                 return (
-                    currentTime < st.endMinutes + buffer &&
-                    currentTime + duration + buffer > st.startMinutes
+                    newStart < st.endMinutes + buffer &&
+                    newEnd + buffer > st.startMinutes
                 );
             });
 
             if (!conflict) {
-                availableTimes.push(newShowtime.startTime);
-                // Cập nhật currentTime sang sau suất chiếu này + buffer
-                currentTime = currentTime + duration + buffer;
+                availableTimes.push(startTime);
+                currentTime = newEnd + buffer;
             } else {
-                // Nếu có xung đột, tăng currentTime thêm 5 phút rồi thử lại
                 currentTime += 5;
             }
         }
 
         return availableTimes;
 
-  } catch (error) {
-    throw error;
-  }
+    } catch (error) {
+        throw error;
+    }
 };
 
 
