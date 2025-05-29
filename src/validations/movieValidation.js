@@ -81,7 +81,7 @@ const createMovie = async (req, res, next) => {
                 "any.required": "Vui lòng nhập ngôn ngữ ghế",
                 "any.only": `Ngôn ngữ chỉ được chọn trong danh sách ngôn ngữ hợp lệ: ${allowedLanguages.join(", ")}`,
             }),
-        duration: Joi.number().required().min(30).max(200).messages({
+        duration: Joi.number().integer().required().min(30).max(200).messages({
             "number.empty": "Thời lượng phim không được để trống",
             "any.required": "Vui lòng nhập thời lượng phim",
             "number.trim": "Không được để khoảng trắng ở đầu hoặc cuối",

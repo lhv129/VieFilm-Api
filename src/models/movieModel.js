@@ -14,7 +14,7 @@ const MOVIE_COLLECTION_SCHEMA = Joi.object({
     actors: Joi.string().trim().allow('').optional(),
     genres: Joi.string().required().trim().strict(),
     language: Joi.string().required().valid("Tiếng Việt","Tiếng Anh","Tiếng Trung"),
-    duration: Joi.number().required(),
+    duration: Joi.number().integer().required(),
     rating: Joi.number().required(),
     releaseDate: Joi.date().timestamp("javascript"),
     endDate: Joi.date().timestamp("javascript").default(Date.now),
