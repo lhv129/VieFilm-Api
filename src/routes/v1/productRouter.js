@@ -19,4 +19,7 @@ Router.route("/:slug")
     .put(authenticateToken, roleMiddleware.checkRole('Admin','Staff'),productValidation.createProduct, productController.update)
     .delete(authenticateToken, roleMiddleware.checkRole('Admin','Staff'),productController.getDelete);
 
+Router.route("/update/status")
+    .put(authenticateToken, roleMiddleware.checkRole('Admin'), productController.updateStatus);
+
 export const productRouter = Router;

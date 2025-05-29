@@ -99,7 +99,7 @@ const getDelete = async (slug) => {
     try {
         const product = await GET_DB()
             .collection(PRODUCT_COLLECTION_NAME)
-            .updateOne({ slug: slug }, { $set: { _deletedAt:true } });
+            .updateOne({ slug: slug }, { $set: { _deletedAt: true } });
         return product;
     } catch (error) {
         throw new Error(error);
@@ -117,6 +117,20 @@ const find = async (filter) => {
     }
 };
 
+const updateOne = async (slug, dataToUpdate) => {
+    try {
+        const result = await GET_DB()
+            .collection(PRODUCT_COLLECTION_NAME)
+            .updateOne(
+                { slug: slug },
+                { $set: dataToUpdate },
+            );
+        return result;
+    } catch (error) {
+        throw new Error("Không thể cập nhật ticket: " + error.message);
+    }
+};
+
 export const productModel = {
     PRODUCT_COLLECTION_NAME,
     PRODUCT_COLLECTION_SCHEMA,
@@ -126,5 +140,6 @@ export const productModel = {
     findOne,
     update,
     getDelete,
-    find
+    find,
+    updateOne
 };

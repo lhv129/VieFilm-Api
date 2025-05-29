@@ -13,7 +13,7 @@ const getAll = async () => {
     }
 };
 
-const create = async (reqBody,reqImage) => {
+const create = async (reqBody, reqImage) => {
     try {
         // Kiểm tra xem name đã tồn tại chưa
         const existingProduct = await productModel.findOne({ name: reqBody.name });
@@ -53,7 +53,7 @@ const create = async (reqBody,reqImage) => {
 
 const getDetails = async (slug) => {
     try {
-        const product = await productModel.findOne({slug:slug});
+        const product = await productModel.findOne({ slug: slug });
         if (!product) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Combo không tồn tại");
         }
@@ -112,10 +112,32 @@ const getDelete = async (slug) => {
     }
 };
 
+const updateStatus = async (reqBody) => {
+    try {
+        const { slug, status } = reqBody;
+        const product = await productModel.findOne({ slug: slug });
+        if (!product) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Combo không tồn tại");
+        }
+        if (status === 'active' || status === 'inactive') {
+            await productModel.updateOne(slug,{status:status});
+            //Lấy bản ghi sau khi cập nhật
+            const getNewProduct = await productModel.findOneById(product._id.toString());
+            return getNewProduct;
+        }else{
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Status của sản phẩm phải là active hoặc inactive");
+        }
+
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const productService = {
     getAll,
     create,
     getDetails,
     update,
     getDelete,
+    updateStatus
 };

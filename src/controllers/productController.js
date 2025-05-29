@@ -66,10 +66,24 @@ const getDelete = async (req, res, next) => {
     }
 };
 
+const updateStatus = async (req, res, next) => {
+    try {
+        const product = await productService.updateStatus(req.body);
+        res.status(200).json({
+            status: "success",
+            message: "Cập nhật thành công",
+            data: product,
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
 export const productController = {
     getAll,
     create,
     getDetails,
     update,
     getDelete,
+    updateStatus
 }
