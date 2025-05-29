@@ -114,13 +114,79 @@ const updateUser = async (reqBody) => {
   }
 };
 
-const getDelete = async (userId) => {
+const getDelete = async (user, reqBody) => {
   try {
-    const user = await userModel.getDelete(userId);
-    if (user.modifiedCount === 0) {
+
+    const { userId } = reqBody;
+
+    if (user._id.toString() === userId) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Bạn không thể xóa tài khoản chính mình");
+    }
+
+    const userData = await userModel.getDelete(userId);
+    if (userData.modifiedCount === 0) {
       throw new ApiError(StatusCodes.NOT_FOUND, "Người dùng không tồn tại");
     }
     return [];
+  } catch (error) {
+    throw error;
+  }
+};
+
+const updateStatus = async (user, reqBody) => {
+  try {
+    const { userId, status } = reqBody;
+
+    const userData = await userModel.findOneById(userId);
+    if (!userData) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Người dùng không tồn tại");
+    }
+
+    if (user._id.toString() === userId) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Bạn không thể thay đổi trạng thái tài khoản của chính mình");
+    }
+
+    if (status === 'active' || status === 'block') {
+      const data = {
+        status: status,
+        updatedAt: Date.now(),
+      }
+      await userModel.updatedUser(userId, data);
+      return;
+    } else {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Trạng thái tài khoản chỉ có active hoặc block");
+    }
+
+  } catch (error) {
+    throw error;
+  }
+};
+
+const removeRole = async (user, reqBody) => {
+  try {
+    const { userId } = reqBody;
+
+    const userData = await userModel.findOneById(userId);
+    if (!userData) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Người dùng không tồn tại");
+    }
+
+    const role = await roleModel.findOne({ name: "Member" });
+    if (!role) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Chức vụ khách hàng không tồn tại, vui lòng kiểm tra lại");
+    }
+
+    if (user._id.toString() === userId) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Bạn không thể thay đổi chức vụ của chính mình");
+    }
+
+    await userModel.updateOne(userId, {
+      roleId: new ObjectId(role._id)
+    });
+
+    await userModel.removeRole(userId);
+
+    return;
   } catch (error) {
     throw error;
   }
@@ -132,4 +198,6 @@ export const userService = {
   getDetails,
   updateUser,
   getDelete,
+  updateStatus,
+  removeRole
 };

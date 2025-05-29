@@ -146,7 +146,7 @@ const getDetails = async (userId) => {
   }
 };
 
-const updatedUser = async (userId,newUser) => {
+const updatedUser = async (userId, newUser) => {
   try {
     // Cập nhật bản ghi
     const updatedUser = await GET_DB()
@@ -192,6 +192,20 @@ const updateOne = async (id, data) => {
   }
 };
 
+const removeRole = async (id) => {
+  try {
+    const result = await GET_DB()
+      .collection(USER_COLLECTION_NAME)
+      .updateOne(
+        { _id: new ObjectId(id) },
+        { $unset: { cinemaId: "" } }
+      );
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
 export const userModel = {
   USER_COLLECTION_NAME,
   USER_COLLECTION_SCHEMA,
@@ -204,4 +218,5 @@ export const userModel = {
   getDelete,
   updateRefreshToken,
   updateOne,
+  removeRole
 };

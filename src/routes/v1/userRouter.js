@@ -10,17 +10,24 @@ const upload = multer(); // Khởi tạo multer
 
 //Cho phép sử dụng form-data
 Router.use(upload.single('images'));
-Router.use(authenticateToken,roleMiddleware.checkRole('Admin'));
+Router.use(authenticateToken, roleMiddleware.checkRole('Admin'));
 
 Router.route("/")
   .get(userController.getAll)
-  .post(userValidation.createUser, userController.create);
+  .post(userValidation.createUser, userController.create)
+  .delete(userController.getDelete);
 
 Router.route("/:id")
   .get(userController.getDetails)
-  .delete(userController.getDelete);
+
 
 Router.route("/update-role")
   .put(userController.updateRole)
+
+Router.route("/update/status")
+  .post(userController.updateStatus);
+
+Router.route("/remove/role")
+  .post(userController.removeRole);
 
 export const userRouter = Router;

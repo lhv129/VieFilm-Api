@@ -59,11 +59,36 @@ const updateRole = async (req, res, next) => {
 
 const getDelete = async (req, res, next) => {
   try {
-    const userId = req.params.id;
-    const user = await userService.getDelete(userId);
+    const user = await userService.getDelete(req.user, req.body);
     res.status(200).json({
       status: "success",
       message: "Xóa người dùng thành công",
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateStatus = async (req, res, next) => {
+  try {
+    const user = await userService.updateStatus(req.user, req.body);
+    res.status(200).json({
+      status: "success",
+      message: "Cập nhật trạng thái tài khoản thành công",
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const removeRole = async (req, res, next) => {
+  try {
+    const user = await userService.removeRole(req.user, req.body);
+    res.status(200).json({
+      status: "success",
+      message: "Cập nhật trạng thái tài khoản thành công",
       data: user,
     });
   } catch (error) {
@@ -77,4 +102,6 @@ export const userController = {
   getDetails,
   updateRole,
   getDelete,
+  updateStatus,
+  removeRole
 };
