@@ -58,11 +58,25 @@ const getOneByName = async (req, res, next) => {
     }
 };
 
+const updateStatus = async (req, res, next) => {
+    try {
+        const promo = await promoService.updateStatus(req.body);
+        res.status(200).json({
+            status: "success",
+            message: "Cập nhật thành công",
+            data: promo,
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
 export const promoController = {
     getAll,
     create,
     getDetails,
     updatePromo,
     deletePromo,
-    getOneByName
+    getOneByName,
+    updateStatus
 };

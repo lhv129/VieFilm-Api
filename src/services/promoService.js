@@ -1,4 +1,5 @@
 // promoService.js
+import { ObjectId } from "mongodb";
 import { promoModel } from "../models/promoModel";
 import ApiError from "../utils/ApiError";
 import { StatusCodes } from "http-status-codes";
@@ -117,11 +118,33 @@ const getOneByName = async (reqBody) => {
     }
 };
 
+const updateStatus = async (reqBody) => {
+    try {
+        const { promoId, status } = reqBody;
+        const promo = await promoModel.findOne({ _id: new ObjectId(promoId) });
+        if (!promo) {
+            throw new ApiError(StatusCodes.NOT_FOUND, "Mã giảm giá không tồn tại");
+        }
+        if (status === 'active' || status === 'inactive') {
+            await promoModel.updatePromo(promoId, { status: status });
+            //Lấy bản ghi sau khi cập nhật
+            const getNewPromo = await promoModel.findOneById(promo._id.toString());
+            return getNewPromo;
+        } else {
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Status của mã giảm giá phải là active hoặc inactive");
+        }
+
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const promoService = {
     getAll,
     create,
     getDetails,
     updatePromo,
     deletePromo,
-    getOneByName
+    getOneByName,
+    updateStatus
 };

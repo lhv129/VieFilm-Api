@@ -18,4 +18,7 @@ Router.route("/:id")
 
 Router.route("/get-one-by-name")
   .post(authenticateToken,promoController.getOneByName)
+
+Router.route("/update/status")
+    .put(authenticateToken, roleMiddleware.checkRole('Admin'), promoController.updateStatus);
 export const promoRouter = Router;

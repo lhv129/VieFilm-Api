@@ -383,7 +383,7 @@ const getDetails = async (reqBody) => {
 
 const updateStatus = async (reqBody, status) => {
     try {
-        const { ticketId,cinemaId } = reqBody;
+        const { ticketId, cinemaId } = reqBody;
 
         const ticket = await ticketModel.findOneById(ticketId);
         if (!ticket) throw new ApiError(StatusCodes.NOT_FOUND, "Không tìm thấy vé");
@@ -447,9 +447,17 @@ const checkOut = async (reqBody) => {
             if (promoCode.length === 0) {
                 throw new ApiError(StatusCodes.NOT_FOUND, "Mã giảm giá không tồn tại");
             }
-            discountPrice = promoCode[0].price;
-            // Cập nhật discountPrice vào ticket
-            await ticketModel.updateOne(ticketId, { discountPrice: discountPrice });
+            const now = new Date(); // thời gian hiện tại
+            const start = new Date(promoCode.startDate);
+            const end = new Date(promoCode.endDate);
+
+            if (now >= start && now <= end) {
+                discountPrice = promoCode[0].price;
+                // Cập nhật discountPrice vào ticket
+                await ticketModel.updateOne(ticketId, { discountPrice: discountPrice });
+            } else {
+                throw new ApiError(StatusCodes.BAD_REQUEST, "Mã giảm giá hiện không còn hiệu lực");
+            }
         }
 
         // Kiểm tra sản phẩm nếu có
@@ -528,9 +536,17 @@ const staffCheckOut = async (reqBody) => {
             if (promoCode.length === 0) {
                 throw new ApiError(StatusCodes.NOT_FOUND, "Mã giảm giá không tồn tại");
             }
-            discountPrice = promoCode[0].price;
-            // Cập nhật discountPrice vào ticket
-            await ticketModel.updateOne(ticketId, { discountPrice: discountPrice });
+            const now = new Date(); // thời gian hiện tại
+            const start = new Date(promoCode.startDate);
+            const end = new Date(promoCode.endDate);
+
+            if (now >= start && now <= end) {
+                discountPrice = promoCode[0].price;
+                // Cập nhật discountPrice vào ticket
+                await ticketModel.updateOne(ticketId, { discountPrice: discountPrice });
+            } else {
+                throw new ApiError(StatusCodes.BAD_REQUEST, "Mã giảm giá hiện không còn hiệu lực");
+            }
         }
 
         // Kiểm tra sản phẩm nếu có
