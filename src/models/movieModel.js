@@ -111,9 +111,6 @@ const update = async (id, data) => {
         const province = await GET_DB()
             .collection(MOVIE_COLLECTION_NAME)
             .updateOne({ _id: new ObjectId(id) }, { $set: data });
-
-         console.log(data);
-
         return province;
     } catch (error) {
         throw error;

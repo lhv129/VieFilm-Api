@@ -20,7 +20,7 @@ Router.route("/")
 
 Router.route("/:slug")
     .get(movieController.getDetails)
-    .put(authenticateToken, roleMiddleware.checkRole('Admin'), movieValidation.createMovie, movieController.update)
+    .put(authenticateToken, roleMiddleware.checkRole('Admin'), movieValidation.updateMovie, movieController.update)
     .delete(authenticateToken, roleMiddleware.checkRole('Admin'), movieController.getDelete)
 
 Router.route("/update-status-movie")
