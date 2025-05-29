@@ -24,7 +24,12 @@ const CINEMA_COLLECTION_SCHEMA = Joi.object({
 
 const getAll = async () => {
     try {
-        const cinemas = await GET_DB().collection(CINEMA_COLLECTION_NAME).find({ _deletedAt: false }).toArray();
+        const cinemas = await GET_DB()
+            .collection(CINEMA_COLLECTION_NAME)
+            .find({ _deletedAt: false })
+            .sort({ createdAt: -1 }) // Sắp xếp giảm dần theo createdAt
+            .toArray();
+
         return cinemas;
     } catch (error) {
         throw new Error(error);

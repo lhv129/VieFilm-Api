@@ -37,16 +37,53 @@ const USER_COLLECTION_SCHEMA = Joi.object({
 const getAll = async () => {
   try {
     const users = await GET_DB().collection(USER_COLLECTION_NAME)
-      .find(
-        { _deletedAt: false },
-        { projection: { _id: 1, username: 1, username: 1, fullname: 1, email: 1, roleId: 1, images: 1, fileImage: 1, phone: 1, address: 1, birthday: 1, status: 1, email_verified_at: 1 } }
-      )
+      .aggregate([
+        {
+          $match: { _deletedAt: false }
+        },
+        {
+          $lookup: {
+            from: 'roles',             // Tên collection roles
+            localField: 'roleId',      // Trường trong users
+            foreignField: '_id',       // Trường trong roles
+            as: 'role'             // Tên trường kết quả sau join
+          }
+        },
+        {
+          $unwind: {
+            path: '$role',
+            preserveNullAndEmptyArrays: true // Nếu có user không có role, vẫn giữ lại
+          }
+        },
+        {
+          $sort: { createdAt: -1 } // Sắp xếp giảm dần theo thời gian tạo
+        },
+        {
+          $project: {
+            _id: 1,
+            username: 1,
+            fullname: 1,
+            email: 1,
+            roleId: 1,
+            'role.name': 1,       // Lấy name từ bảng roles
+            images: 1,
+            fileImage: 1,
+            phone: 1,
+            address: 1,
+            birthday: 1,
+            status: 1,
+            email_verified_at: 1
+          },
+        }
+      ])
       .toArray();
+
     return users;
   } catch (error) {
     throw new Error(error);
   }
 };
+
 
 const validateBeforeCreate = async (data) => {
   return await USER_COLLECTION_SCHEMA.validateAsync(data, {
