@@ -25,10 +25,15 @@ const timeToMinutes = (t) => {
 };
 
 // Hàm chuyển phút sang "HH:mm"
-function minutesToTime(mins) {
-    const h = Math.floor(mins / 60);
-    const m = mins % 60;
-    return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
+function minutesToTimeRounded(minutes) {
+    const rounded = roundUpToNearestFive(minutes);
+    const hrs = Math.floor(rounded / 60);
+    const mins = rounded % 60;
+    return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+}
+
+function roundUpToNearestFive(minutes) {
+    return Math.ceil(minutes / 5) * 5;
 }
 
 // Kiểm tra xem một thời điểm có xung đột với các suất chiếu khác không
@@ -47,4 +52,4 @@ const isConflict = (startTime, existingShowtimes, duration, buffer) => {
     return false;
 };
 
-export const timeUtils = { generatePossibleStartTimes, timeToMinutes, isConflict,minutesToTime }
+export const timeUtils = { generatePossibleStartTimes, timeToMinutes, isConflict, minutesToTimeRounded }
