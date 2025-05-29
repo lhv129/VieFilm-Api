@@ -311,6 +311,20 @@ const getAllShowtimeByCinemaGroupedByMovie = async (reqBody) => {
     }
 };
 
+const getAllByScreen = async (reqBody) => {
+    try {
+        const { screenId, movieId, date } = reqBody;
+        const showtimes = await showtimeModel.find({
+            screenId: new ObjectId(screenId),
+            movieId:new ObjectId(movieId),
+            date:date,
+        });
+        return showtimes;
+    } catch (error) {
+        throw error;
+    }
+}
+
 
 export const showtimeService = {
     getAll,
@@ -320,5 +334,6 @@ export const showtimeService = {
     getDelete,
     getSeatsByShowtime,
     getAllByMovie,
-    getAllShowtimeByCinemaGroupedByMovie
+    getAllShowtimeByCinemaGroupedByMovie,
+    getAllByScreen
 };

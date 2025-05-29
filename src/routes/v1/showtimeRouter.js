@@ -16,7 +16,7 @@ Router.route("/")
 Router.route("/:id")
     .get(showtimeController.getDetails)
     .put(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'), showtimeController.update)
-    
+
 Router.route("/get-seats-by-showtime")
     .post(showtimeController.getSeatsByShowtime)
 
@@ -25,5 +25,8 @@ Router.route("/get-all-by-movie")
 
 Router.route("/get-all-by-date")
     .post(showtimeController.getAllShowtimeByCinemaHandler);
+
+Router.route("/get-all-by-screen")
+    .post(showtimeController.getAllByScreen);
 
 export const showtimeRouter = Router;
