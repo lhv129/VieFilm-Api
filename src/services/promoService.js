@@ -53,15 +53,6 @@ const updatePromo = async (promoId, dataUpdate) => {
         // Không cho update name
         delete dataUpdate.name;
 
-        // Kiểm tra logic ngày nếu có startDate và endDate
-        if (dataUpdate.startDate && dataUpdate.endDate) {
-            const start = new Date(dataUpdate.startDate);
-            const end = new Date(dataUpdate.endDate);
-            if (end <= start) {
-                throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, "endDate phải lớn hơn startDate");
-            }
-        }
-
         const promo = await promoModel.findOneById(promoId);
         if (!promo) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Mã giảm giá không tồn tại");
@@ -69,6 +60,7 @@ const updatePromo = async (promoId, dataUpdate) => {
 
         const newData = {
             ...dataUpdate,
+            name:promo.name,
             updatedAt: Date.now()
         };
 

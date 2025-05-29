@@ -47,9 +47,11 @@ const findOne = async (filter) => {
 };
 
 const updatePromo = async (promoId, newData) => {
+  const validData = await validateBeforeCreate(newData);
+  validData.updatedAt = new Date(validData.updatedAt).getTime();
   return await GET_DB()
     .collection(PROMO_COLLECTION_NAME)
-    .updateOne({ _id: new ObjectId(promoId) }, { $set: newData });
+    .updateOne({ _id: new ObjectId(promoId) }, { $set: validData });
 };
 
 const deletePromo = async (promoId) => {
