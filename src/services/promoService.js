@@ -118,7 +118,7 @@ const updateStatus = async (reqBody) => {
             throw new ApiError(StatusCodes.NOT_FOUND, "Mã giảm giá không tồn tại");
         }
         if (status === 'active' || status === 'inactive') {
-            await promoModel.updatePromo(promoId, { status: status });
+            await promoModel.updateOne(promoId, { status: status });
             //Lấy bản ghi sau khi cập nhật
             const getNewPromo = await promoModel.findOneById(promo._id.toString());
             return getNewPromo;

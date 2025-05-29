@@ -69,6 +69,17 @@ const find = async (filter) => {
   }
 };
 
+const updateOne = async (promoId, data) => {
+  try {
+    const results = await GET_DB()
+      .collection(PROMO_COLLECTION_NAME)
+      .updateOne({ _id: new ObjectId(promoId) }, { $set: data });
+    return results;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
 export const promoModel = {
   PROMO_COLLECTION_NAME,
   PROMO_COLLECTION_SCHEMA,
@@ -78,5 +89,6 @@ export const promoModel = {
   findOne,
   updatePromo,
   deletePromo,
-  find
+  find,
+  updateOne
 };
