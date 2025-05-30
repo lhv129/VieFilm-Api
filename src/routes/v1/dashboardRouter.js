@@ -8,9 +8,9 @@ const router = express.Router();
 
 router.use(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'));
 
-router.get("/get-revenue-by-cinema", dashboardController.getRevenueByCinema);
-router.get("/get-revenue-by-movie", dashboardController.getRevenueByMovie);
-router.get("/get-total-seat/:cinemaId", dashboardController.getTotalSeat);
-router.get("/get-revenue-top-by-cinema", dashboardController.getTop5RevenueCinemas);
+router.post("/get-revenue-by-cinema", dashboardController.getRevenueByCinema);
+router.post("/get-revenue-by-movie", dashboardController.getRevenueByMovie);
+router.post("/get-total-seat", dashboardController.getTotalSeat);
+router.post("/get-revenue-top-by-cinema", dashboardController.getTop5RevenueCinemas);
 
 export const dashboardRouter = router;

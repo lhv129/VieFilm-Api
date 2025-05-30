@@ -16,7 +16,7 @@ const getRevenueByCinema = async (req, res, next) => {
 
 const getRevenueByMovie = async (req, res, next) => {
     try {
-        const revenueData = await dashboardService.getRevenueByMovie();
+        const revenueData = await dashboardService.getRevenueByMovie(req.body);
         return res.status(200).json({
             status: "success",
             message: "Lấy doanh thu theo phim thành công",
@@ -30,7 +30,7 @@ const getRevenueByMovie = async (req, res, next) => {
 
 const getTotalSeat = async (req, res, next) => {
     try {
-        const cinemaId = req.params.cinemaId;
+        const cinemaId = req.body.cinemaId;
         const revenueData = await dashboardService.getTotalSeat(cinemaId);
         return res.status(200).json({
             status: "success",

@@ -108,9 +108,10 @@ const getRevenueByCinema = async () => {
     }
 };
 
-const getRevenueByMovie = async () => {
+const getRevenueByMovie = async (reqBody) => {
     try {
         const db = GET_DB();
+        const { cinemaId } = reqBody;
 
         const results = await db.collection("tickets").aggregate([
             {
@@ -118,7 +119,7 @@ const getRevenueByMovie = async () => {
                     status: { $in: ["paid", "used"] }
                 }
             },
-            // Join showtimes để lấy movieId
+            // 1. Join showtimes để lấy screenId và movieId
             {
                 $lookup: {
                     from: "showtimes",
@@ -129,14 +130,33 @@ const getRevenueByMovie = async () => {
             },
             { $unwind: "$showtime" },
 
-            // Group theo movieId
+            // 2. Join screens để lấy cinemaId
+            {
+                $lookup: {
+                    from: "screens",
+                    localField: "showtime.screenId",
+                    foreignField: "_id",
+                    as: "screen"
+                }
+            },
+            { $unwind: "$screen" },
+
+            // 3. Lọc theo cinemaId
+            {
+                $match: {
+                    "screen.cinemaId": new ObjectId(cinemaId)
+                }
+            },
+
+            // 4. Group theo movieId
             {
                 $group: {
                     _id: "$showtime.movieId",
                     totalRevenue: { $sum: "$totalAmount" }
                 }
             },
-            // Join movies để lấy tên phim
+
+            // 5. Join movies để lấy tên phim
             {
                 $lookup: {
                     from: "movies",
@@ -147,7 +167,7 @@ const getRevenueByMovie = async () => {
             },
             { $unwind: "$movie" },
 
-            // Trả về name + revenue (làm tròn về triệu đồng)
+            // 6. Project kết quả: tên phim + doanh thu (triệu đồng)
             {
                 $project: {
                     _id: 0,
@@ -173,6 +193,7 @@ const getRevenueByMovie = async () => {
         throw error;
     }
 };
+
 
 const fillDaily = (dailyResult) => {
     const today = dayjs().startOf("day");
