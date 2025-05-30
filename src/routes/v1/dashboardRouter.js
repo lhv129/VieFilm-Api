@@ -6,7 +6,7 @@ import { roleMiddleware } from "../../middlewares/roleMiddleware";
 
 const router = express.Router();
 
-router.use(authenticateToken, roleMiddleware.checkRole("Admin"));
+router.use(authenticateToken, roleMiddleware.checkRole('Admin', 'Staff'));
 
 router.get("/get-revenue-by-cinema", dashboardController.getRevenueByCinema);
 router.get("/get-revenue-by-movie", dashboardController.getRevenueByMovie);
