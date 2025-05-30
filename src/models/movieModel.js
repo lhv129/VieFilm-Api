@@ -138,7 +138,7 @@ const getDelete = async (slug) => {
 
 const getAllByDate = async (date) => {
     try {
-        const today = Date.now(); // lấy timestamp hiện tại
+        const today = getStartOfDay(Date.now()); // lấy timestamp hiện tại
         let query = { _deletedAt: false };
 
         if (date === 'showing') {
