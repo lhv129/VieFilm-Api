@@ -1,6 +1,6 @@
 // routes/dashboardRouter.ts
 import express from "express";
-import { dashboardController } from "@/controllers/dashboardController";
+import { dashboardController } from "../../controllers/dashboardController";
 import { authenticateToken } from "../../middlewares/authMiddleware";
 import { roleMiddleware } from "../../middlewares/roleMiddleware";
 
