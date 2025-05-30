@@ -12,6 +12,7 @@ const createMovie = async (req, res, next) => {
         "Tiếng Thái Lan",
         "Tiếng Ấn Độ",
         "Thuyết minh",
+        "Tiếng Nhật",
     ];
 
     const correctCondition = Joi.object({
@@ -175,6 +176,7 @@ const updateMovie = async (req, res, next) => {
         "Tiếng Thái Lan",
         "Tiếng Ấn Độ",
         "Thuyết minh",
+        "Tiếng Nhật",
     ];
 
     const correctCondition = Joi.object({
