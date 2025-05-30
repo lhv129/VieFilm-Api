@@ -26,13 +26,8 @@ const MOVIE_COLLECTION_SCHEMA = Joi.object({
     _deletedAt: Joi.boolean().default(false),
 });
 
-const getStartOfDay = (date) => {
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-    return d.getTime();
-};
 
-const getAll = async (req, res, next) => {
+const getAll = async () => {
     try {
         const today = getStartOfDay(Date.now());
         const movies = await GET_DB().collection(MOVIE_COLLECTION_NAME).find({
@@ -138,7 +133,8 @@ const getDelete = async (slug) => {
 
 const getAllByDate = async (date) => {
     try {
-        const today = getStartOfDay(Date.now()); // lấy timestamp hiện tại
+        const today = getStartOfDay(Date.now());
+
         let query = { _deletedAt: false };
 
         if (date === 'showing') {
@@ -161,6 +157,14 @@ const getAllByDate = async (date) => {
     } catch (error) {
         throw new Error(error);
     }
+};
+
+// getStartOfDay(Date.now()) sẽ trả về timestamp của ngày hôm nay lúc 00:00:00.
+// Đến ngày 31/5/2025 (lúc 00:00:00) thì today sẽ là timestamp ngày 31, và phim này không được lấy nữa vì endDate < today.
+const getStartOfDay = (date) => {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
 };
 
 export const movieModel = {

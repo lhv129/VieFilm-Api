@@ -15,30 +15,6 @@ const getAll = async (req, res, next) => {
     }
 }
 
-const findOneById = async (id) => {
-    try {
-        const result = await GET_DB()
-            .collection(PROVINCE_COLLECTION_NAME)
-            .findOne({
-                _id: new ObjectId(id),
-            });
-        return result;
-    } catch (error) {
-        throw new Error(error);
-    }
-};
-
-const findOne = async (filter) => {
-    try {
-        const result = await GET_DB()
-            .collection(PROVINCE_COLLECTION_NAME)
-            .findOne(filter);
-        return result;
-    } catch (error) {
-        throw new Error(error);
-    }
-};
-
 const create = async (reqBody, reqImage) => {
     try {
         const slug = slugify(reqBody.title);
@@ -78,7 +54,7 @@ const create = async (reqBody, reqImage) => {
 
 const getDetails = async (slug) => {
     try {
-        const movie = await movieModel.findOne({ slug: slug, status:"active" });
+        const movie = await movieModel.findOne({ slug: slug });
         return movie;
     } catch (error) {
         throw error;
@@ -167,7 +143,7 @@ const updateStatus = async (reqBody) => {
             const getMovie = await movieModel.findOneById(movie._id);
 
             return getMovie;
-        }else{
+        } else {
             throw new ApiError(StatusCodes.BAD_REQUEST, "Trạng thái của phim phải là active hoặc inactive");
         }
 
@@ -196,8 +172,6 @@ const getOneById = async (id) => {
 
 export const movieService = {
     getAll,
-    findOneById,
-    findOne,
     create,
     getDetails,
     update,
