@@ -7,7 +7,11 @@ const createMovie = async (req, res, next) => {
     const allowedLanguages = [
         "Tiếng Anh",
         "Tiếng Trung",
-        "Tiếng Việt"
+        "Tiếng Việt",
+        "Tiếng Hàn",
+        "Tiếng Thái Lan",
+        "Tiếng Ấn Độ",
+        "Thuyết minh",
     ];
 
     const correctCondition = Joi.object({
