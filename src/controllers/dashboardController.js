@@ -3,7 +3,7 @@ import { dashboardService } from "../services/dashboardService";
 
 const getRevenueByCinema = async (req, res, next) => {
     try {
-        const revenueData = await dashboardService.getRevenueByCinema();
+        const revenueData = await dashboardService.getRevenueByCinema(req.body);
         return res.status(200).json({
             status: "success",
             message: "Lấy doanh thu theo rạp thành công",
