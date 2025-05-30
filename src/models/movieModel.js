@@ -26,15 +26,21 @@ const MOVIE_COLLECTION_SCHEMA = Joi.object({
     _deletedAt: Joi.boolean().default(false),
 });
 
+const getStartOfDay = (date) => {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+};
+
 const getAll = async (req, res, next) => {
     try {
-        const today = Date.now();
+        const today = getStartOfDay(Date.now());
         const movies = await GET_DB().collection(MOVIE_COLLECTION_NAME).find({
             _deletedAt: false,
             endDate: { $gte: today },
         })
-        .sort({ createdAt: -1 })
-        .toArray();
+            .sort({ createdAt: -1 })
+            .toArray();
         return movies;
     } catch (error) {
         throw new Error(error);
