@@ -53,7 +53,10 @@ const login = async (reqBody) => {
                 user: {
                     ...user,
                     roleName: role?.name,
-                    cinema: cinema.name ?? null,
+                    cinema: {
+                        _id: cinema._id,
+                        name: cinema.name,
+                    },
                 }
             }
             return newUser;
