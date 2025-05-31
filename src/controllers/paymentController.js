@@ -29,13 +29,16 @@ const handlePaymentReturn = async (req, res) => {
             await ticketModel.updateStatus(ticket._id.toString(), "paid");
             const getTicket = await ticketModel.getDetailAfterPayment(ticket._id.toString());
 
-            // Sau khi getTicket xong:
-            // Lay ra email cua user
-            const user = await userModel.findOneById(ticket.userId);
-
-            const subject = 'Xác nhận đặt vé thành công - VieFilm';
-            const htmlBody = buildTicketEmailHTML(getTicket);
-            await sendEmail(user.email, subject, htmlBody);
+            // Gửi email xác nhận
+            try {
+                const user = await userModel.findOneById(ticket.userId);
+                const subject = 'Xác nhận đặt vé thành công - VieFilm';
+                const htmlBody = buildTicketEmailHTML(getTicket);
+                await sendEmail(user.email, subject, htmlBody);
+            } catch (emailError) {
+                console.error("Gửi email thất bại:", emailError);
+                // Không throw ở đây, để tránh fail toàn bộ đặt vé
+            }
 
             res.status(200).json({
                 status: true,
