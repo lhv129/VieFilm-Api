@@ -55,7 +55,7 @@ const create = async (reqBody, reqImage) => {
 const getDetails = async (slug) => {
     try {
         const today = getStartOfDay(Date.now());
-        const movie = await movieModel.findOne({ slug: slug, endDate: { $gte: today } });
+        const movie = await movieModel.findOne({ slug: slug, endDate: { $gte: today },_deletedAt: false,status: "active"});
         return movie;
     } catch (error) {
         throw error;
