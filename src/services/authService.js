@@ -10,6 +10,7 @@ import { convertDateToTimestamp } from "../utils/convertDate";
 import { normalizeVietnamPhone } from "../utils/normalizeVietnamPhone";
 import { passwordResetModel } from "../models/passwordResetModel";
 import crypto from "crypto";
+import { cinemaModel } from "../models/cinemaModel";
 const { uploadImage, deleteImage } = require("../config/cloudinary");
 const bcrypt = require("bcrypt");
 
@@ -43,15 +44,31 @@ const login = async (reqBody) => {
         delete user.password;
         delete user.refresh_token;
 
-        const newUser = {
-            access_token: accessToken,
-            refresh_token: refreshToken,
-            user: {
-                ...user,
-                roleName: role?.name
+
+        if (user.cinemaId) {
+            const cinema = await cinemaModel.findOneById(user.cinemaId);
+            let newUser = {
+                access_token: accessToken,
+                refresh_token: refreshToken,
+                user: {
+                    ...user,
+                    roleName: role?.name,
+                    cinema: cinema.name ?? null,
+                }
             }
+            return newUser;
+        } else {
+            let newUser = {
+                access_token: accessToken,
+                refresh_token: refreshToken,
+                user: {
+                    ...user,
+                    roleName: role?.name,
+                }
+            }
+            return newUser;
         }
-        return newUser;
+
     } catch (error) {
         throw error;
     }
