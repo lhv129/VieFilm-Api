@@ -55,7 +55,7 @@ const create = async (reqBody, reqImage) => {
 const getDetails = async (slug) => {
     try {
         const today = getStartOfDay(Date.now());
-        const movie = await movieModel.findOne({ slug: slug, endDate: { $gte: today },_deletedAt: false,status: "active"});
+        const movie = await movieModel.findOne({ slug: slug, endDate: { $gte: today },_deletedAt: false});
         return movie;
     } catch (error) {
         throw error;
@@ -130,8 +130,7 @@ const getDelete = async (slug) => {
 const updateStatus = async (reqBody) => {
     try {
         const { movieId, status } = reqBody;
-        const today = getStartOfDay(Date.now());
-        const movie = await movieModel.findOne({ _id: new ObjectId(movieId), endDate: { $gte: today }, });
+        const movie = await movieModel.findOne({ _id: new ObjectId(movieId) });
         if (!movie) {
             throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, "Phim không tồn tại");
         }
