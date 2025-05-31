@@ -1,0 +1,3917 @@
+{
+	"info": {
+		"_postman_id": "54453840-2112-42cf-ac03-982bad538ac7",
+		"name": "viefilm-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34830619"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"lhv2k4@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/auth/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\" : \"vietlh\",\r\n    \"fullname\" : \"Lưu Hoàng Việt\",\r\n    \"email\" : \"vietlhth00179@fpt.edu.vn\",\r\n    \"password\": \"123456\",\r\n    \"password_confirm\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/auth/register",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh-token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refresh_token\" : \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTY0MzA0OCwiZXhwIjoxNzQ2MjQ3ODQ4fQ.i_mzeT7SaRN-t6dmT_eUJTP-3ErI1Xhk6NhS2Gjr5Zk\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/auth/refresh-token",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0ODIyODY2OCwiZXhwIjoxNzQ4NTMxMDY4fQ.4DfEe_r9qK6kLA6Etzv2ehlbCEji4nY4QiTro6CZYTo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/auth/profile",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0ODI1MjA2MCwiZXhwIjoxNzQ4NTU0NDYwfQ.le3kpHekNoYSk73QrXEJtlc-SyF7Nna4htQNbvOyNZY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "Tester",
+									"type": "text"
+								},
+								{
+									"key": "fullname",
+									"value": "Testt",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "+84983669199",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "Số nhà 67 - Miêu Nha - Tây Mỗ - Nam Từ Liêm - Hà Nội",
+									"type": "text"
+								},
+								{
+									"key": "birthday",
+									"value": "12/09/2004",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/v1/auth/profile",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change-password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0ODI0MDM4NSwiZXhwIjoxNzQ4NTQyNzg1fQ.wnXg23iiyPc9KJb_GFhnxncUmF_BTQdJc59RycrWasM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"123456\",\r\n    \"newPassword\": \"123456\",\r\n    \"confirmPassword\" : \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/auth/change-password",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "take-token-forget-password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"vietlhth00179@fpt.edu.vn\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/auth/send-token-forget-password",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"send-token-forget-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "forget-password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\" : \"d4d48800cd\",\r\n    \"password\" : \"123456\",\r\n    \"confirmPassword\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/auth/forget-password",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"forget-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "get-all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODUzMDM1NSwiZXhwIjoxNzQ4ODMyNzU1fQ.DCld5VdoIvPAEiHizCBKcLwKXzUABf6nzFvFJblB5SM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/users",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "hviet",
+									"type": "text"
+								},
+								{
+									"key": "fullname",
+									"value": "Lưu Hoàng Việt",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "vietlh.hn@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "password_confirm",
+									"value": "123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/v1/users",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODUzNjA3MSwiZXhwIjoxNzQ4ODM4NDcxfQ.Bi76sWdVDXlwsUsHlyhkBUzhJeXo0bjma2WKwW-ooKA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/users/6802fa8e8f096615a37cbb54",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"6802fa8e8f096615a37cbb54"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODI2ODg2MiwiZXhwIjoxNzQ4NTcxMjYyfQ.C_TJpvZ8JaX7fdTSIri8E9cTdFJd6dQK3u-bhQBwhgw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\" : \"683476223dc164eb7b3e2173\",\r\n    \"roleId\" : \"680273d3e15cc806263258f6\",\r\n    \"cinemaId\" : \"68035db82d21be7453864e99\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/users/update-role",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"update-role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODUzMTAyMSwiZXhwIjoxNzQ4ODMzNDIxfQ.haekPcnUwOY4ILlUTpmxIfIxGyQX4lR__lPmUhBowSU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\" : \"6802fa8e8f096615a37cbb54\",\r\n    \"status\" : \"active\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/users/update/status",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"update",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove-role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODUzMTAyMSwiZXhwIjoxNzQ4ODMzNDIxfQ.haekPcnUwOY4ILlUTpmxIfIxGyQX4lR__lPmUhBowSU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\" : \"683476223dc164eb7b3e2173\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/users/remove/role",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"remove",
+								"role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODUzMTIzOCwiZXhwIjoxNzQ4ODMzNjM4fQ.700AIWu3zoOp9rLmL-MCv-Nt0DGLaTJ3Jwcr1Q3zNrY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\" : \"683476223dc164eb7b3e2173\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/users",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "roles",
+			"item": [
+				{
+					"name": "get-all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODUzNjA3MSwiZXhwIjoxNzQ4ODM4NDcxfQ.Bi76sWdVDXlwsUsHlyhkBUzhJeXo0bjma2WKwW-ooKA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/roles",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODIzNDY0OCwiZXhwIjoxNzQ4NTM3MDQ4fQ.-NM5ZkFEaZedIUHQKQktJXRTEIEr7J3ZwoTG8Qxe7lo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/roles",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/roles/memberr",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"roles",
+								"memberr"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one-by-id",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roleId\" : \"68027408e15cc806263258f7\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/roles/get-one",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"roles",
+								"get-one"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Member\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/roles/stafff",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"roles",
+								"stafff"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/roles/staff",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"roles",
+								"staff"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "promo",
+			"item": [
+				{
+					"name": "get-all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NjAxNzg3MiwiZXhwIjoxNzQ2MDIxNDcyfQ.kFTuOGX0MiYqtWT118rqTKXtWtXa0Npn7wQX66mlJis",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/promo",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"promo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODUwMjc4MiwiZXhwIjoxNzQ4ODA1MTgyfQ.IFOpQy__Um8Y8h0uWfHfELvRpHvElbw_josVssh8ZwA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\" : \"Mã giảm giá 30k\",\r\n    \"price\" : 30000,\r\n    \"startDate\" : \"2025-05-01\",\r\n    \"endDate\": \"2025-06-30\",\r\n    \"status\" : \"active\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/promo",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"promo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one-by-name",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0NzYyNTM3MywiZXhwIjoxNzQ3OTI3NzczfQ.A_I_j3smxfh2IzCAQlrYDSqg_EDt3uh_09_XBW8tG-k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"MGG-940467488\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/promo/get-one-by-name",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"promo",
+								"get-one-by-name"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/promo/ma-giam-gia-100k",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"promo",
+								"ma-giam-gia-100k"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODUwMjc4MiwiZXhwIjoxNzQ4ODA1MTgyfQ.IFOpQy__Um8Y8h0uWfHfELvRpHvElbw_josVssh8ZwA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\" : \"Mã giảm giá 30k\",\r\n    \"price\" : 30000,\r\n    \"startDate\" : \"2025-05-01\",\r\n    \"endDate\": \"2025-07-01\",\r\n    \"status\" : \"active\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/promo/68381200d6a50c84d6e8a77c",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"promo",
+								"68381200d6a50c84d6e8a77c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODUwMjc4MiwiZXhwIjoxNzQ4ODA1MTgyfQ.IFOpQy__Um8Y8h0uWfHfELvRpHvElbw_josVssh8ZwA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"promoId\" : \"68381200d6a50c84d6e8a77c\",\r\n    \"status\" : \"inactive\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/promo/update/status",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"promo",
+								"update",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODUwMjc4MiwiZXhwIjoxNzQ4ODA1MTgyfQ.IFOpQy__Um8Y8h0uWfHfELvRpHvElbw_josVssh8ZwA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/promo/68380948f6c9097e4faed33d",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"promo",
+								"68380948f6c9097e4faed33d"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "provinces",
+			"item": [
+				{
+					"name": "get-all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/provinces",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"provinces"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-cinema-by-province",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/provinces/get-cinema-by-province",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"provinces",
+								"get-cinema-by-province"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-cinema-by-province v2",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/provinces/get-cinema-by-province",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"provinces",
+								"get-cinema-by-province"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTA5ODQ5MiwiZXhwIjoxNzQ1NDAwODkyfQ._PS_YQNbfpt6il3aeUqgS7QMC8jwKXhu34aECzMZML4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"TP HCM\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/provinces",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"provinces"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTA5NzM4OCwiZXhwIjoxNzQ1Mzk5Nzg4fQ.BSTANJaQQrxFsqbq3qineRawZO1i98WK_FfvtYxwMRg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/provinces/tp-hcm",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"provinces",
+								"tp-hcm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTAyOTQ3MiwiZXhwIjoxNzQ1MDMzMDcyfQ.Ti4jjsa15w7RskhVz251zT6tne1hhfmXkpnwWl9aoGQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Hà Nội\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/provinces/ha-noi",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"provinces",
+								"ha-noi"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTA0ODQ4OSwiZXhwIjoxNzQ1MDUyMDg5fQ.QQ9wDo-1dJmnoEWRWgkDAc1Ay5IEshydl48aoGdudYw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/provinces/tp-hcm",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"provinces",
+								"tp-hcm"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cinemas",
+			"item": [
+				{
+					"name": "get-all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/cinemas",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"cinemas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all-by-province",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"provinceId\" : \"6812b40c5898a7844e443f6b\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/cinemas/get-all-by-province",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"cinemas",
+								"get-all-by-province"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODIzNDY0OCwiZXhwIjoxNzQ4NTM3MDQ4fQ.-NM5ZkFEaZedIUHQKQktJXRTEIEr7J3ZwoTG8Qxe7lo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "provinceId",
+									"value": "6803087e667409cea147a01e",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Vi",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "Số 4 - Phố Võ Quý Huân - Phường Phúc Diễn - Quận Bắc Từ Liêm - Hà Nội",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/C:/Users/vietlh/Desktop/image/620264f9727fd18d8259fee1_beta-cinemas-my-dinh-tang-ham-b1-tu-liem-ha-noi.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/v1/cinemas",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"cinemas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTcxOTMyMCwiZXhwIjoxNzQ2MDIxNzIwfQ.GN4DJR0KsISt0gxNjWTbwBh_7kusfrqtrjC1Zkf2sL4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/cinemas/viefilm-bac-tu-liem",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"cinemas",
+								"viefilm-bac-tu-liem"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NjE0NjcyNCwiZXhwIjoxNzQ2NDQ5MTI0fQ.y0v_1OqMru69iohXRfEhhEwfLH_wn6hEs-sjGkiONOM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "VieFilm Bắc Từ Liêm",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "Số 4 - Phố Võ Quý Huân - Phường Phúc Diễn - Quận Bắc Từ Liêm - Hà Nội",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/C:/Users/vietlh/Desktop/image/33f0fe86-cgv-vincom-bac-tu-liem-thumb.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/v1/cinemas/viefilm-bac-tu-liem",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"cinemas",
+								"viefilm-bac-tu-liem"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTE2MDAxMywiZXhwIjoxNzQ1NDYyNDEzfQ.J1SwJiHU4POrghZhrc1C-Dox2WBqxYgy0GnFsVu49Dc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/cinemas/viefilm-nam-tu-liem",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"cinemas",
+								"viefilm-nam-tu-liem"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one-by-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/cinemas/get-one/6803755d370e710a894701c4",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"cinemas",
+								"get-one",
+								"6803755d370e710a894701c4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "screens",
+			"item": [
+				{
+					"name": "get-all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NjExNzYwNSwiZXhwIjoxNzQ2NDIwMDA1fQ.bfjipoxJHvIbkQGC-jdzPBg64Ai3VuFllYomprBYETE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/screens",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"screens"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all-by-cinema",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\" : \"68035db82d21be7453864e99\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/screens/get-all-by-cinema",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"screens",
+								"get-all-by-cinema"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODEyNDg1OCwiZXhwIjoxNzQ4NDI3MjU4fQ.S5nIZFor-FJWLUTWyYm14KfI6aYe2CDGGfXXyRmUMzA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\" : \"6803755d370e710a894701c4\",\r\n    \"name\" : \"Screen 05\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/screens",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"screens"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0NjMxNDk2NiwiZXhwIjoxNzQ2NjE3MzY2fQ.qroHefd8Amda08_SzvYd84VAH3pT9tQH9sRqOd1TlG4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/screens/680367d25e020482abca710e",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"screens",
+								"680367d25e020482abca710e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one-by-id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0NjI2NzA1MywiZXhwIjoxNzQ2MjcwNjUzfQ.g4o4DxqtSM3-OQ002b6GhIR85ELi8FS_un9HKp07gpU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\" : \"6803755d370e710a894701c4\",\r\n    \"screenId\" : \"680367d25e020482abca710e\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/screens/get-one",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"screens",
+								"get-one"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0NjI3MDQ4NywiZXhwIjoxNzQ2NTcyODg3fQ.lbL6PFsPPSoLTt3izcXvhow0oJYFqVSraIA2Rn6vrns",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\": \"6803755d370e710a894701c4\",\r\n    \"screenId\": \"6814f1ff6354fdaf7835a0ba\",\r\n    \"name\" : \"Screen 02\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/screens",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"screens"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0NjA5MDUzNiwiZXhwIjoxNzQ2MzkyOTM2fQ.Ot7CXkDmaq3yWZqyWkvOsLVvEqn4IhfHioq8Dr_PWgc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\": \"6803755d370e710a894701c4\",\r\n    \"screenId\": \"6814f1ff6354fdaf7835a0ba\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/screens",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"screens"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "seats",
+			"item": [
+				{
+					"name": "get-all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTA5ODQ5MiwiZXhwIjoxNzQ1NDAwODkyfQ._PS_YQNbfpt6il3aeUqgS7QMC8jwKXhu34aECzMZML4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/seats",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"seats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all-by-screen",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"screenId\" : \"6814f1f76354fdaf7835a0b9\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/seats/get-all-by-screen",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"seats",
+								"get-all-by-screen"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODEyNDg1OCwiZXhwIjoxNzQ4NDI3MjU4fQ.S5nIZFor-FJWLUTWyYm14KfI6aYe2CDGGfXXyRmUMzA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\": \"6803755d370e710a894701c4\",\r\n    \"screenId\": \"683244dcde905c2b39021656\",\r\n    \"startRow\" : \"A\",\r\n    \"endRow\": \"C\",\r\n    \"number\" : 12,\r\n    \"type\" : \"Ghế thường\",\r\n    \"price\" : 65000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/seats",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"seats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0NjI2NzA1MywiZXhwIjoxNzQ2MjcwNjUzfQ.g4o4DxqtSM3-OQ002b6GhIR85ELi8FS_un9HKp07gpU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/seats/680367d25e020482abca710e",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"seats",
+								"680367d25e020482abca710e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0NjMwNjI5OSwiZXhwIjoxNzQ2MzA5ODk5fQ.VFMtzY5q99LvnwI3nGnOBHysiVRs7r_VjTotTOcWn0E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\": \"6803755d370e710a894701c4\",\r\n    \"screenId\": \"6814f1f76354fdaf7835a0b9\",\r\n    \"seatId\" : \"68168760d68fd1c5bc2751c5\",\r\n    \"row\" : \"i\",\r\n    \"number\": 16,\r\n    \"type\": \"Ghế VIP\",\r\n    \"price\": 85000,\r\n    \"status\" : \"available\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/seats",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"seats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NjA5NDQxMywiZXhwIjoxNzQ2Mzk2ODEzfQ.Q9c6wwSL1ACTWixjSH3WgoJigrA1ZnJiuqnUhyR5Up4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\": \"6803755d370e710a894701c4\",\r\n    \"screenId\": \"681600586154b83ead1ddf38\",\r\n    \"seatId\" : \"68168a440d1301692798873b\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/seats",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"seats"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "movies",
+			"item": [
+				{
+					"name": "get-all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/movies",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"movies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one-by-id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/movies/get-one-by-id/68056014ea3f7fa604523b46",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"movies",
+								"get-one-by-id",
+								"68056014ea3f7fa604523b46"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all-by-date",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\" : \"showing\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/movies/get-all-by-date",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"movies",
+								"get-all-by-date"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODQxMTU3NywiZXhwIjoxNzQ4NzEzOTc3fQ.PqyAHUJuIPH4NsFJ_KZYw2rwBmae5Xzpg3zX4bArM3g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Phim Shin Cậu Bé Bút Chì: Bí Ẩn! Học Viện Hoa Lệ Tenkasu",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Câu chuyện của bộ phim bắt đầu với Shinnosuke và những người bạn của Shin thuộc Đội đặc nhiệm Kasukabe trải qua một tuần ở lại \"Học viện Tư nhân Tenkasu Kasukabe\" (Còn gọi là \"Học viện Tenkasu\"), một trường nội trú ưu tú được quản lý bởi một AI hiện đại, \"Otsmun\". Tất cả các học sinh ban đầu được trao một huy hiệu với 1000 điểm và điểm của các em sẽ được Otsmun tăng hoặc giảm dựa trên hành vi và kết quả học tập của các em. Trong đó ai đó tấn công Kazama. Kết quả là trí thông minh của anh ta bị suy giảm và những vết cắn kỳ lạ để lại trên mông anh ta. Đội đặc nhiệm Kasukabe hợp lực với chủ tịch hội học sinh bỏ học của trường, Chishio Atsuki, một cựu vận động viên, để thành lập một nhóm thám tử và giải quyết bí ẩn",
+									"type": "text"
+								},
+								{
+									"key": "trailer",
+									"value": "https://www.youtube.com/watch?v=x2ik9QiU154",
+									"type": "text"
+								},
+								{
+									"key": "poster",
+									"type": "file",
+									"src": "/C:/Users/vietlh/Desktop/image/shin.png"
+								},
+								{
+									"key": "directors",
+									"value": "Wataru Takahashi",
+									"type": "text"
+								},
+								{
+									"key": "actors",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "genres",
+									"value": "Hoạt hình, Gia đình",
+									"type": "text"
+								},
+								{
+									"key": "language",
+									"value": "Tiếng Việt",
+									"type": "text"
+								},
+								{
+									"key": "duration",
+									"value": "106",
+									"type": "text"
+								},
+								{
+									"key": "rating",
+									"value": "8.2",
+									"type": "text"
+								},
+								{
+									"key": "releaseDate",
+									"value": "02/05/2025",
+									"type": "text"
+								},
+								{
+									"key": "endDate",
+									"value": "30/05/2025",
+									"type": "text"
+								},
+								{
+									"key": "ageRating",
+									"value": "P",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/v1/movies",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"movies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTA5NTcyMCwiZXhwIjoxNzQ1Mzk4MTIwfQ.j7trYfC8gsG9N2bvzTvy8H2dCC3ZogZVi6RDqOyOrB8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/movies/tham-tu-kien-ky-an-khong-dau",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"movies",
+								"tham-tu-kien-ky-an-khong-dau"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODUxNTQwMSwiZXhwIjoxNzQ4ODE3ODAxfQ.2aRzgyY6E2kLgEIUuZKElz-FbXGlRROzM22R--IAjBM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Lilo & Stitch",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Bộ phim live-action Lilo và Stitch đưa câu chuyện kinh điển của Disney năm 2002 trở lại với một diện mạo mới, vừa hài hước vừa đầy cảm xúc. Phim theo chân Lilo, một cô bé người Hawaii cô đơn, và Stitch, sinh vật ngoài hành tinh tinh nghịch đang chạy trốn, khi cả hai vô tình tìm thấy nhau và cùng nhau hàn gắn những tan vỡ trong gia đình của Lilo.",
+									"type": "text"
+								},
+								{
+									"key": "trailer",
+									"value": "https://www.youtube.com/watch?v=VWqJifMMgZE",
+									"type": "text"
+								},
+								{
+									"key": "poster",
+									"type": "file",
+									"src": "/C:/Users/vietlh/Desktop/image/endgame.jpg",
+									"disabled": true
+								},
+								{
+									"key": "directors",
+									"value": "Dean Fleischer Camp",
+									"type": "text"
+								},
+								{
+									"key": "actors",
+									"value": "Maia Kealoha, Sydney Elizabeth Agudong, Tia Carrere, Chris Sanders",
+									"type": "text"
+								},
+								{
+									"key": "genres",
+									"value": "Gia đình, Hài hước",
+									"type": "text"
+								},
+								{
+									"key": "language",
+									"value": "Tiếng Anh",
+									"type": "text"
+								},
+								{
+									"key": "duration",
+									"value": "107",
+									"type": "text"
+								},
+								{
+									"key": "rating",
+									"value": "8.46",
+									"type": "text"
+								},
+								{
+									"key": "releaseDate",
+									"value": "01/05/2025",
+									"type": "text"
+								},
+								{
+									"key": "endDate",
+									"value": "30/06/2025",
+									"type": "text"
+								},
+								{
+									"key": "ageRating",
+									"value": "P",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/v1/movies/lilo-stitch",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"movies",
+								"lilo-stitch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTA5NTcyMCwiZXhwIjoxNzQ1Mzk4MTIwfQ.j7trYfC8gsG9N2bvzTvy8H2dCC3ZogZVi6RDqOyOrB8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/movies/pororo-tham-hiem-dai-duong-xanh",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"movies",
+								"pororo-tham-hiem-dai-duong-xanh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODQwMTQyMSwiZXhwIjoxNzQ4NzAzODIxfQ.ltYVHk8xwJU5wC0qJEtNoOCNynqoxoN4wxphzbg_eUs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"movieId\" : \"680de83654caa26f845ef87a\",\r\n    \"status\" : \"inactive\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/movies/update-status-movie",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"movies",
+								"update-status-movie"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "showtimes",
+			"item": [
+				{
+					"name": "get-all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTE5MjQ4NiwiZXhwIjoxNzQ1NDk0ODg2fQ.TnvcNPVoe0rOm8fJVp6-fmHBTZ4Otl5nUiMVsp4hLPo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\" : \"\",\r\n    \"cinemaId\" : \"6803755d370e710a894701c4\",\r\n    \"movieId\": \"\",\r\n    \"screenId\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/showtimes/get-all",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"showtimes",
+								"get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-seats-by-showtime",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"showtimeId\" : \"6816d6112a20a606e5b71cf6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/showtimes/get-seats-by-showtime",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"showtimes",
+								"get-seats-by-showtime"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all-by-(cinema,movie,date)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\" : \"6803755d370e710a894701c4\",\r\n    \"movieId\": \"68056014ea3f7fa604523b46\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/showtimes/get-all-by-movie",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"showtimes",
+								"get-all-by-movie"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all-by-date",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\" : \"6803755d370e710a894701c4\",\r\n    \"date\": \"25/05/2025\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/showtimes/get-all-by-date",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"showtimes",
+								"get-all-by-date"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0ODQ0NzY3NywiZXhwIjoxNzQ4NzUwMDc3fQ.QYo8NLqwo5k-AvcgjI_CVdY9q6Y8ah3_lGBlJstC964",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\": \"6803755d370e710a894701c4\",\r\n    \"screenId\": \"683244dcde905c2b39021656\",\r\n    \"movieId\" : \"680de83654caa26f845ef87a\",\r\n    \"startTime\" : \"16:00\",\r\n    \"date\": \"30/05/2025\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/showtimes",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"showtimes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTg2OTQxMSwiZXhwIjoxNzQ2MTcxODExfQ.d1C7bUsATGjQr5O4mt0_qzo2tlPLr9nk2yk0FhC_DCI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/showtimes/6816a80e92feb2de7c1abb24",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"showtimes",
+								"6816a80e92feb2de7c1abb24"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0NjI3MDQ4NywiZXhwIjoxNzQ2NTcyODg3fQ.lbL6PFsPPSoLTt3izcXvhow0oJYFqVSraIA2Rn6vrns",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\" : \"6803755d370e710a894701c4\",\r\n    \"screenId\": \"6814f1f76354fdaf7835a0b9\",\r\n    \"movieId\" : \"6805721a60be314a68ca73da\",\r\n    \"startTime\" : \"8:45\",\r\n    \"date\": \"06/05/2025\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/showtimes/6815edb4351bf27b41a85286",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"showtimes",
+								"6815edb4351bf27b41a85286"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0NjMzMzIyMCwiZXhwIjoxNzQ2NjM1NjIwfQ.efI_h3NQ5kWGuUkjaF6rgmT_74M0PML_VEEe_hf5HHI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\" : \"6803755d370e710a894701c4\",\r\n    \"showtimeId\" : \"6816d577be3515fd45a82423\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/showtimes",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"showtimes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all-by-screen",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"screenId\" : \"6816786899c6d9d8246e815f\",\r\n    \"date\" : \"30/05/2025\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/showtimes/get-all-by-screen",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"showtimes",
+								"get-all-by-screen"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-empty-showtime",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"screenId\" : \"681700acaa7e0ea60233151e\",\r\n    \"movieId\" : \"6805721a60be314a68ca73da\",\r\n    \"date\" : \"04/06/2025\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/showtimes/get-empty-showtime",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"showtimes",
+								"get-empty-showtime"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "payment-methods",
+			"item": [
+				{
+					"name": "get-all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTI1NTI5OCwiZXhwIjoxNzQ1NTU3Njk4fQ.sbvao_KmHyY_pTWxNGSCuaPWWqYyy_e8e_woR3d8k1M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/payment-methods",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"payment-methods"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTA5ODQ5MiwiZXhwIjoxNzQ1NDAwODkyfQ._PS_YQNbfpt6il3aeUqgS7QMC8jwKXhu34aECzMZML4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Tiền mặt\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/payment-methods",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"payment-methods"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTA5NzM4OCwiZXhwIjoxNzQ1Mzk5Nzg4fQ.BSTANJaQQrxFsqbq3qineRawZO1i98WK_FfvtYxwMRg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/payment-methods/tien-mat",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"payment-methods",
+								"tien-mat"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTAyOTQ3MiwiZXhwIjoxNzQ1MDMzMDcyfQ.Ti4jjsa15w7RskhVz251zT6tne1hhfmXkpnwWl9aoGQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Hà Nội\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/payment-methods/tien-mat",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"payment-methods",
+								"tien-mat"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTA0ODQ4OSwiZXhwIjoxNzQ1MDUyMDg5fQ.QQ9wDo-1dJmnoEWRWgkDAc1Ay5IEshydl48aoGdudYw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/payment-methods/tien-mat",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"payment-methods",
+								"tien-mat"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "products",
+			"item": [
+				{
+					"name": "get-all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/products",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODUwMDU1MiwiZXhwIjoxNzQ4ODAyOTUyfQ.7yca57x_KoO-BAq4kTak88eeHq-vMGXcgCKC3NmT06M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "F",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "TIẾT KIỆM 95K!!! Gồm: 2 Bắp (69oz) + 4 Nước có gaz (22oz) + 2 Snack Oishi (80g)",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/C:/Users/vietlh/Desktop/image/familicombo.png"
+								},
+								{
+									"key": "price",
+									"value": "213000",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "a",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/v1/products",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTA5NzM4OCwiZXhwIjoxNzQ1Mzk5Nzg4fQ.BSTANJaQQrxFsqbq3qineRawZO1i98WK_FfvtYxwMRg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/products/combo-see-me-cau-vong",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								"combo-see-me-cau-vong"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODcwOTg4MCwiZXhwIjoxNzQ5MDEyMjgwfQ.VvvDTdi0qp87xUinAyGBNrtf0EwTYken29eHzTUpiN4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Combo 2 nước 1 bỏng",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "TIẾT KIỆM 46K!!! Gồm: 1 Bắp (69oz) + 2 Nước có gaz (22oz)",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/C:/Users/vietlh/Desktop/image/sweetcombo.png"
+								},
+								{
+									"key": "price",
+									"value": "80000",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "active",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/v1/products/combo-2-nuoc-1-bong",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								"combo-2-nuoc-1-bong"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NTE2MDAxMywiZXhwIjoxNzQ1NDYyNDEzfQ.J1SwJiHU4POrghZhrc1C-Dox2WBqxYgy0GnFsVu49Dc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/products/combo-see-me-cau-vong",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								"combo-see-me-cau-vong"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODQ5ODUxMCwiZXhwIjoxNzQ4ODAwOTEwfQ.uuurn9JJBIkPMxEdUGoYWk05IDYYABuYA7AcH-sK6oI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"slug\" : \"combo-see-me-cau-vong\",\r\n    \"status\": \"inactive\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/products/update/status",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								"update",
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tickets",
+			"item": [
+				{
+					"name": "get-all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MzQ3NjIyM2RjMTY0ZWI3YjNlMjE3MyIsImlhdCI6MTc0ODQ1OTYxNCwiZXhwIjoxNzQ4NzYyMDE0fQ.m08hKSrQgF7vFQupfW8NGiz9v-aA2RARHzZ_VRPW10w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\" : \"HĐ-GXW\",\r\n    \"cinemaId\" : \"68035db82d21be7453864e99\",\r\n    \"date\" : \"\",\r\n    \"status\" : \"\",\r\n    \"movieId\" : \"68055a0afc6f7eaaf6b947b0\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/tickets/get-all",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"tickets",
+								"get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all-by-user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0ODQzMjg3MywiZXhwIjoxNzQ4NzM1MjczfQ.0RK-5I6cE6RsEKCV3DV__QRHIFQ1qQb9qb0RePHShgw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\" : 1,\r\n    \"limit\" : 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/tickets/get-all-by-user",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"tickets",
+								"get-all-by-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one-by-user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0ODQ0ODMwNSwiZXhwIjoxNzQ4NzUwNzA1fQ.inAM59XVxiPIb5WW69rPpBVhUmJUKAnbbHUju4-XESw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ticketId\" : \"6836fe70ff257be2347193d6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/tickets/get-one-by-user",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"tickets",
+								"get-one-by-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "staff-create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MzQ3NjIyM2RjMTY0ZWI3YjNlMjE3MyIsImlhdCI6MTc0ODI3MzYxNSwiZXhwIjoxNzQ4NTc2MDE1fQ.6P--XtIJqhTk9EFAOIXkhGUhi6sGALQqGzEydfS8RO0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "showtimeId",
+									"value": "6816a7d292feb2de7c1abb21",
+									"type": "text"
+								},
+								{
+									"key": "seatIds[]",
+									"value": "681700c3aa7e0ea602331526",
+									"type": "text"
+								},
+								{
+									"key": "seatIds[]",
+									"value": "681700cfaa7e0ea602331587",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "cinemaId",
+									"value": "68035db82d21be7453864e99",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/v1/tickets/staff/create",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"tickets",
+								"staff",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "staff-checkout",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0ODI3MjA2NywiZXhwIjoxNzQ4NTc0NDY3fQ.kf03jVtIIiEq1M68wHDzFZ-dJRlDjU2ZI6YO7yeO8LE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "ticketId",
+									"value": "68348e0fde336806f516949e",
+									"type": "text"
+								},
+								{
+									"key": "customer",
+									"value": "Nguyễn Thúy Ngọc",
+									"type": "text"
+								},
+								{
+									"key": "paymentMethodId",
+									"value": "68068043ecea502ee1874bb6",
+									"type": "text"
+								},
+								{
+									"key": "products[0][productId]",
+									"value": "680686d2cf57fc30719e7214",
+									"type": "text"
+								},
+								{
+									"key": "products[0][quantity]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "promoName",
+									"value": "MGG-940467488",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/v1/tickets/staff/checkout",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"tickets",
+								"staff",
+								"checkout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0ODQ0NzY3NywiZXhwIjoxNzQ4NzUwMDc3fQ.QYo8NLqwo5k-AvcgjI_CVdY9q6Y8ah3_lGBlJstC964",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "showtimeId",
+									"value": "683854f5275001c3703d493c",
+									"type": "text"
+								},
+								{
+									"key": "seatIds[]",
+									"value": "681701d74de364448ad85471",
+									"type": "text"
+								},
+								{
+									"key": "seatIds[]",
+									"value": "681701d74de364448ad85472",
+									"type": "text"
+								},
+								{
+									"key": "cinemaId",
+									"value": "68035db82d21be7453864e99",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/v1/tickets/hold/seats",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"tickets",
+								"hold",
+								"seats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "checkout",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0ODY5NjQ2NywiZXhwIjoxNzQ4NzAwMDY3fQ.mSBGZwVdhqG90gJNy5eOhxpYmPctljH46anACtSuVxg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "ticketId",
+									"value": "683affc673f4bfec3864d423",
+									"type": "text"
+								},
+								{
+									"key": "paymentMethodId",
+									"value": "6806803aecea502ee1874bb5",
+									"type": "text"
+								},
+								{
+									"key": "products[0][productId]",
+									"value": "680686d2cf57fc30719e7214",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "products[0][quantity]",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "promoName",
+									"value": "MGG-940467488",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/v1/tickets/checkout",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"tickets",
+								"checkout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-one",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MzQ3NjIyM2RjMTY0ZWI3YjNlMjE3MyIsImlhdCI6MTc0ODQ2NTEwNywiZXhwIjoxNzQ4NzY3NTA3fQ.JmwDUnYYgopNriCZzo6dqVTAgH5cxN94TY1KE3m9fYw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ticketId\" : \"6837316ee2737a6c5f5d7054\",\r\n    \"cinemaId\" : \"68035db82d21be7453864e99\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/tickets/get-one",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"tickets",
+								"get-one"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MzQ3NjIyM2RjMTY0ZWI3YjNlMjE3MyIsImlhdCI6MTc0ODQ2NTQ0MiwiZXhwIjoxNzQ4NzY3ODQyfQ.epMlLOkcT4PivEzVitFVnnfdTy_lAF7lmWzhn3QDDaw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ticketId\" : \"68373654745f47f99345e572\",\r\n    \"cinemaId\" : \"6803755d370e710a894701c4\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/tickets/update/status",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"tickets",
+								"update",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteHoldSeats",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGQ5ZDBlMGU0YjMyMmQzN2QxNjJlNiIsImlhdCI6MTc0NzQ1NjQwNSwiZXhwIjoxNzQ3NzU4ODA1fQ.FVzRAOTTEAxH4HZf-HxBfaYirgYfWv4o7Aya-1qh9Ng",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ticketId\" : \"682811a40284eaf0892ab664\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/tickets/hold/seats",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"tickets",
+								"hold",
+								"seats"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "dashboard",
+			"item": [
+				{
+					"name": "get-revenue-by-cinema",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODU3OTIzNywiZXhwIjoxNzQ4ODgxNjM3fQ.4kYg6Kr6TDQ0i7J_fKS74FlM_W6nynjnS5sy8NEeuck",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\" : \"6803755d370e710a894701c4\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/dashboard/get-revenue-by-cinema",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"dashboard",
+								"get-revenue-by-cinema"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-revenue-by-movie",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0ODU3OTIzNywiZXhwIjoxNzQ4ODgxNjM3fQ.4kYg6Kr6TDQ0i7J_fKS74FlM_W6nynjnS5sy8NEeuck",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\" : \"6803755d370e710a894701c4\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/dashboard/get-revenue-by-movie",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"dashboard",
+								"get-revenue-by-movie"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-total-by-seat",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MzQ3NjIyM2RjMTY0ZWI3YjNlMjE3MyIsImlhdCI6MTc0ODU3ODk2OCwiZXhwIjoxNzQ4ODgxMzY4fQ.6-BXjlYx2qBdCjcFQ0qZRMjajDje9AZR4vF0MOP0SzM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\" : \"68035db82d21be7453864e99\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/dashboard/get-total-seat",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"dashboard",
+								"get-total-seat"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-revenue-top-by-cinema",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MzQ3NjIyM2RjMTY0ZWI3YjNlMjE3MyIsImlhdCI6MTc0ODU3ODY4MywiZXhwIjoxNzQ4ODgxMDgzfQ.kh9_LnOhoH6dk7v0JMzuYRVzgPEZb1bdq1MeDjxSjj4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cinemaId\" : \"68035db82d21be7453864e99\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/dashboard/get-revenue-top-by-cinema",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"dashboard",
+								"get-revenue-top-by-cinema"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cleanup-tickets",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDJmYThlOGYwOTY2MTVhMzdjYmI1NCIsImlhdCI6MTc0NjExNzYwNSwiZXhwIjoxNzQ2NDIwMDA1fQ.bfjipoxJHvIbkQGC-jdzPBg64Ai3VuFllYomprBYETE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/v1/cron/cleanup-tickets",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"v1",
+						"cron",
+						"cleanup-tickets"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "https://viefilm-api.vercel.app",
+			"type": "string"
+		}
+	]
+}
