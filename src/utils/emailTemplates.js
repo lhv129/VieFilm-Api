@@ -1,9 +1,9 @@
 export const buildTicketEmailHTML = (ticket) => {
-    const { code, movie, cinema, showtime, screen, detail, totalAmount } = ticket;
-    const { seats = [], products = [] } = detail || {};
+    const { code, movie, cinema, showtime, screen, details, totalAmount } = ticket;
+    const { seats = [], products = [] } = details || {};
 
     return `
-  <div style="font-family:sans-serif;max-width:500px;margin:auto;padding:20px;border:1px solid #ddd;border-radius:8px;">
+  <div style="font-family:sans-serif;max-width:400px;margin:auto;padding:20px;border:1px solid #ddd;border-radius:8px;">
     <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;border-bottom:1px dashed #ccc;">
       <div>
         <p style="font-size:12px;color:#555;margin:0;">Mã đặt vé</p>
