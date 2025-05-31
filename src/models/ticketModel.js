@@ -656,6 +656,7 @@ const getDetailAfterPayment = async (ticketId) => {
         seats: ticketDetailsWithSeatCode,
         products: ticketProductsWithName,
       },
+      userId: ticket.userId,
       showtime: showtimeInfo,
       screen: screenInfo,
       cinema: cinemaInfo,

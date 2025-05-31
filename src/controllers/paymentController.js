@@ -1,4 +1,7 @@
 import { ticketModel } from "../models/ticketModel";
+import { buildTicketEmailHTML } from "../utils/emailTemplates";
+import { sendEmail } from "../utils/email";
+import { userModel } from "../models/userModel";
 
 const handlePaymentReturn = async (req, res) => {
     const { vnp_ResponseCode, vnp_TxnRef } = req.query;
@@ -23,10 +26,16 @@ const handlePaymentReturn = async (req, res) => {
                 message: "Hủy thanh toán thành công"
             })
         } else {
-            await ticketModel.updateStatus(ticket._id.toString(),"paid");
+            await ticketModel.updateStatus(ticket._id.toString(), "paid");
             const getTicket = await ticketModel.getDetailAfterPayment(ticket._id.toString());
 
-            // console.log(getTicket);
+            // Sau khi getTicket xong:
+            // Lay ra email cua user
+            const user = await userModel.findOneById(ticket.userId);
+
+            const subject = 'Xác nhận đặt vé thành công - VieFilm';
+            const htmlBody = buildTicketEmailHTML(getTicket);
+            await sendEmail(user.email, subject, htmlBody);
 
             res.status(200).json({
                 status: true,
