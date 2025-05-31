@@ -70,10 +70,13 @@ const create = async (data) => {
 
 const findOneById = async (id) => {
     try {
+        const today = getStartOfDay(Date.now());
         const result = await GET_DB()
             .collection(MOVIE_COLLECTION_NAME)
             .findOne({
                 _id: new ObjectId(id),
+                _deletedAt: false,
+                endDate: { $gte: today },
             });
         return result;
     } catch (error) {
@@ -83,9 +86,14 @@ const findOneById = async (id) => {
 
 const findOne = async (filter) => {
     try {
+        const today = getStartOfDay(Date.now());
         const result = await GET_DB()
             .collection(MOVIE_COLLECTION_NAME)
-            .findOne(filter);
+            .findOne({
+                filter,
+                _deletedAt: false,
+                endDate: { $gte: today },
+            });
         return result;
     } catch (error) {
         throw new Error(error);
