@@ -19,8 +19,7 @@ Follow these steps to get the project up and running on your local machine:
 
 1.  **Clone the repository**:
     ```bash
-    git clone [https://github.com/username/VieFilm-Api.git](https://github.com/username/VieFilm-Api.git)
-    cd VieFilm-Api
+    git clone https://github.com/lhv129/VieFilm-Api.git
     ```
 
 2.  **Install dependencies**:
