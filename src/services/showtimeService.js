@@ -9,6 +9,7 @@ import { ObjectId } from "mongodb";
 import { showtimeValidation } from "../validations/showtimeValidation";
 import { cinemaModel } from "../models/cinemaModel";
 import { timeUtils } from "../utils/timeUtils";
+import { getStartOfDay } from "../utils/getStartOfDay";
 
 const getAll = async (reqBody) => {
     try {
@@ -179,12 +180,14 @@ const getSeatsByShowtime = async (showtimeId) => {
 
 const getAllByMovie = async (reqBody) => {
     try {
+        const todayMili = getStartOfDay(Date.now());
         const { cinemaId, movieId } = reqBody;
         const cinema = await cinemaModel.findOneById(cinemaId);
         if (!cinema) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Rạp phim không tồn tại vui lòng kiểm tra lại");
         }
-        const movie = await movieModel.findOneById(movieId);
+        const movie = await movieModel.findOne({_id: new ObjectId(movieId), _deletedAt: false, endDate: { $gte: todayMili }, status: "active" });
+
         if (!movie) {
             throw new ApiError(StatusCodes.NOT_FOUND, "Phim không tồn tại, vui lòng kiểm tra lại");
         }

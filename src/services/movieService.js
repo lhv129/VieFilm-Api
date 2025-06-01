@@ -5,6 +5,7 @@ import { uploadImage, deleteImage } from "../config/cloudinary";
 import { convertDateToTimestamp } from "../utils/convertDate";
 import { slugify } from "../utils/formatters";
 import { ObjectId } from "mongodb";
+import { getStartOfDay } from "../utils/getStartOfDay";
 
 const getAll = async (req, res, next) => {
     try {
@@ -52,10 +53,20 @@ const create = async (reqBody, reqImage) => {
     }
 }
 
+const getOne = async (slug) => {
+    try {
+        const today = getStartOfDay(Date.now());
+        const movie = await movieModel.findOne({ slug: slug, endDate: { $gte: today }, _deletedAt: false });
+        return movie;
+    } catch (error) {
+        throw error;
+    }
+}
+
 const getDetails = async (slug) => {
     try {
         const today = getStartOfDay(Date.now());
-        const movie = await movieModel.findOne({ slug: slug, endDate: { $gte: today },_deletedAt: false});
+        const movie = await movieModel.findOne({ slug: slug, endDate: { $gte: today }, _deletedAt: false, status: "active" });
         return movie;
     } catch (error) {
         throw error;
@@ -172,12 +183,6 @@ const getOneById = async (id) => {
     }
 }
 
-const getStartOfDay = (date) => {
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-    return d.getTime();
-};
-
 export const movieService = {
     getAll,
     create,
@@ -186,5 +191,6 @@ export const movieService = {
     getDelete,
     updateStatus,
     getAllByDate,
-    getOneById
+    getOneById,
+    getOne
 }

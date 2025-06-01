@@ -27,6 +27,19 @@ const create = async (req, res, next) => {
     }
 }
 
+const getOne = async (req, res, next) => {
+    try {
+        const movie = await movieService.getOne(req.params.slug);
+        return res.status(200).json({
+            status: "success",
+            message: "Tìm phim thành công",
+            data: movie
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
 const getDetails = async (req, res, next) => {
     try {
         const movie = await movieService.getDetails(req.params.slug);

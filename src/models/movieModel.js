@@ -2,6 +2,7 @@ import { GET_DB } from "../config/mongodb";
 import Joi from "joi";
 import { ObjectId } from "mongodb";
 import { convertDateToTimestamp } from "../utils/convertDate";
+import { getStartOfDay } from "../utils/getStartOfDay";
 
 const MOVIE_COLLECTION_NAME = "movies";
 const MOVIE_COLLECTION_SCHEMA = Joi.object({
@@ -70,11 +71,13 @@ const create = async (data) => {
 
 const findOneById = async (id) => {
     try {
+        const today = getStartOfDay(Date.now());
         const result = await GET_DB()
             .collection(MOVIE_COLLECTION_NAME)
             .findOne({
                 _id: new ObjectId(id),
                 _deletedAt: false,
+                endDate: { $gte: today },
             });
         return result;
     } catch (error) {
@@ -158,14 +161,6 @@ const getAllByDate = async (date) => {
     } catch (error) {
         throw new Error(error);
     }
-};
-
-// getStartOfDay(Date.now()) sẽ trả về timestamp của ngày hôm nay lúc 00:00:00.
-// Đến ngày 31/5/2025 (lúc 00:00:00) thì today sẽ là timestamp ngày 31, và phim này không được lấy nữa vì endDate < today.
-const getStartOfDay = (date) => {
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-    return d.getTime();
 };
 
 export const movieModel = {

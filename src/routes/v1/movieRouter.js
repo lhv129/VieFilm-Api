@@ -23,6 +23,9 @@ Router.route("/:slug")
     .put(authenticateToken, roleMiddleware.checkRole('Admin'), movieValidation.updateMovie, movieController.update)
     .delete(authenticateToken, roleMiddleware.checkRole('Admin'), movieController.getDelete)
 
+Router.route("/:slug/details")
+    .get(movieController.getDetails)
+
 Router.route("/update-status-movie")
     .post(authenticateToken, roleMiddleware.checkRole('Admin'), movieController.updateStatus)
 
