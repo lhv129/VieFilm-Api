@@ -186,11 +186,11 @@ const getOneById = async (id) => {
 export const movieService = {
     getAll,
     create,
+    getOne,
     getDetails,
     update,
     getDelete,
     updateStatus,
     getAllByDate,
     getOneById,
-    getOne
 }

@@ -121,6 +121,7 @@ const getOneById = async (req, res, next) => {
 export const movieController = {
     getAll,
     create,
+    getOne,
     getDetails,
     update,
     getDelete,
