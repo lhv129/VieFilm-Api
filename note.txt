@@ -1,1 +1,5 @@
 - Tạo suất chiếu thì chưa kiểm tra Staff.
+- Cần cải thiện (chưa làm)
+ *Nếu muốn xóa suất chiếu -> kiểm tra xem suất chiếu đó có ai đặt chỗ hay chữa,
+ *Xóa phòng -> kiểm tra xem phòng đó có suất chiếu nào có ai đặt hay chưa
+ *Xóa rạp -> kiểm tra tất cả các phòng....

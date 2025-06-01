@@ -19,7 +19,7 @@ Router.route("/")
     .post(authenticateToken, roleMiddleware.checkRole('Admin'), movieValidation.createMovie, movieController.create)
 
 Router.route("/:slug")
-    .get(movieController.getDetails)
+    .get(movieController.getOne)
     .put(authenticateToken, roleMiddleware.checkRole('Admin'), movieValidation.updateMovie, movieController.update)
     .delete(authenticateToken, roleMiddleware.checkRole('Admin'), movieController.getDelete)
 
