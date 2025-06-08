@@ -5,14 +5,12 @@ import { provinceModel } from "../models/provinceModel";
 import dayjs from "dayjs";
 
 const getRevenueByCinema = async (reqBody) => {
-
-    const {cinemaId} = reqBody;
+    const { cinemaId } = reqBody;
 
     if (!cinemaId) throw new Error("cinemaId is required");
 
     try {
         const db = GET_DB();
-
         const cinema = await cinemaModel.findOneById(cinemaId);
         if (!cinema) throw new Error("Cinema not found");
 
@@ -31,7 +29,20 @@ const getRevenueByCinema = async (reqBody) => {
             }
         ]).toArray();
 
-        const daysOfWeek = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+        // Ngày bắt đầu và kết thúc tuần hiện tại (Thứ Hai → Chủ Nhật)
+        const today = new Date();
+        const currentDay = today.getDay(); // 0 (CN) - 6 (T7)
+        const distanceToMonday = currentDay === 0 ? -6 : 1 - currentDay;
+
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() + distanceToMonday);
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
+
+        const daysOfWeek = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật'];
         const monthsOfYear = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
 
         const result = {
@@ -42,13 +53,22 @@ const getRevenueByCinema = async (reqBody) => {
 
         tickets.forEach(ticket => {
             const date = new Date(ticket.date);
-            const day = date.getDay(); // 0 - 6
-            const weekIndex = Math.min(Math.floor((date.getDate() - 1) / 7), 3); // 0 - 3
-            const month = date.getMonth(); // 0 - 11
+            const amount = ticket.totalAmount;
 
-            result.week[day].revenue += ticket.totalAmount;
-            result.month[weekIndex].revenue += ticket.totalAmount;
-            result.year[month].revenue += ticket.totalAmount;
+            // WEEK: chỉ tính nếu trong tuần hiện tại
+            if (date >= startOfWeek && date <= endOfWeek) {
+                let weekdayIndex = date.getDay() - 1;
+                if (weekdayIndex < 0) weekdayIndex = 6; // Nếu Chủ Nhật thì thành index 6
+                result.week[weekdayIndex].revenue += amount;
+            }
+
+            // MONTH: tính theo tuần trong tháng
+            const weekIndex = Math.min(Math.floor((date.getDate() - 1) / 7), 3); // 0 - 3
+            result.month[weekIndex].revenue += amount;
+
+            // YEAR: tính theo tháng
+            const month = date.getMonth(); // 0 - 11
+            result.year[month].revenue += amount;
         });
 
         const toMillion = (value) => Math.round((value / 1_000_000) * 10) / 10;
@@ -64,6 +84,7 @@ const getRevenueByCinema = async (reqBody) => {
         throw error;
     }
 };
+
 
 
 const getRevenueByMovie = async (reqBody) => {
